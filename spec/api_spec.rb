@@ -64,10 +64,10 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'reset_anomalous_user_events' do
+    context 'reset_anomalous_user' do
       it 'should successfully call setUserAttributes with resetAnomalies' do
-        VCR.use_cassette('reset_anomalous_user_events') do
-          expect { api.reset_anomalous_user_events(first_user_id) }.to_not raise_error
+        VCR.use_cassette('reset_anomalous_user') do
+          expect { api.reset_anomalous_user(first_user_id) }.to_not raise_error
         end
       end
     end
@@ -117,6 +117,14 @@ describe LeanplumApi::API do
         it 'should raise an error' do
           VCR.use_cassette('track_events_broken') do
             expect { api.track_events(broken_events) }.to raise_error(/No device_id or user_id in hash/)
+          end
+        end
+      end
+
+      context 'anomalous data force_anomalous_override' do
+        it 'should successfully force the anomalous data override events' do
+          VCR.use_cassette('track_events_anomaly_overrider') do
+            expect { api.track_events(events, force_anomalous_override: true) }.to_not raise_error
           end
         end
       end

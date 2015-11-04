@@ -11,23 +11,33 @@ module LeanplumApi
       @http = LeanplumApi::HTTP.new(logger: @logger)
     end
 
-    def set_user_attributes(user_attributes)
-      track_multi(nil, user_attributes)
+    def set_user_attributes(user_attributes, options = {})
+      track_multi(nil, user_attributes, options)
     end
 
-    def track_events(events)
-      track_multi(events, nil)
+    def track_events(events, options = {})
+      track_multi(events, nil, options)
     end
 
     # This method is for tracking events and/or updating user attributes at the same time, batched together like leanplum
     # recommends.
-    def track_multi(events = nil, user_attributes = nil)
+    # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events and force them to not
+    # be considered anomalous
+    def track_multi(events = nil, user_attributes = nil, options = {})
       events = arrayify(events)
       user_attributes = arrayify(user_attributes)
 
       request_data = user_attributes.map { |h| build_user_attributes_hash(h) } + events.map { |h| build_event_attributes_hash(h) }
       response = @http.post(request_data)
       validate_response(events + user_attributes, response)
+
+      if options[:force_anomalous_override]
+        response.body['response'].each_with_index do |indicator, i|
+          if indicator['warning'] && indicator['warning']['message'] =~ /Anomaly detected/i
+            reset_anomalous_user((events + user_attributes)[i][:user_id])
+          end
+        end
+      end
     end
 
     # Returns the jobId
@@ -114,10 +124,11 @@ module LeanplumApi
       content_read_only_connection.get(action: 'getMessage', id: message_id).body['response'].first['message']
     end
 
-    # If you pass old events, leanplum will mark them 'anomalous' and exclude them from your data set.
+    # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark them 'anomalous'
+    # and exclude them from your data set.
     # Calling this method after you pass old events will fix that for all events for the specified user_id
     # For some reason this API feature requires the developer key
-    def reset_anomalous_user_events(user_id)
+    def reset_anomalous_user(user_id)
       request_data = { 'action' => 'setUserAttributes', 'resetAnomalies' => true, 'userId' => user_id }
       response = development_connection.get(request_data)
       validate_response([request_data], response)
