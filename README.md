@@ -14,15 +14,17 @@ required_ruby_version is set to 1.9 but this code has only been tested with Ruby
 
 ## Configuration
 
-You need to obtain the CLIENT_KEY and APP_ID (and potentially DATA_EXPORT_KEY, if you are looking to call any data export methods) from Leanplum.  Then you can setup the gem for use in your application like so:
+You need to obtain (at a minimum) the PRODUCTION and APP_ID from Leanplum.  You may also want to configure the DATA_EXPORT_KEY, CONTENT_READ_ONLY_KEY, and DEVELOPMENT_KEY if you plan on calling methods that require those keys.  Then you can setup the gem for use in your application like so:
 
 ```ruby
 require 'leanplum_api'
 
 LeanplumApi.configure do |config|
-  config.client_key = 'MY_CLIENT_KEY'
+  config.production_key = 'MY_CLIENT_KEY'
   config.app_id = 'MY_APP_ID'
-  config.data_export_key = 'MY_DATA_KEY'  # Optional; necessary only if you want to call data export methods.
+  config.data_export_key = 'MY_DATA_KEY'          # Optional; necessary only if you want to call data export methods.
+  config.content_read_only_key = 'MY_CONTENT_KEY' # Optional; necessary for retrieving AB test info
+  config.development_key = 'MY_CONTENT_KEY'       # Optional; needed for resetting anomalous events
 
   # These options are optional unless you plan to use the export to s3 option
   config.s3_bucket_name = 'my_bucket'
@@ -97,16 +99,17 @@ The default log_path is ```log/```
 
 ## Tests
 
-To run tests, you must set the LEANPLUM_CLIENT_KEY, LEANPLUM_APP_ID, LEANPLUM_CONTENT_READ_ONLY_KEY, and LEANPLUM_DATA_EXPORT_KEY environment variables (preferably to some development only keys) to something and then run rspec.
-Because of the nature of VCR/Webmock, you can set them to anything (including invalid keys) as long as you are not changing anything substantive.  If you want to make substantive changes, VCR will need to be able to generate fixture data so you will need to use a real set of Leanplum keys.
+To run tests, you must set the LEANPLUM_PRODUCTION_KEY, LEANPLUM_APP_ID, LEANPLUM_CONTENT_READ_ONLY_KEY, LEANPLUM_DEVELOPMENT_KEY, and LEANPLUM_DATA_EXPORT_KEY environment variables (preferably to some development only keys) to something and then run rspec.
+Because of the nature of VCR/Webmock, you can set them to anything (including invalid keys) as long as you are not changing anything substantive or writing new specs.  If you want to make substantive changes/add new specs, VCR will need to be able to generate fixture data so you will need to use a real set of Leanplum keys.
 
 > BE AWARE THAT IF YOU WRITE A NEW SPEC OR DELETE A VCR FILE, IT'S POSSIBLE THAT REAL DATA WILL BE WRITTEN TO THE LEANPLUM_APP_ID YOU CONFIGURE!  Certainly a real request will be made to rebuild the VCR file, and while specs run with ```devMode=true```, it's usually a good idea to create a fake app for testing/running specs against.
 
 ```bash
-export LEANPLUM_CLIENT_KEY=dev_somethingsomething123456
+export LEANPLUM_PRODUCTION_KEY=dev_somethingsomeg123456
 export LEANPLUM_APP_ID=app_somethingsomething2039410238
 export LEANPLUM_DATA_EXPORT_KEY=data_something_3238mmmX
 export LEANPLUM_CONTENT_READ_ONLY_KEY=sometingsome23xx9
+export LEANPLUM_DEVELOPMENT_KEY=sometingsome23xx923n23i
 
 bundle exec rspec
 ```
