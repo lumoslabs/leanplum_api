@@ -21,9 +21,10 @@ module LeanplumApi
 
     # IDs and access keys provided by leanplum
     attr_accessor :app_id
-    attr_accessor :client_key
+    attr_accessor :production_key
     attr_accessor :content_read_only_key
     attr_accessor :data_export_key
+    attr_accessor :development_key
 
     # Optional configuration for exporting raw data to S3.
     # If s3_bucket_name is provided, s3_access_id and s3_access_key must also be provided.

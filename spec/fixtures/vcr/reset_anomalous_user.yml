@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://www.leanplum.com/api?action=getMessages&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_CONTENT_READ_ONLY_KEY>&devMode=false&recent=false
+    uri: https://www.leanplum.com/api?action=setUserAttributes&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DEVELOPMENT_KEY>&devMode=false&resetAnomalies=true&userId=123456
     body:
       encoding: US-ASCII
       string: ''
@@ -23,7 +23,7 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 04 Nov 2015 20:50:09 GMT
+      - Wed, 04 Nov 2015 21:50:00 GMT
       Server:
       - Google Frontend
       Cache-Control:
@@ -34,8 +34,7 @@ http_interactions:
       - chunked
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":true,"messages":[{"id":5670583287676928,"created":1.440091595799E9,"name":"New
-        Message","active":false,"messageType":"Push Notification"}]}]}'
+      string: '{"response":[{"success":true}]}'
     http_version: 
   recorded_at: Wed, 12 Aug 2015 00:00:00 GMT
 recorded_with: VCR 2.9.3

@@ -11,23 +11,33 @@ module LeanplumApi
       @http = LeanplumApi::HTTP.new(logger: @logger)
     end
 
-    def set_user_attributes(user_attributes)
-      track_multi(nil, user_attributes)
+    def set_user_attributes(user_attributes, options = {})
+      track_multi(nil, user_attributes, options)
     end
 
-    def track_events(events)
-      track_multi(events, nil)
+    def track_events(events, options = {})
+      track_multi(events, nil, options)
     end
 
     # This method is for tracking events and/or updating user attributes at the same time, batched together like leanplum
     # recommends.
-    def track_multi(events = nil, user_attributes = nil)
+    # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events and force them to not
+    # be considered anomalous
+    def track_multi(events = nil, user_attributes = nil, options = {})
       events = arrayify(events)
       user_attributes = arrayify(user_attributes)
 
       request_data = user_attributes.map { |h| build_user_attributes_hash(h) } + events.map { |h| build_event_attributes_hash(h) }
       response = @http.post(request_data)
       validate_response(events + user_attributes, response)
+
+      if options[:force_anomalous_override]
+        response.body['response'].each_with_index do |indicator, i|
+          if indicator['warning'] && indicator['warning']['message'] =~ /Anomaly detected/i
+            reset_anomalous_user((events + user_attributes)[i][:user_id])
+          end
+        end
+      end
     end
 
     # Returns the jobId
@@ -114,6 +124,16 @@ module LeanplumApi
       content_read_only_connection.get(action: 'getMessage', id: message_id).body['response'].first['message']
     end
 
+    # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark them 'anomalous'
+    # and exclude them from your data set.
+    # Calling this method after you pass old events will fix that for all events for the specified user_id
+    # For some reason this API feature requires the developer key
+    def reset_anomalous_user(user_id)
+      request_data = { 'action' => 'setUserAttributes', 'resetAnomalies' => true, 'userId' => user_id }
+      response = development_connection.get(request_data)
+      validate_response([request_data], response)
+    end
+
     private
 
     # Only instantiated for data export endpoint calls
@@ -124,6 +144,10 @@ module LeanplumApi
     # Only instantiated for data export endpoint calls
     def content_read_only_connection
       @content_read_only ||= LeanplumApi::ContentReadOnly.new(logger: @logger)
+    end
+
+    def development_connection
+      @development ||= LeanplumApi::Development.new(logger: @logger)
     end
 
     def extract_user_id_or_device_id_hash(hash)
@@ -144,7 +168,7 @@ module LeanplumApi
     end
 
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)
-    def build_event_attributes_hash(event_hash, action = 'setUserAttributes')
+    def build_event_attributes_hash(event_hash)
       fail "No event name provided in #{event_hash}" unless event_hash[:event] || event_hash['event']
 
       time = event_hash[:time] || event_hash['time']
@@ -177,6 +201,9 @@ module LeanplumApi
       new_hash
     end
 
+    # In case leanplum decides your events are too old, they will send a warning.
+    # Right now we aren't responding to this directly.
+    # '{"response":[{"success":true,"warning":{"message":"Anomaly detected: time skew. User will be excluded from analytics."}}]}'
     def validate_response(input, response)
       success_indicators = response.body['response']
       if success_indicators.size != input.size

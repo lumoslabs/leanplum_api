@@ -12,6 +12,7 @@ describe LeanplumApi::API do
       create_date: '2010-01-01'.to_date
     }]
   end
+  let(:first_user_id) { users.first[:user_id] }
 
   context 'users' do
     it 'build_user_attributes_hash' do
@@ -49,11 +50,9 @@ describe LeanplumApi::API do
     end
 
     context 'export_user' do
-      let(:user_id) { users.first[:user_id] }
-
       it 'should get user attributes for this user' do
         VCR.use_cassette('export_user') do
-          user_info = api.export_user(user_id)
+          user_info = api.export_user(first_user_id)
           user_info.keys.each do |k|
             if users.first[k.to_sym].is_a?(Date) || users.first[k.to_sym].is_a?(DateTime)
               expect(user_info[k]).to eq(users.first[k.to_sym].strftime('%Y-%m-%d'))
@@ -61,6 +60,14 @@ describe LeanplumApi::API do
               expect(user_info[k]).to eq(users.first[k.to_sym])
             end
           end
+        end
+      end
+    end
+
+    context 'reset_anomalous_user' do
+      it 'should successfully call setUserAttributes with resetAnomalies' do
+        VCR.use_cassette('reset_anomalous_user') do
+          expect { api.reset_anomalous_user(first_user_id) }.to_not raise_error
         end
       end
     end
@@ -113,6 +120,14 @@ describe LeanplumApi::API do
           end
         end
       end
+
+      context 'anomalous data force_anomalous_override' do
+        it 'should successfully force the anomalous data override events' do
+          VCR.use_cassette('track_events_anomaly_overrider') do
+            expect { api.track_events(events, force_anomalous_override: true) }.to_not raise_error
+          end
+        end
+      end
     end
 
     context 'along with user attributes' do
@@ -146,16 +161,6 @@ describe LeanplumApi::API do
       end
 
       context 'export_data' do
-        before do
-          query = {
-            'action' => 'exportData',
-            'apiVersion' =>  LeanplumApi.configuration.api_version,
-            'appId' =>  LeanplumApi.configuration.app_id,
-            'clientKey' => LeanplumApi.configuration.client_key
-          }
-          stub_request(:get, 'https://www.leanplum.com/api').with(:query => query)
-        end
-
         it 'should request a data export job with a starttime' do
           VCR.use_cassette('export_data') do
             expect { api.export_data(Time.new(2015, 8, 4)) }.to raise_error(/No matching data found/)

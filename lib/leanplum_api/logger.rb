@@ -4,10 +4,11 @@ module LeanplumApi
   class LeanplumApiLogger < Logger
     def format_message(severity, timestamp, progname, msg)
       @keys ||= [
-        LeanplumApi.configuration.client_key,
+        LeanplumApi.configuration.production_key,
         LeanplumApi.configuration.app_id,
         LeanplumApi.configuration.data_export_key,
         LeanplumApi.configuration.content_read_only_key,
+        LeanplumApi.configuration.development_key,
         LeanplumApi.configuration.s3_access_key,
         LeanplumApi.configuration.s3_access_id
       ].compact

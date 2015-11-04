@@ -23,7 +23,7 @@ module LeanplumApi
     def authentication_params
       {
         appId: LeanplumApi.configuration.app_id,
-        clientKey: LeanplumApi.configuration.client_key,
+        clientKey: LeanplumApi.configuration.production_key,
         apiVersion: LeanplumApi.configuration.api_version,
         devMode: LeanplumApi.configuration.developer_mode
       }
@@ -33,18 +33,20 @@ module LeanplumApi
 
     def connection
       fail 'APP_ID not configured!' unless LeanplumApi.configuration.app_id
-      fail 'CLIENT_KEY not configured!' unless LeanplumApi.configuration.client_key
+      fail 'PRODUCTION_KEY not configured!' unless LeanplumApi.configuration.production_key
 
       @connection ||= Faraday.new(url: 'https://www.leanplum.com') do |connection|
         connection.request :json
 
-        if ENV['LEANPLUM_API_DEBUG'].to_s =~ /^(true|1)$/i
-          connection.response :logger, @logger, bodies: true
-        end
+        connection.response :logger, @logger, bodies: true if api_debug?
         connection.response :json, :content_type => /\bjson$/
 
         connection.adapter Faraday.default_adapter
       end
+    end
+
+    def api_debug?
+      ENV['LEANPLUM_API_DEBUG'].to_s =~ /^(true|1)$/i
     end
 
     def auth_param_string

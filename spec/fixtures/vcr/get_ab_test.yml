@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.9.1
+      - Faraday v0.9.2
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -23,17 +23,13 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Sep 2015 20:47:53 GMT
+      - Wed, 04 Nov 2015 20:50:09 GMT
       Server:
       - Google Frontend
       Cache-Control:
       - private
       Alt-Svc:
       - quic=":443"; p="1"; ma=604800
-      Accept-Ranges:
-      - none
-      Vary:
-      - Accept-Encoding
       Transfer-Encoding:
       - chunked
     body:
