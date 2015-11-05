@@ -32,15 +32,20 @@ module LeanplumApi
       validate_response(events + user_attributes, response)
 
       if options[:force_anomalous_override]
+        user_ids_to_reset = []
         response.body['response'].each_with_index do |indicator, i|
           if indicator['warning'] && indicator['warning']['message'] =~ /Anomaly detected/i
-            reset_anomalous_user((events + user_attributes)[i][:user_id])
+            user_ids_to_reset << (events + user_attributes)[i][:user_id]
           end
         end
+        reset_anomalous_users(user_ids_to_reset)
       end
     end
 
     # Returns the jobId
+    # Leanplum has confirmed that using startTime and endTime, especially trying to be relatively up to the minute,
+    # leads to sort of unprocessed information that can be incomplete.
+    # They recommend using the automatic export to S3 if possible.
     def export_data(start_time, end_time = nil)
       fail "Start time #{start_time} after end time #{end_time}" if end_time && start_time > end_time
       @logger.info("Requesting data export from #{start_time} to #{end_time}...")
@@ -128,10 +133,11 @@ module LeanplumApi
     # and exclude them from your data set.
     # Calling this method after you pass old events will fix that for all events for the specified user_id
     # For some reason this API feature requires the developer key
-    def reset_anomalous_user(user_id)
-      request_data = { 'action' => 'setUserAttributes', 'resetAnomalies' => true, 'userId' => user_id }
-      response = development_connection.get(request_data)
-      validate_response([request_data], response)
+    def reset_anomalous_users(user_ids)
+      user_ids = arrayify(user_ids)
+      request_data = user_ids.map { |user_id| { 'action' => 'setUserAttributes', 'resetAnomalies' => true, 'userId' => user_id } }
+      response = development_connection.post(request_data)
+      validate_response(request_data, response)
     end
 
     private
@@ -141,7 +147,7 @@ module LeanplumApi
       @data_export ||= LeanplumApi::DataExport.new(logger: @logger)
     end
 
-    # Only instantiated for data export endpoint calls
+    # Only instantiated for ContentReadOnly calls (AB tests)
     def content_read_only_connection
       @content_read_only ||= LeanplumApi::ContentReadOnly.new(logger: @logger)
     end

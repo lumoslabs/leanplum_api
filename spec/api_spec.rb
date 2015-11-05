@@ -64,10 +64,10 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'reset_anomalous_user' do
+    context 'reset_anomalous_users' do
       it 'should successfully call setUserAttributes with resetAnomalies' do
         VCR.use_cassette('reset_anomalous_user') do
-          expect { api.reset_anomalous_user(first_user_id) }.to_not raise_error
+          expect { api.reset_anomalous_users(first_user_id) }.to_not raise_error
         end
       end
     end

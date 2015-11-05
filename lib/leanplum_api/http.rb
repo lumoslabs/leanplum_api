@@ -11,7 +11,7 @@ module LeanplumApi
     end
 
     def post(payload)
-      connection.post("#{LEANPLUM_API_PATH}?#{auth_param_string}") do |request|
+      connection.post("#{LEANPLUM_API_PATH}?#{authed_multi_param_string}") do |request|
         request.body = { data: payload }.to_json
       end
     end
@@ -49,7 +49,7 @@ module LeanplumApi
       ENV['LEANPLUM_API_DEBUG'].to_s =~ /^(true|1)$/i
     end
 
-    def auth_param_string
+    def authed_multi_param_string
       if LeanplumApi.configuration.developer_mode
         URI.encode_www_form(authentication_params.merge(action: 'multi', time: Time.now.utc.strftime('%s'), devMode: true))
       else
