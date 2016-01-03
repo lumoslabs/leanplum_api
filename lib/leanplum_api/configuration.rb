@@ -15,16 +15,18 @@ module LeanplumApi
   class Configuration
     DEFAULT_LEANPLUM_API_VERSION = '1.0.6'
 
-    attr_accessor :api_version
-    attr_accessor :developer_mode
-    attr_accessor :log_path
-
-    # IDs and access keys provided by leanplum
+    # Required IDs and access keys provided by leanplum
     attr_accessor :app_id
     attr_accessor :production_key
     attr_accessor :content_read_only_key
     attr_accessor :data_export_key
     attr_accessor :development_key
+
+    # Optional
+    attr_accessor :api_version
+    attr_accessor :developer_mode
+    attr_accessor :log_path
+    attr_accessor :timeout_seconds
 
     # Optional configuration for exporting raw data to S3.
     # If s3_bucket_name is provided, s3_access_id and s3_access_key must also be provided.
@@ -37,6 +39,7 @@ module LeanplumApi
       @log_path = 'log'
       @api_version = DEFAULT_LEANPLUM_API_VERSION
       @developer_mode = false
+      @timeout_seconds = 600
     end
   end
 end
