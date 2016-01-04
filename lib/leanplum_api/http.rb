@@ -12,7 +12,7 @@ module LeanplumApi
 
     def post(payload)
       connection.post("#{LEANPLUM_API_PATH}?#{authed_multi_param_string}") do |request|
-        request.body = { data: payload }.to_json
+        request.body = { data: payload }
       end
     end
 
@@ -44,9 +44,8 @@ module LeanplumApi
       }
 
       @connection ||= Faraday.new(options) do |connection|
-        connection.request :json
+        connection.request :leanplum_response_validation
 
-        connection.response :leanplum_response_validation
         connection.response :logger, @logger, bodies: true if api_debug?
         connection.response :json, :content_type => /\bjson$/
 

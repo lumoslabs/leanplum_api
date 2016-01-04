@@ -8,9 +8,7 @@ module LeanplumApi
 
     def initialize(options = {})
       fail 'LeanplumApi not configured yet!' unless LeanplumApi.configuration
-
-      @logger = options[:logger] || LeanplumApiLogger.new(File.join(LeanplumApi.configuration.log_path, "#{$$}_leanplum_#{Time.now.utc.strftime('%Y-%m-%d_%H:%M:%S')}.log"))
-      @http = LeanplumApi::HTTP.new(logger: @logger)
+      @http = LeanplumApi::HTTP.new
     end
 
     def set_user_attributes(user_attributes, options = {})
@@ -31,7 +29,6 @@ module LeanplumApi
 
       request_data = user_attributes.map { |h| build_user_attributes_hash(h) } + events.map { |h| build_event_attributes_hash(h) }
       response = @http.post(request_data)
-      validate_response(events + user_attributes, response)
 
       if options[:force_anomalous_override]
         user_ids_to_reset = []
@@ -50,7 +47,7 @@ module LeanplumApi
     # They recommend using the automatic export to S3 if possible.
     def export_data(start_time, end_time = nil)
       fail "Start time #{start_time} after end time #{end_time}" if end_time && start_time > end_time
-      @logger.info("Requesting data export from #{start_time} to #{end_time}...")
+      LeanplumApi.configuration.logger.info("Requesting data export from #{start_time} to #{end_time}...")
 
       # Because of open questions about how startTime and endTime work (or don't work, as the case may be), we
       # only want to pass the dates unless start and end times are specifically requested.
@@ -87,8 +84,8 @@ module LeanplumApi
     def get_export_results(job_id)
       response = data_export_connection.get(action: 'getExportResults', jobId: job_id).body['response'].first
       if response['state'] == EXPORT_FINISHED
-        @logger.info("Export finished.")
-        @logger.debug("  Response: #{response}")
+        LeanplumApi.configuration.logger.info("Export finished.")
+        LeanplumApi.configuration.logger.debug("  Response: #{response}")
         {
           files: response['files'],
           number_of_sessions: response['numSessions'],
@@ -103,7 +100,7 @@ module LeanplumApi
 
     def wait_for_job(job_id, polling_interval = 60)
       while get_export_results(job_id)[:state] != EXPORT_FINISHED
-        @logger.debug("Polling job #{job_id}: #{get_export_results(job_id)}")
+        LeanplumApi.configuration.logger.debug("Polling job #{job_id}: #{get_export_results(job_id)}")
         sleep(polling_interval)
       end
       get_export_results(job_id)
@@ -144,24 +141,23 @@ module LeanplumApi
     def reset_anomalous_users(user_ids)
       user_ids = Array.wrap(user_ids)
       request_data = user_ids.map { |user_id| { 'action' => 'setUserAttributes', 'resetAnomalies' => true, 'userId' => user_id } }
-      response = development_connection.post(request_data)
-      validate_response(request_data, response)
+      development_connection.post(request_data)
     end
 
     private
 
     # Only instantiated for data export endpoint calls
     def data_export_connection
-      @data_export ||= LeanplumApi::DataExport.new(logger: @logger)
+      @data_export ||= LeanplumApi::DataExport.new
     end
 
     # Only instantiated for ContentReadOnly calls (AB tests)
     def content_read_only_connection
-      @content_read_only ||= LeanplumApi::ContentReadOnly.new(logger: @logger)
+      @content_read_only ||= LeanplumApi::ContentReadOnly.new
     end
 
     def development_connection
-      @development ||= LeanplumApi::Development.new(logger: @logger)
+      @development ||= LeanplumApi::Development.new
     end
 
     def extract_user_id_or_device_id_hash(hash)
@@ -213,25 +209,6 @@ module LeanplumApi
         end
       end
       new_hash
-    end
-
-    def validate_response(input, response)
-      success_indicators = response.body['response']
-      if success_indicators.size != input.size
-        fail "Attempted to update #{input.size} records but only received confirmation for #{success_indicators.size}!"
-      end
-
-      failure_indices = []
-      success_indicators.each_with_index do |s,i|
-        if s['success'].to_s != 'true'
-          @logger.error("Unsuccessful attempt to update at position #{i}: #{input[i]}")
-          failure_indices << i
-        else
-          @logger.debug("Successfully updated position #{i}: #{input[i]}")
-        end
-      end
-
-      fail LeanplumValidationException.new('Failed to update') if failure_indices.size > 0
     end
   end
 end

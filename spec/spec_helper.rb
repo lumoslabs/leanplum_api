@@ -19,6 +19,7 @@ RSpec.configure do |config|
       configuration.data_export_key = ENV.fetch('LEANPLUM_DATA_EXPORT_KEY')
       configuration.content_read_only_key = ENV.fetch('LEANPLUM_CONTENT_READ_ONLY_KEY')
       configuration.development_key = ENV.fetch('LEANPLUM_DEVELOPMENT_KEY')
+      configuration.logger.level = Logger::FATAL
     end
 
     Timecop.freeze('2015-08-12'.to_time.utc)
@@ -37,7 +38,7 @@ VCR.configure do |c|
   c.filter_sensitive_data('<LEANPLUM_APP_ID>')                { ENV.fetch('LEANPLUM_APP_ID') }
   c.filter_sensitive_data('<LEANPLUM_CONTENT_READ_ONLY_KEY>') { ENV.fetch('LEANPLUM_CONTENT_READ_ONLY_KEY') }
   c.filter_sensitive_data('<LEANPLUM_DATA_EXPORT_KEY>')       { ENV.fetch('LEANPLUM_DATA_EXPORT_KEY') }
-  c.filter_sensitive_data('<LEANPLUM_DEVELOPMENT_KEY>')       { ENV.fetch('LEANPLUM_DEVELOPMENT_KEY') }  
+  c.filter_sensitive_data('<LEANPLUM_DEVELOPMENT_KEY>')       { ENV.fetch('LEANPLUM_DEVELOPMENT_KEY') }
 
   c.default_cassette_options = {
     match_requests_on: [:method, :uri, :body]

@@ -26,6 +26,7 @@ module LeanplumApi
     attr_accessor :api_version
     attr_accessor :developer_mode
     attr_accessor :log_path
+    attr_accessor :logger
     attr_accessor :timeout_seconds
 
     # Optional configuration for exporting raw data to S3.
@@ -36,10 +37,13 @@ module LeanplumApi
     attr_accessor :s3_object_prefix
 
     def initialize
-      @log_path = 'log'
       @api_version = DEFAULT_LEANPLUM_API_VERSION
       @developer_mode = false
       @timeout_seconds = 600
+      @logger = LeanplumApi::Logger.new(STDOUT)
+
+      # Deprecated
+      @log_path = 'log'
     end
   end
 end
