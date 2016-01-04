@@ -16,7 +16,7 @@ module LeanplumApi
       if @keys.empty?
         "#{timestamp.strftime('%Y-%m-%d %H:%M:%S')} #{severity} #{msg}\n"
       else
-        "#{timestamp.strftime('%Y-%m-%d %H:%M:%S')} #{severity} #{msg.gsub(/#{@keys.join('|')}/, '<HIDDEN_KEY>')}\n"
+        "#{timestamp.strftime('%Y-%m-%d %H:%M:%S')} #{severity} #{msg.gsub(/#{@keys.map { |k| Regexp.quote(k) }.join('|')}/, '<HIDDEN_KEY>')}\n"
       end
     end
   end
