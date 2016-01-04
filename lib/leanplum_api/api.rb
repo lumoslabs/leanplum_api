@@ -72,12 +72,12 @@ module LeanplumApi
         params.merge!(s3ObjectPrefix: LeanplumApi.configuration.s3_object_prefix) if LeanplumApi.configuration.s3_object_prefix
       end
 
-      response = data_export_connection.get(params).body['response'].first
-      if response['success'] == true
-        response['jobId']
-      else
-        fail "No success message!  Response: #{response}"
-      end
+      body = data_export_connection.get(params).body
+      fail "No :response key in response body!" unless body['response']
+      response = body['response'].first
+      fail "No success message! Response: #{response}" unless response['success'] == true
+
+      response['jobId']
     end
 
     # See leanplum docs.
