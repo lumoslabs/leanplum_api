@@ -34,10 +34,19 @@ module LeanplumApi
         user_ids_to_reset = []
         response.body['response'].each_with_index do |indicator, i|
           if indicator['warning'] && indicator['warning']['message'] =~ /Anomaly detected/i
-            user_ids_to_reset << (events + user_attributes)[i][:user_id]
+            # Leanplum does not return their warnings in order!!!  So we just have to reset everyone who had any events.
+            # This is what the code should be:
+            # user_ids_to_reset << request_data[i]['userId']
+
+            # This is what it has to be:
+            user_ids_to_reset = events.map { |e| e[:user_id] }
           end
         end
-        reset_anomalous_users(user_ids_to_reset)
+
+        unless user_ids_to_reset.empty?
+          LeanplumApi.configuration.logger.info("Resetting anomalous user ids: #{user_ids_to_reset}")
+          reset_anomalous_users(user_ids_to_reset)
+        end
       end
     end
 
@@ -140,7 +149,7 @@ module LeanplumApi
     # For some reason this API feature requires the developer key
     def reset_anomalous_users(user_ids)
       user_ids = Array.wrap(user_ids)
-      request_data = user_ids.map { |user_id| { 'action' => 'setUserAttributes', 'resetAnomalies' => true, 'userId' => user_id } }
+      request_data = user_ids.map { |user_id| { action: 'setUserAttributes', resetAnomalies: true, userId: user_id } }
       development_connection.post(request_data)
     end
 
