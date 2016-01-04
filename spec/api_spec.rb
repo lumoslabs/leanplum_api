@@ -164,13 +164,13 @@ describe LeanplumApi::API do
         context 'regular export' do
           it 'should request a data export job with a starttime' do
             VCR.use_cassette('export_data') do
-              expect { api.export_data(Time.at(1438660800).utc) }.to raise_error(/No matching data found/)
+              expect { api.export_data(Time.at(1438660800).utc) }.to raise_error LeanplumApi::ResourceNotFoundError
             end
           end
 
           it 'should request a data export job with start and end dates' do
             VCR.use_cassette('export_data_dates') do
-              expect { api.export_data(Date.new(2015, 9, 5), Date.new(2015, 9, 6)) }.to raise_error(/No matching data found/)
+              expect { api.export_data(Date.new(2015, 9, 5), Date.new(2015, 9, 6)) }.to raise_error LeanplumApi::ResourceNotFoundError
             end
           end
         end
@@ -201,27 +201,37 @@ describe LeanplumApi::API do
     end
 
     context 'content read only methods' do
-      it 'gets ab tests' do
-        VCR.use_cassette('get_ab_tests') do
-          expect(api.get_ab_tests).to eq([])
+      context 'ab tests' do
+        it 'gets ab tests' do
+          VCR.use_cassette('get_ab_tests') do
+            expect(api.get_ab_tests).to eq([])
+          end
+        end
+
+        it 'gets an ab test' do
+          VCR.use_cassette('get_ab_test') do
+            expect(api.get_ab_tests(1)).to eq([])
+          end
         end
       end
 
-      it 'gets an ab test' do
-        VCR.use_cassette('get_ab_test') do
-          expect(api.get_ab_tests(1)).to eq([])
+      context 'messages' do
+        it 'gets messages' do
+          VCR.use_cassette('get_messages') do
+            expect(api.get_messages).to eq([{
+              "id" => 5670583287676928,
+              "created" => 1440091595.799,
+              "name" => "New Message",
+              "active" => false,
+              "messageType" => "Push Notification"
+            }])
+          end
         end
-      end
 
-      it 'gets messages' do
-        VCR.use_cassette('get_messages') do
-          expect(api.get_messages).to eq([{
-            "id" => 5670583287676928,
-            "created" => 1440091595.799,
-            "name" => "New Message",
-            "active" => false,
-            "messageType" => "Push Notification"
-          }])
+        it 'throws exception on missing message' do
+          VCR.use_cassette('missing_message') do
+            expect { api.get_message(1234) }.to raise_error LeanplumApi::ResourceNotFoundError
+          end
         end
       end
 
