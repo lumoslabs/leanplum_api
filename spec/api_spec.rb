@@ -163,7 +163,7 @@ describe LeanplumApi::API do
       context 'export_data' do
         it 'should request a data export job with a starttime' do
           VCR.use_cassette('export_data') do
-            expect { api.export_data(Time.new(2015, 8, 4)) }.to raise_error(/No matching data found/)
+            expect { api.export_data(Time.at(1438660800).utc) }.to raise_error(/No matching data found/)
           end
         end
 
@@ -212,6 +212,13 @@ describe LeanplumApi::API do
             "active" => false,
             "messageType" => "Push Notification"
           }])
+        end
+      end
+
+      it 'gets vars' do
+        VCR.use_cassette('get_vars') do
+          vars = api.get_vars(first_user_id)
+          expect(vars).to eq({'test_var' => 1})
         end
       end
     end

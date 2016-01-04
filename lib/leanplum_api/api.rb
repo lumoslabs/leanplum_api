@@ -129,6 +129,10 @@ module LeanplumApi
       content_read_only_connection.get(action: 'getMessage', id: message_id).body['response'].first['message']
     end
 
+    def get_vars(user_id)
+      @http.get(action: 'getVars', userId: user_id).body['response'].first['vars']
+    end
+
     # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark them 'anomalous'
     # and exclude them from your data set.
     # Calling this method after you pass old events will fix that for all events for the specified user_id
