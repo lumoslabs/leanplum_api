@@ -152,10 +152,6 @@ describe LeanplumApi::API do
     end
 
     context 'data export methods' do
-      let(:s3_bucket_name) { 'bucket' }
-      let(:s3_access_key) { 's3_access_key' }
-      let(:s3_access_id) { 's3_access_id' }
-
       around(:all) do |example|
         LeanplumApi.configure do |c|
           c.developer_mode = false
@@ -165,16 +161,26 @@ describe LeanplumApi::API do
       end
 
       context 'export_data' do
-        it 'should request a data export job with a starttime' do
-          VCR.use_cassette('export_data') do
-            expect { api.export_data(Time.at(1438660800).utc) }.to raise_error(/No matching data found/)
+        context 'regular export' do
+          it 'should request a data export job with a starttime' do
+            VCR.use_cassette('export_data') do
+              expect { api.export_data(Time.at(1438660800).utc) }.to raise_error(/No matching data found/)
+            end
+          end
+
+          it 'should request a data export job with start and end dates' do
+            VCR.use_cassette('export_data_dates') do
+              expect { api.export_data(Date.new(2015, 9, 5), Date.new(2015, 9, 6)) }.to raise_error(/No matching data found/)
+            end
           end
         end
 
-        it 'should request a data export job with start and end dates' do
-          VCR.use_cassette('export_data_dates') do
-            expect { api.export_data(Date.new(2015, 9, 5), Date.new(2015, 9, 6)) }.to raise_error(/No matching data found/)
-          end
+        context 's3 export' do
+          let(:s3_bucket_name) { 'bucket' }
+          let(:s3_access_key) { 's3_access_key' }
+          let(:s3_access_id) { 's3_access_id' }
+
+          it 'should request an S3 export'
         end
       end
 

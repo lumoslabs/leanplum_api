@@ -1,7 +1,7 @@
 require 'logger'
 
 module LeanplumApi
-  class LeanplumApiLogger < Logger
+  class Logger < ::Logger
     def format_message(severity, timestamp, progname, msg)
       @keys ||= [
         LeanplumApi.configuration.production_key,

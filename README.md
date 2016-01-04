@@ -27,10 +27,10 @@ LeanplumApi.configure do |config|
   config.development_key = 'MY_CONTENT_KEY'       # Optional; needed for resetting anomalous events
 
   # Optional configuration variables
-  config.log_path = '/log/path'  # Defaults to 'log/'
-  attr_accessor :timeout_seconds # Defaults to 600
-  config.api_version             # Defaults to 1.0.6
-  attr_accessor :developer_mode  # Defaults to false
+  config.logger = LeanplumApi::Logger.new('file.log') # Defaults to STDOUT.  The gem logger class hides passwords.
+  config.timeout_seconds                              # Defaults to 600
+  config.api_version                                  # Defaults to 1.0.6
+  config.developer_mode                               # Defaults to false
 
   # S3 export required options
   config.s3_bucket_name = 'my_bucket'
