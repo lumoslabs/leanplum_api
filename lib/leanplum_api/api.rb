@@ -4,6 +4,8 @@ module LeanplumApi
     EXPORT_RUNNING = 'RUNNING'
     EXPORT_FINISHED = 'FINISHED'
 
+    class LeanplumValidationException < RuntimeError; end
+
     def initialize(options = {})
       fail 'LeanplumApi not configured yet!' unless LeanplumApi.configuration
 
@@ -72,12 +74,7 @@ module LeanplumApi
         params.merge!(s3ObjectPrefix: LeanplumApi.configuration.s3_object_prefix) if LeanplumApi.configuration.s3_object_prefix
       end
 
-      body = data_export_connection.get(params).body
-      fail "No :response key in response #{body}!" unless body['response']
-      response = body['response'].first
-      fail "No success message! Response: #{response}" unless response['success'] == true
-
-      response['jobId']
+      data_export_connection.get(params).body['response'].first['jobId']
     end
 
     # See leanplum docs.
@@ -218,9 +215,6 @@ module LeanplumApi
       new_hash
     end
 
-    # In case leanplum decides your events are too old, they will send a warning.
-    # Right now we aren't responding to this directly.
-    # '{"response":[{"success":true,"warning":{"message":"Anomaly detected: time skew. User will be excluded from analytics."}}]}'
     def validate_response(input, response)
       success_indicators = response.body['response']
       if success_indicators.size != input.size

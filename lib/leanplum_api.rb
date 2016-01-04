@@ -1,15 +1,9 @@
 require 'faraday'
 require 'active_support/all'
 
-require 'leanplum_api/api'
-require 'leanplum_api/configuration'
-require 'leanplum_api/content_read_only'
-require 'leanplum_api/data_export'
-require 'leanplum_api/development'
-require 'leanplum_api/exception'
-require 'leanplum_api/http'
-require 'leanplum_api/logger'
-require 'leanplum_api/version'
+path = File.join(File.expand_path(File.dirname(__FILE__)), 'leanplum_api')
+Dir["#{path}/*.rb"].each { |f| require f }
+Dir["#{path}/**/*.rb"].each { |f| require f }
 
 module LeanplumApi
 end
