@@ -16,7 +16,7 @@ module LeanplumApi
       end
     end
 
-    def get(query, options = {})
+    def get(query)
       connection.get(LEANPLUM_API_PATH, query.merge(authentication_params))
     end
 
@@ -35,7 +35,15 @@ module LeanplumApi
       fail 'APP_ID not configured!' unless LeanplumApi.configuration.app_id
       fail 'PRODUCTION_KEY not configured!' unless LeanplumApi.configuration.production_key
 
-      @connection ||= Faraday.new(url: 'https://www.leanplum.com') do |connection|
+      options = {
+        url: 'https://www.leanplum.com',
+        request: {
+          timeout: LeanplumApi.configuration.timeout_seconds,
+          open_timeout: LeanplumApi.configuration.timeout_seconds
+        }
+      }
+
+      @connection ||= Faraday.new(options) do |connection|
         connection.request :json
 
         connection.response :logger, @logger, bodies: true if api_debug?
