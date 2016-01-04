@@ -24,8 +24,8 @@ module LeanplumApi
     # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events and force them to not
     # be considered anomalous
     def track_multi(events = nil, user_attributes = nil, options = {})
-      events = arrayify(events)
-      user_attributes = arrayify(user_attributes)
+      events = Array.wrap(events)
+      user_attributes = Array.wrap(user_attributes)
 
       request_data = user_attributes.map { |h| build_user_attributes_hash(h) } + events.map { |h| build_event_attributes_hash(h) }
       response = @http.post(request_data)
@@ -73,7 +73,7 @@ module LeanplumApi
       end
 
       body = data_export_connection.get(params).body
-      fail "No :response key in response body!" unless body['response']
+      fail "No :response key in response #{body}!" unless body['response']
       response = body['response'].first
       fail "No success message! Response: #{response}" unless response['success'] == true
 
@@ -82,7 +82,7 @@ module LeanplumApi
 
     # See leanplum docs.
     # The segment syntax is identical to that produced by the "Insert Value" feature on the dashboard.
-    # Examples: 'Country = "US"', '{Country = “US”} and {App version = 1}'.
+    # Examples: 'Country = "US"', '{Country = "US"} and {App version = 1}'.
     def export_users(segment, ab_test_id)
       data_export_connection.get(action: 'exportUsers', segment: segment, ab_test_id: ab_test_id)
     end
@@ -145,7 +145,7 @@ module LeanplumApi
     # Calling this method after you pass old events will fix that for all events for the specified user_id
     # For some reason this API feature requires the developer key
     def reset_anomalous_users(user_ids)
-      user_ids = arrayify(user_ids)
+      user_ids = Array.wrap(user_ids)
       request_data = user_ids.map { |user_id| { 'action' => 'setUserAttributes', 'resetAnomalies' => true, 'userId' => user_id } }
       response = development_connection.post(request_data)
       validate_response(request_data, response)
@@ -238,14 +238,6 @@ module LeanplumApi
       end
 
       fail LeanplumValidationException.new('Failed to update') if failure_indices.size > 0
-    end
-
-    def arrayify(x)
-      if x && !x.is_a?(Array)
-        [x]
-      else
-        x || []
-      end
     end
   end
 end

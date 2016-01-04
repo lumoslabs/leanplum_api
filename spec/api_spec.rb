@@ -222,7 +222,7 @@ describe LeanplumApi::API do
       it 'gets vars' do
         VCR.use_cassette('get_vars') do
           vars = api.get_vars(first_user_id)
-          expect(vars).to eq({'test_var' => 1})
+          expect(vars).to eq({ 'test_var' => 1 })
         end
       end
     end
