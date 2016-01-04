@@ -43,8 +43,10 @@ module LeanplumApi
           end
         end
 
-        LeanplumApi.configuration.logger.info("Resetting anomalous user ids: #{user_ids_to_reset}")
-        reset_anomalous_users(user_ids_to_reset) unless user_ids_to_reset.empty?
+        unless user_ids_to_reset.empty?
+          LeanplumApi.configuration.logger.info("Resetting anomalous user ids: #{user_ids_to_reset}")
+          reset_anomalous_users(user_ids_to_reset)
+        end
       end
     end
 
