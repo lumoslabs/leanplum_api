@@ -64,6 +64,10 @@ describe LeanplumApi::API do
       end
     end
 
+    context 'export_users' do
+      it 'should export users'
+    end
+
     context 'reset_anomalous_users' do
       it 'should successfully call setUserAttributes with resetAnomalies' do
         VCR.use_cassette('reset_anomalous_user') do

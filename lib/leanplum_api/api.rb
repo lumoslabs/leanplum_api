@@ -80,6 +80,13 @@ module LeanplumApi
       end
     end
 
+    # See leanplum docs.
+    # The segment syntax is identical to that produced by the "Insert Value" feature on the dashboard.
+    # Examples: 'Country = "US"', '{Country = “US”} and {App version = 1}'.
+    def export_users(segment, ab_test_id)
+      data_export_connection.get(action: 'exportUsers', segment: segment, ab_test_id: ab_test_id)
+    end
+
     def get_export_results(job_id)
       response = data_export_connection.get(action: 'getExportResults', jobId: job_id).body['response'].first
       if response['state'] == EXPORT_FINISHED
