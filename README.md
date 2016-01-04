@@ -26,7 +26,13 @@ LeanplumApi.configure do |config|
   config.content_read_only_key = 'MY_CONTENT_KEY' # Optional; necessary for retrieving AB test info
   config.development_key = 'MY_CONTENT_KEY'       # Optional; needed for resetting anomalous events
 
-  # These options are optional unless you plan to use the export to s3 option
+  # Optional configuration variables
+  config.log_path = '/log/path'  # Defaults to 'log/'
+  attr_accessor :timeout_seconds # Defaults to 600
+  config.api_version             # Defaults to 1.0.6
+  attr_accessor :developer_mode  # Defaults to false
+
+  # S3 export required options
   config.s3_bucket_name = 'my_bucket'
   config.s3_access_id = 'access_id'
   config.s3_access_key = 'access_key'
