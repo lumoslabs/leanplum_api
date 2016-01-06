@@ -39,7 +39,7 @@ module LeanplumApi
             # user_ids_to_reset << request_data[i]['userId']
 
             # This is what it has to be:
-            user_ids_to_reset = events.map { |e| e[:user_id] }
+            user_ids_to_reset = events.map { |e| e[:user_id] }.uniq
           end
         end
 
