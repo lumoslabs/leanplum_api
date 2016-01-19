@@ -171,11 +171,11 @@ module LeanplumApi
 
     # Deletes the user_id and device_id key/value pairs from the hash parameter.
     def extract_user_id_or_device_id_hash!(hash)
-      fail "No device_id or user_id in hash #{hash}" unless hash[:user_id] || hash[:device_id]
+      user_id = hash.delete(:user_id)
+      device_id = hash.delete(:device_id)
+      fail "No device_id or user_id in hash #{hash}" unless user_id || device_id
 
-      user_id = hash[:user_id] ? { 'userId' => hash[:user_id] } : { 'deviceId' => hash[:device_id] }
-      hash.reject! { |k,v| k.to_s =~ /^(user_id|device_id)$/ }
-      user_id
+      user_id ? { 'userId' => user_id } : { 'deviceId' => device_id }
     end
 
     # Action can be any command that takes a userAttributes param.  "start" (a session) is the other command that most
@@ -199,14 +199,10 @@ module LeanplumApi
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)
     def build_event_attributes_hash(event_hash)
       event_hash = HashWithIndifferentAccess.new(event_hash)
+      fail "Event name or timestamp not provided in #{event_hash}" unless event_hash[:event]
 
       # TODO: Putting event params at the :params key is deprecated and should be removed in a 2.0 release
-      if event_hash[:params]
-        event_hash.merge!(event_hash[:params])
-        event_hash.reject! { |k,v| k.to_s == 'params' }
-      end
-
-      fail "Event name or timestamp not provided in #{event_hash}" unless event_hash[:event]
+      event_hash.merge!(event_hash.delete(:params)) if event_hash[:params]
 
       time_hash = event_hash[:time] ? { 'time' => event_hash[:time].strftime('%s') } : {}
       time_hash.merge!('action' => 'track', 'event' => event_hash[:event])
