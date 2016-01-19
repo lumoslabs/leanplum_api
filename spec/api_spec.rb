@@ -109,11 +109,6 @@ describe LeanplumApi::API do
       it 'builds the events format' do
         expect(api.send(:build_event_attributes_hash, events.first)).to eq(event_hash)
       end
-
-      it 'builds the events from a deprecated format' do
-        deprecated_event = events.first.reject { |k,v| k == 'some_timestamp' }.merge(params: { some_timestamp: timestamp })
-        expect(api.send(:build_event_attributes_hash, deprecated_event)).to eq(event_hash)
-      end
     end
 
     context 'without user attributes' do

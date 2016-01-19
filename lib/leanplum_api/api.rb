@@ -143,8 +143,8 @@ module LeanplumApi
       @http.get(action: 'getVars', userId: user_id).body['response'].first['vars']
     end
 
-    # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark them 'anomalous'
-    # and exclude them from your data set.
+    # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark
+    # them 'anomalous' and exclude them from your data set.
     # Calling this method after you pass old events will fix that for all events for the specified user_id
     # For some reason this API feature requires the developer key
     def reset_anomalous_users(user_ids)
@@ -185,15 +185,10 @@ module LeanplumApi
 
       # As of 2015-10 Leanplum supports ISO8601 date strings as user attributes. Support for times is as yet unavailable.
       user_hash.each do |k,v|
-        if v.is_a?(Date)
-          user_hash[k] = v.iso8601
-        elsif v.is_a?(Time) || v.is_a?(DateTime)
-          user_hash[k] = v.strftime('%Y-%m-%d %H:%M:%S')
-        end
+        user_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime)
       end
 
-      user_id = extract_user_id_or_device_id_hash!(user_hash)
-      user_id.merge('action' => action, 'userAttributes' => user_hash)
+      extract_user_id_or_device_id_hash!(user_hash).merge('action' => action, 'userAttributes' => user_hash)
     end
 
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)
@@ -201,9 +196,6 @@ module LeanplumApi
       event_hash = HashWithIndifferentAccess.new(event_hash)
       event_name = event_hash.delete(:event)
       fail "Event name or timestamp not provided in #{event_hash}" unless event_name
-
-      # TODO: Putting event params at the :params key is deprecated and should be removed in a 2.0 release
-      event_hash.merge!(event_hash.delete(:params)) if event_hash[:params]
 
       event = { 'action' => 'track', 'event' => event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
       time = event_hash.delete(:time)
