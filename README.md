@@ -57,19 +57,19 @@ attribute_hash = {
   first_name: 'Mike',
   last_name: 'Jones',
   gender: 'm',
-  birthday: Date.today, # Dates and times in user attributes will be formatted as strings; Leanplum doesn't support date or time types
+  birthday: Date.today, # Dates/times only sort of supported in user attributes
   email: 'still_tippin@test.com'
 }
 api.set_user_attributes(attribute_hash)
 
-# You must also provide the :event property for event tracking
+# You must also provide the :event property for event tracking.
+# You can optionally provide a :time property; if it is not set Leanplum will timestamp the event "now".
+# All other key/values besides :user_id, :device_id, :event, and :time will be sent as event params/properties.
 event = {
   user_id: 12345,
   event: 'purchase',
   time: Time.now.utc, # Event timestamps will be converted to epoch seconds by the gem.
-  params: {
-    'some_event_property' => 'boss_hog_on_candy'
-  }
+  some_event_property: 'boss_hog_on_candy'
 }
 api.track_events(event)
 
@@ -83,7 +83,7 @@ api.reset_anomalous_users([12345, 23456])
 api.track_events(event, force_anomalous_override: true)
 ```
 
-Data export:
+API based data export.  Note well that Leanplum officially recommends use of the automated S3 export instead of API based export.  According to a Leanplum engineer these two data export methodologies are completely independent data paths and in our experience we have found API based data export to be missing 10-15% of the data that is eventually returned by the automated export.
 ```ruby
 api = LeanplumApi::API.new
 job_id = api.export_data(start_time, end_time)
@@ -92,10 +92,10 @@ response = wait_for_job(job_id)
 
 ## Specs
 
-To run specs, you must set the LEANPLUM_PRODUCTION_KEY, LEANPLUM_APP_ID, LEANPLUM_CONTENT_READ_ONLY_KEY, LEANPLUM_DEVELOPMENT_KEY, and LEANPLUM_DATA_EXPORT_KEY environment variables (preferably to some development only keys) to something and then run rspec.
+To run specs, you must set the `LEANPLUM_PRODUCTION_KEY`, `LEANPLUM_APP_ID`, `LEANPLUM_CONTENT_READ_ONLY_KEY`, `LEANPLUM_DEVELOPMENT_KEY`, and `LEANPLUM_DATA_EXPORT_KEY` environment variables (preferably to some development only keys) to something and then run rspec.
 Because of the nature of VCR/Webmock, you can set them to anything (including invalid keys) as long as you are not changing anything substantive or writing new specs.  If you want to make substantive changes/add new specs, VCR will need to be able to generate fixture data so you will need to use a real set of Leanplum keys.
 
-> BE AWARE THAT IF YOU WRITE A NEW SPEC OR DELETE A VCR FILE, IT'S POSSIBLE THAT REAL DATA WILL BE WRITTEN TO THE LEANPLUM_APP_ID YOU CONFIGURE!  Certainly a real request will be made to rebuild the VCR file, and while specs run with ```devMode=true```, it's usually a good idea to create a fake app for testing/running specs against.
+> BE AWARE THAT IF YOU WRITE A NEW SPEC OR DELETE A VCR FILE, IT'S POSSIBLE THAT REAL DATA WILL BE WRITTEN TO THE `LEANPLUM_APP_ID` YOU CONFIGURE!  Certainly a real request will be made to rebuild the VCR file, and while specs run with ```devMode=true```, it's usually a good idea to create a fake app for testing/running specs against.
 
 ```bash
 export LEANPLUM_PRODUCTION_KEY=dev_somethingsomeg123456
@@ -117,4 +117,4 @@ export LEANPLUM_API_DEBUG=true
 bundle exec rails whatever
 ```
 
-You can also configure "developer mode".  This will use the "devMode=true" parameter on all requests, which sends them to a separate queue (and probably means actions logged as development tests don't count towards your bill).
+You can also configure "developer mode".  This will use the "devMode=true" parameter on some requests, which seems to sends them to a separate queue which might not count towards Leanplum's usage billing.

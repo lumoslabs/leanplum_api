@@ -169,55 +169,51 @@ module LeanplumApi
       @development ||= LeanplumApi::Development.new
     end
 
-    def extract_user_id_or_device_id_hash(hash)
-      user_id = hash['user_id'] || hash[:user_id]
-      device_id = hash['device_id'] || hash[:device_id]
-      fail "No device_id or user_id in hash #{hash}" unless user_id || device_id
+    # Deletes the user_id and device_id key/value pairs from the hash parameter.
+    def extract_user_id_or_device_id_hash!(hash)
+      fail "No device_id or user_id in hash #{hash}" unless hash[:user_id] || hash[:device_id]
 
-      user_id ? { 'userId' => user_id } : { 'deviceId' => device_id }
+      user_id = hash[:user_id] ? { 'userId' => hash[:user_id] } : { 'deviceId' => hash[:device_id] }
+      hash.reject! { |k,v| k.to_s =~ /^(user_id|device_id)$/ }
+      user_id
     end
 
     # Action can be any command that takes a userAttributes param.  "start" (a session) is the other command that most
     # obviously takes userAttributes.
     def build_user_attributes_hash(user_hash, action = 'setUserAttributes')
-      extract_user_id_or_device_id_hash(user_hash).merge(
-        'action' => action,
-        'userAttributes' => turn_date_and_time_values_to_strings(user_hash).reject { |k,v| k.to_s =~ /^(user_id|device_id)$/ }
-      )
+      user_hash = HashWithIndifferentAccess.new(user_hash)
+
+      # As of 2015-10 Leanplum supports ISO8601 date strings as user attributes. Support for times is as yet unavailable.
+      user_hash.each do |k,v|
+        if v.is_a?(Date)
+          user_hash[k] = v.iso8601
+        elsif v.is_a?(Time) || v.is_a?(DateTime)
+          user_hash[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+        end
+      end
+
+      user_id = extract_user_id_or_device_id_hash!(user_hash)
+      user_id.merge('action' => action, 'userAttributes' => user_hash)
     end
 
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)
     def build_event_attributes_hash(event_hash)
-      fail "No event name provided in #{event_hash}" unless event_hash[:event] || event_hash['event']
+      event_hash = HashWithIndifferentAccess.new(event_hash)
 
-      time = event_hash[:time] || event_hash['time']
-      time_hash = time ? { 'time' => time.strftime('%s') } : {}
-
-      event = extract_user_id_or_device_id_hash(event_hash).merge(time_hash).merge(
-        'action' => 'track',
-        'event' => event_hash[:event] || event_hash['event']
-      )
-      event_params = event_hash.reject { |k,v| k.to_s =~ /^(user_id|device_id|event|time)$/ }
-      if event_params.keys.size > 0
-        event.merge('params' => event_params )
-      else
-        event
+      # TODO: Putting event params at the :params key is deprecated and should be removed in a 2.0 release
+      if event_hash[:params]
+        event_hash.merge!(event_hash[:params])
+        event_hash.reject! { |k,v| k.to_s == 'params' }
       end
-    end
 
-    # Leanplum does not support dates and times as of 2015-08-11
-    def turn_date_and_time_values_to_strings(hash)
-      new_hash = {}
-      hash.each do |k,v|
-        if v.is_a?(Time) || v.is_a?(DateTime)
-          new_hash[k] = v.strftime('%Y-%m-%d %H:%M:%S')
-        elsif v.is_a?(Date)
-          new_hash[k] = v.strftime('%Y-%m-%d')
-        else
-          new_hash[k] = v
-        end
-      end
-      new_hash
+      fail "Event name or timestamp not provided in #{event_hash}" unless event_hash[:event]
+
+      time_hash = event_hash[:time] ? { 'time' => event_hash[:time].strftime('%s') } : {}
+      time_hash.merge!('action' => 'track', 'event' => event_hash[:event])
+      time_hash.merge!(extract_user_id_or_device_id_hash!(event_hash))
+      event_params = event_hash.reject { |k,v| k.to_s =~ /^(event|time)$/ }
+
+      event_params.keys.size > 0 ? time_hash.merge('params' => event_params ) : time_hash
     end
   end
 end

@@ -19,13 +19,13 @@ describe LeanplumApi::API do
       expect(api.send(:build_user_attributes_hash, users.first)).to eq({
         'userId' => 123456,
         'action' => 'setUserAttributes',
-        'userAttributes' => {
+        'userAttributes' => HashWithIndifferentAccess.new(
           first_name: 'Mike',
           last_name: 'Jones',
           gender: 'm',
           email: 'still_tippin@test.com',
           create_date: '2010-01-01'
-        }
+        )
       })
     end
 
@@ -84,26 +84,37 @@ describe LeanplumApi::API do
           user_id: 12345,
           event: 'purchase',
           time: Time.now.utc,
-          params: {
-            'some_timestamp' => '2015-05-01 01:02:03'
-          }
+          'some_timestamp' => '2015-05-01 01:02:03'
         },
         {
           user_id: 54321,
           event: 'purchase_page_view',
-          time: Time.now.utc - 10.minutes,
+          time: Time.now.utc - 10.minutes
         }
       ]
     end
 
-    it 'build_event_attributes_hash' do
-      expect(api.send(:build_event_attributes_hash, events.first)).to eq({
-        'userId' => 12345,
-        'time' => Time.now.utc.strftime('%s'),
-        'action' => 'track',
-        'event' => 'purchase',
-        'params' => { params: { 'some_timestamp'=>'2015-05-01 01:02:03' } }
-      })
+    context '#build_event_attributes_hash' do
+      it 'builds the events from a deprecated format' do
+        expect(api.send(:build_event_attributes_hash, events.first)).to eq({
+          'userId' => 12345,
+          'time' => Time.now.utc.strftime('%s'),
+          'action' => 'track',
+          'event' => 'purchase',
+          'params' => { 'some_timestamp'=>'2015-05-01 01:02:03' }
+        })
+      end
+
+      it 'builds the events from a deprecated format' do
+        deprecated_format_event = events.last.merge(params: { 'some_timestamp' => '2015-05-01 01:02:03' })
+        expect(api.send(:build_event_attributes_hash, events.first)).to eq({
+          'userId' => 12345,
+          'time' => Time.now.utc.strftime('%s'),
+          'action' => 'track',
+          'event' => 'purchase',
+          'params' => { 'some_timestamp'=>'2015-05-01 01:02:03' }
+        })
+      end
     end
 
     context 'without user attributes' do
