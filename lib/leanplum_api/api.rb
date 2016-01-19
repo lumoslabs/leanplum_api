@@ -199,17 +199,17 @@ module LeanplumApi
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)
     def build_event_attributes_hash(event_hash)
       event_hash = HashWithIndifferentAccess.new(event_hash)
-      fail "Event name or timestamp not provided in #{event_hash}" unless event_hash[:event]
+      event_name = event_hash.delete(:event)
+      fail "Event name or timestamp not provided in #{event_hash}" unless event_name
 
       # TODO: Putting event params at the :params key is deprecated and should be removed in a 2.0 release
       event_hash.merge!(event_hash.delete(:params)) if event_hash[:params]
 
-      time_hash = event_hash[:time] ? { 'time' => event_hash[:time].strftime('%s') } : {}
-      time_hash.merge!('action' => 'track', 'event' => event_hash[:event])
-      time_hash.merge!(extract_user_id_or_device_id_hash!(event_hash))
-      event_params = event_hash.reject { |k,v| k.to_s =~ /^(event|time)$/ }
+      event = { 'action' => 'track', 'event' => event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
+      time = event_hash.delete(:time)
+      event.merge!('time' => time.strftime('%s')) if time
 
-      event_params.keys.size > 0 ? time_hash.merge('params' => event_params ) : time_hash
+      event_hash.keys.size > 0 ? event.merge('params' => event_hash ) : event
     end
   end
 end
