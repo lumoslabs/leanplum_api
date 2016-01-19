@@ -78,13 +78,14 @@ describe LeanplumApi::API do
   end
 
   context 'events' do
+    let(:timestamp) { '2015-05-01 01:02:03' }
     let(:events) do
       [
         {
           user_id: 12345,
           event: 'purchase',
           time: Time.now.utc,
-          'some_timestamp' => '2015-05-01 01:02:03'
+          some_timestamp: timestamp
         },
         {
           user_id: 54321,
@@ -95,25 +96,23 @@ describe LeanplumApi::API do
     end
 
     context '#build_event_attributes_hash' do
-      it 'builds the events from a deprecated format' do
-        expect(api.send(:build_event_attributes_hash, events.first)).to eq({
+      let(:event_hash) do
+        {
           'userId' => 12345,
           'time' => Time.now.utc.strftime('%s'),
           'action' => 'track',
           'event' => 'purchase',
-          'params' => { 'some_timestamp'=>'2015-05-01 01:02:03' }
-        })
+          'params' => { 'some_timestamp' => timestamp }
+        }
+      end
+
+      it 'builds the events format' do
+        expect(api.send(:build_event_attributes_hash, events.first)).to eq(event_hash)
       end
 
       it 'builds the events from a deprecated format' do
-        deprecated_format_event = events.last.merge(params: { 'some_timestamp' => '2015-05-01 01:02:03' })
-        expect(api.send(:build_event_attributes_hash, events.first)).to eq({
-          'userId' => 12345,
-          'time' => Time.now.utc.strftime('%s'),
-          'action' => 'track',
-          'event' => 'purchase',
-          'params' => { 'some_timestamp'=>'2015-05-01 01:02:03' }
-        })
+        deprecated_event = events.first.reject { |k,v| k == 'some_timestamp' }.merge(params: { some_timestamp: timestamp })
+        expect(api.send(:build_event_attributes_hash, deprecated_event)).to eq(event_hash)
       end
     end
 
