@@ -6,7 +6,7 @@ Gem for the Leanplum API.
 
 Leanplum calls it a REST API but it is not very RESTful.
 
-The gem uses the ```multi``` method with a POST for all requests except data export.  Check Leanplum's docs for more information on ```multi```.
+The gem uses the ```multi``` method with a POST for all event tracking and user attribute updating requests.  Check Leanplum's docs for more information on ```multi```.
 
 Tested with Leanplum API version 1.0.6.
 
@@ -37,7 +37,7 @@ LeanplumApi.configure do |config|
   config.s3_access_id = 'access_id'
   config.s3_access_key = 'access_key'
 
-  # Set this to true to send events and user attributes to the test environment
+  # Set this to true to send events and user attributes to the test environment.
   # Defaults to false.  See "Debugging" below for more info.
   config.developer_mode = true
 end
@@ -64,7 +64,7 @@ api.set_user_attributes(attribute_hash)
 
 # You must also provide the :event property for event tracking.
 # You can optionally provide a :time property; if it is not set Leanplum will timestamp the event "now".
-# All other key/values besides :user_id, :device_id, :event, and :time will be sent as event params/properties.
+# All other key/values besides :user_id, :device_id, :event, and :time will be sent as event params.
 event = {
   user_id: 12345,
   event: 'purchase',
