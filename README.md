@@ -111,7 +111,7 @@ bundle exec rspec
 
 ## Debugging
 
-The LEANPLUM_API_DEBUG environment variable will trigger full printouts of Faraday's debug output to STDERR and to the configured logger.
+The `LEANPLUM_API_DEBUG` environment variable will trigger full printouts of Faraday's debug output to STDERR and to the configured logger.
 
 ```bash
 cd /my/app
@@ -119,4 +119,4 @@ export LEANPLUM_API_DEBUG=true
 bundle exec rails whatever
 ```
 
-You can also configure "developer mode".  This will use the "devMode=true" parameter on some requests, which seems to sends them to a separate queue which might not count towards Leanplum's usage billing.
+You can also configure "developer mode".  This will use the `devMode=true` parameter on some requests, which seems to sends them to a separate queue which might not count towards Leanplum's usage billing.
