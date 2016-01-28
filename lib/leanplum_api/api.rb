@@ -28,11 +28,11 @@ module LeanplumApi
       user_attributes = Array.wrap(user_attributes)
 
       request_data = user_attributes.map { |h| build_user_attributes_hash(h) } + events.map { |h| build_event_attributes_hash(h) }
-      response = @http.post(request_data)
+      response = @http.post(request_data).body['response']
 
       if options[:force_anomalous_override]
         user_ids_to_reset = []
-        response.body['response'].each_with_index do |indicator, i|
+        response.each_with_index do |indicator, i|
           if indicator['warning'] && indicator['warning']['message'] =~ /Anomaly detected/i
             # Leanplum does not return their warnings in order!!!  So we just have to reset everyone who had any events.
             # This is what the code should be:

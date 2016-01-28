@@ -1,9 +1,7 @@
-require 'logger'
-
 module LeanplumApi
   class Logger < ::Logger
     def format_message(severity, timestamp, progname, msg)
-      @keys ||= [
+      @hide_keys ||= [
         LeanplumApi.configuration.production_key,
         LeanplumApi.configuration.app_id,
         LeanplumApi.configuration.data_export_key,
@@ -13,11 +11,8 @@ module LeanplumApi
         LeanplumApi.configuration.s3_access_id
       ].compact
 
-      if @keys.empty?
-        "#{timestamp.strftime('%Y-%m-%d %H:%M:%S')} #{severity} #{msg}\n"
-      else
-        "#{timestamp.strftime('%Y-%m-%d %H:%M:%S')} #{severity} #{msg.gsub(/#{@keys.map { |k| Regexp.quote(k) }.join('|')}/, '<HIDDEN_KEY>')}\n"
-      end
+      msg = msg.gsub(/#{@hide_keys.map { |k| Regexp.quote(k) }.join('|')}/, '<HIDDEN_KEY>') unless @hide_keys.empty?
+      "#{timestamp.strftime('%Y-%m-%d %H:%M:%S')} #{severity} #{msg}\n"
     end
   end
 end

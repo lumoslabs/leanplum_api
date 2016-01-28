@@ -1,7 +1,3 @@
-require 'faraday'
-require 'faraday_middleware'
-require 'uri'
-
 module LeanplumApi
   class HTTP
     LEANPLUM_API_PATH = '/api'
