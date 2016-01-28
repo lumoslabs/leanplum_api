@@ -8,7 +8,6 @@ module LeanplumApi
 
     def initialize(options = {})
       fail 'LeanplumApi not configured yet!' unless LeanplumApi.configuration
-      @http = LeanplumApi::HTTP.new
     end
 
     def set_user_attributes(user_attributes, options = {})
@@ -28,7 +27,7 @@ module LeanplumApi
       user_attributes = Array.wrap(user_attributes)
 
       request_data = user_attributes.map { |h| build_user_attributes_hash(h) } + events.map { |h| build_event_attributes_hash(h) }
-      response = @http.post(request_data).body['response']
+      response = production_connection.post(request_data).body['response']
 
       if options[:force_anomalous_override]
         user_ids_to_reset = []
@@ -140,7 +139,7 @@ module LeanplumApi
     end
 
     def get_vars(user_id)
-      @http.get(action: 'getVars', userId: user_id).body['response'].first['vars']
+      production_connection.get(action: 'getVars', userId: user_id).body['response'].first['vars']
     end
 
     # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark
@@ -154,6 +153,10 @@ module LeanplumApi
     end
 
     private
+
+    def production_connection
+      @production ||= LeanplumApi::Production.new
+    end
 
     # Only instantiated for data export endpoint calls
     def data_export_connection

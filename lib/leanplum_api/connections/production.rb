@@ -1,5 +1,5 @@
 module LeanplumApi
-  class HTTP
+  class Production
     LEANPLUM_API_PATH = '/api'
 
     def initialize(options = {})

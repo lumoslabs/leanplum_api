@@ -1,7 +1,7 @@
-require 'leanplum_api/http'
+require 'leanplum_api/connections/production'
 
 module LeanplumApi
-  class Development < HTTP
+  class Development < Production
     def initialize(options = {})
       raise 'Development key not configured!' unless LeanplumApi.configuration.development_key
       super

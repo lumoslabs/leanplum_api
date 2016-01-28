@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LeanplumApi::HTTP do
+describe LeanplumApi::Production do
   around(:all) do |example|
     Timecop.freeze('2015-08-12'.to_time.utc)
     example.run
