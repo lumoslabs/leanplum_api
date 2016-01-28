@@ -94,8 +94,9 @@ Note well that Leanplum officially recommends use of the automated S3 export ins
 
 ## Specs
 
-To run specs, you must set the `LEANPLUM_PRODUCTION_KEY`, `LEANPLUM_APP_ID`, `LEANPLUM_CONTENT_READ_ONLY_KEY`, `LEANPLUM_DEVELOPMENT_KEY`, and `LEANPLUM_DATA_EXPORT_KEY` environment variables (preferably to some development only keys) to something and then run rspec.
-Because of the nature of VCR/Webmock, you can set them to anything (including invalid keys) as long as you are not changing anything substantive or writing new specs.  If you want to make substantive changes/add new specs, VCR will need to be able to generate fixture data so you will need to use a real set of Leanplum keys.
+`bundle exec rspec` should work fine at running existing specs.
+
+To write _new__ specs (or regenerate one of VCR's YAML files), you must set the `LEANPLUM_PRODUCTION_KEY`, `LEANPLUM_APP_ID`, `LEANPLUM_CONTENT_READ_ONLY_KEY`, `LEANPLUM_DEVELOPMENT_KEY`, and `LEANPLUM_DATA_EXPORT_KEY` environment variables (preferably to some development only keys) to something and then run rspec.  VCR will create fixture data based on your requests, masking your actual keys so that it's safe to commit the file.
 
 > BE AWARE THAT IF YOU WRITE A NEW SPEC OR DELETE A VCR FILE, IT'S POSSIBLE THAT REAL DATA WILL BE WRITTEN TO THE `LEANPLUM_APP_ID` YOU CONFIGURE!  Certainly a real request will be made to rebuild the VCR file, and while specs run with ```devMode=true```, it's usually a good idea to create a fake app for testing/running specs against.
 
@@ -116,7 +117,7 @@ The `LEANPLUM_API_DEBUG` environment variable will trigger full printouts of Far
 ```bash
 cd /my/app
 export LEANPLUM_API_DEBUG=true
-bundle exec rails whatever
+bundle exec whatever
 ```
 
 You can also configure "developer mode".  This will use the `devMode=true` parameter on some requests, which seems to sends them to a separate queue which might not count towards Leanplum's usage billing.
