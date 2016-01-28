@@ -27,7 +27,7 @@ module LeanplumApi
       user_attributes = Array.wrap(user_attributes)
 
       request_data = user_attributes.map { |h| build_user_attributes_hash(h) } + events.map { |h| build_event_attributes_hash(h) }
-      response = production_connection.post(request_data).body['response']
+      response = production_connection.multi(request_data).body['response']
 
       if options[:force_anomalous_override]
         user_ids_to_reset = []
@@ -149,27 +149,27 @@ module LeanplumApi
     def reset_anomalous_users(user_ids)
       user_ids = Array.wrap(user_ids)
       request_data = user_ids.map { |user_id| { action: 'setUserAttributes', resetAnomalies: true, userId: user_id } }
-      development_connection.post(request_data)
+      development_connection.multi(request_data)
     end
 
     private
 
     def production_connection
-      @production ||= LeanplumApi::Production.new
+      @production ||= Connection::Production.new
     end
 
     # Only instantiated for data export endpoint calls
     def data_export_connection
-      @data_export ||= LeanplumApi::DataExport.new
+      @data_export ||= Connection::DataExport.new
     end
 
     # Only instantiated for ContentReadOnly calls (AB tests)
     def content_read_only_connection
-      @content_read_only ||= LeanplumApi::ContentReadOnly.new
+      @content_read_only ||= Connection::ContentReadOnly.new
     end
 
     def development_connection
-      @development ||= LeanplumApi::Development.new
+      @development ||= Connection::Development.new
     end
 
     # Deletes the user_id and device_id key/value pairs from the hash parameter.

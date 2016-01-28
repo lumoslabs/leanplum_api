@@ -1,6 +1,6 @@
 require 'leanplum_api/connections/production'
 
-module LeanplumApi
+module LeanplumApi::Connection
   class Development < Production
     def initialize(options = {})
       raise 'Development key not configured!' unless LeanplumApi.configuration.development_key

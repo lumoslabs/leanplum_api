@@ -1,4 +1,4 @@
-module LeanplumApi
+module LeanplumApi::Connection
   class Production
     LEANPLUM_API_PATH = '/api'
 
@@ -6,7 +6,7 @@ module LeanplumApi
       @logger = options[:logger] || Logger.new(STDERR)
     end
 
-    def post(payload)
+    def multi(payload)
       connection.post("#{LEANPLUM_API_PATH}?#{authed_multi_param_string}") do |request|
         request.body = { data: payload }
       end

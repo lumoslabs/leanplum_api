@@ -1,6 +1,6 @@
 require 'leanplum_api/connections/production'
 
-module LeanplumApi
+module LeanplumApi::Connection
   class DataExport < Production
     def initialize(options = {})
       raise 'Data export key not configured' unless LeanplumApi.configuration.data_export_key
