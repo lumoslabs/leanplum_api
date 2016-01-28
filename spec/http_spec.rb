@@ -1,12 +1,6 @@
 require 'spec_helper'
 
 describe LeanplumApi::Connection::Production do
-  around(:all) do |example|
-    Timecop.freeze('2015-08-12'.to_time.utc)
-    example.run
-    Timecop.return
-  end
-
   context 'regular mode' do
     it 'should build the right multi url' do
       http = described_class.new

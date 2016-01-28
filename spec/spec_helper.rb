@@ -17,6 +17,7 @@ RSpec.configure do |config|
       configuration.logger.level = Logger::FATAL
     end
 
+    # Leanplum requires passing the time in some requests so we freeze it.
     Timecop.freeze('2015-08-12'.to_time.utc)
   end
 end

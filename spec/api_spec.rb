@@ -113,9 +113,15 @@ describe LeanplumApi::API do
 
     context 'without user attributes' do
       context 'valid request' do
-        it 'should successfully track events' do
+        it 'should successfully track session events' do
           VCR.use_cassette('track_events') do
             expect { api.track_events(events) }.to_not raise_error
+          end
+        end
+
+        it 'should successfully track non session events' do
+          VCR.use_cassette('track_offline_events') do
+            expect { api.track_events(events, allow_offline: true) }.to_not raise_error
           end
         end
       end

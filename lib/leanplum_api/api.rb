@@ -26,7 +26,8 @@ module LeanplumApi
       events = Array.wrap(events)
       user_attributes = Array.wrap(user_attributes)
 
-      request_data = user_attributes.map { |h| build_user_attributes_hash(h) } + events.map { |h| build_event_attributes_hash(h) }
+      request_data = user_attributes.map { |h| build_user_attributes_hash(h) }
+      request_data += events.map { |h| build_event_attributes_hash(h, options) }
       response = production_connection.multi(request_data).body['response']
 
       if options[:force_anomalous_override]
@@ -192,13 +193,16 @@ module LeanplumApi
     end
 
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)
-    def build_event_attributes_hash(event_hash)
+    # Use the :allow_offline option to send events without creating a new session
+    def build_event_attributes_hash(event_hash, options = {})
       event_hash = HashWithIndifferentAccess.new(event_hash)
       event_name = event_hash.delete(:event)
       fail "Event name or timestamp not provided in #{event_hash}" unless event_name
 
       event = { action: 'track', event: event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
       event.merge!(time: event_hash.delete(:time).strftime('%s')) if event_hash[:time]
+      event.merge!(info: event_hash.delete(:info)) if event_hash[:info]
+      event.merge!(allowOffline: true) if options[:allow_offline]
 
       event_hash.keys.size > 0 ? event.merge(params: event_hash.symbolize_keys ) : event
     end
