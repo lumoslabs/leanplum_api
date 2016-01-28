@@ -17,9 +17,9 @@ describe LeanplumApi::API do
   context 'users' do
     it 'build_user_attributes_hash' do
       expect(api.send(:build_user_attributes_hash, users.first)).to eq({
-        'userId' => 123456,
-        'action' => 'setUserAttributes',
-        'userAttributes' => HashWithIndifferentAccess.new(
+        userId: 123456,
+        action: 'setUserAttributes',
+        userAttributes: HashWithIndifferentAccess.new(
           first_name: 'Mike',
           last_name: 'Jones',
           gender: 'm',
@@ -98,11 +98,11 @@ describe LeanplumApi::API do
     context '#build_event_attributes_hash' do
       let(:event_hash) do
         {
-          'userId' => 12345,
-          'time' => Time.now.utc.strftime('%s'),
-          'action' => 'track',
-          'event' => 'purchase',
-          'params' => { 'some_timestamp' => timestamp }
+          userId: 12345,
+          time: Time.now.utc.strftime('%s'),
+          action: 'track',
+          event: 'purchase',
+          params: { some_timestamp: timestamp }
         }
       end
 

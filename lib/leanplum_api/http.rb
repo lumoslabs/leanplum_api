@@ -58,11 +58,9 @@ module LeanplumApi
     end
 
     def authed_multi_param_string
-      if LeanplumApi.configuration.developer_mode
-        URI.encode_www_form(authentication_params.merge(action: 'multi', time: Time.now.utc.strftime('%s'), devMode: true))
-      else
-        URI.encode_www_form(authentication_params.merge(action: 'multi', time: Time.now.utc.strftime('%s')))
-      end
+      params = authentication_params.merge(action: 'multi', time: Time.now.utc.strftime('%s'))
+      params.merge!(devMode: true) if LeanplumApi.configuration.developer_mode
+      URI.encode_www_form(params)
     end
   end
 end

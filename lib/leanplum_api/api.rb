@@ -175,20 +175,17 @@ module LeanplumApi
       device_id = hash.delete(:device_id)
       fail "No device_id or user_id in hash #{hash}" unless user_id || device_id
 
-      user_id ? { 'userId' => user_id } : { 'deviceId' => device_id }
+      user_id ? { userId: user_id } : { deviceId: device_id }
     end
 
     # Action can be any command that takes a userAttributes param.  "start" (a session) is the other command that most
     # obviously takes userAttributes.
+    # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
     def build_user_attributes_hash(user_hash, action = 'setUserAttributes')
       user_hash = HashWithIndifferentAccess.new(user_hash)
+      user_hash.each { |k, v| user_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
 
-      # As of 2015-10 Leanplum supports ISO8601 date strings as user attributes. Support for times is as yet unavailable.
-      user_hash.each do |k,v|
-        user_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime)
-      end
-
-      extract_user_id_or_device_id_hash!(user_hash).merge('action' => action, 'userAttributes' => user_hash)
+      extract_user_id_or_device_id_hash!(user_hash).merge(action: action, userAttributes: user_hash)
     end
 
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)
@@ -197,11 +194,10 @@ module LeanplumApi
       event_name = event_hash.delete(:event)
       fail "Event name or timestamp not provided in #{event_hash}" unless event_name
 
-      event = { 'action' => 'track', 'event' => event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
-      time = event_hash.delete(:time)
-      event.merge!('time' => time.strftime('%s')) if time
+      event = { action: 'track', event: event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
+      event.merge!(time: event_hash.delete(:time).strftime('%s')) if event_hash[:time]
 
-      event_hash.keys.size > 0 ? event.merge('params' => event_hash ) : event
+      event_hash.keys.size > 0 ? event.merge(params: event_hash.symbolize_keys ) : event
     end
   end
 end
