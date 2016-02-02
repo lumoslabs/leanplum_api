@@ -62,16 +62,19 @@ attribute_hash = {
 }
 api.set_user_attributes(attribute_hash)
 
-# You must also provide the :event property for event tracking.
-# You can optionally provide a :time property; if it is not set Leanplum will timestamp the event "now".
+# You must also provide the :event property for event tracking. :info is an optional property for an extra string.
+# You can optionally provide a :time; if it is not set Leanplum will timestamp the event "now".
 # All other key/values besides :user_id, :device_id, :event, and :time will be sent as event params.
 event = {
   user_id: 12345,
   event: 'purchase',
+  info: 'reallybigpurchase',
   time: Time.now.utc, # Event timestamps will be converted to epoch seconds by the gem.
   some_event_property: 'boss_hog_on_candy'
 }
 api.track_events(event)
+# Events tracked like this will be made part of a session; for independent events use :allow_offline
+api.track_events(event, allow_offline: true)
 
 # You can also track events and user attributes at the same time
 api.track_multi(event, attribute_hash)
