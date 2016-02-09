@@ -20,17 +20,20 @@ You need to obtain (at a minimum) the `PRODUCTION_KEY` and `APP_ID` from Leanplu
 require 'leanplum_api'
 
 LeanplumApi.configure do |config|
+  # Required keys
   config.app_id = 'MY_APP_ID'
   config.production_key = 'MY_CLIENT_KEY'
-  config.data_export_key = 'MY_DATA_KEY'          # Optional; necessary only if you want to call data export methods.
-  config.content_read_only_key = 'MY_CONTENT_KEY' # Optional; necessary for retrieving AB test info
-  config.development_key = 'MY_CONTENT_KEY'       # Optional; needed for resetting anomalous events
+
+  # Optional keys
+  config.data_export_key = 'MY_DATA_KEY'          # Necessary only if you want to call data export methods.
+  config.content_read_only_key = 'MY_CONTENT_KEY' # Necessary for retrieving AB test info
+  config.development_key = 'MY_CONTENT_KEY'       # Necessary for resetting anomalous events
 
   # Optional configuration variables
-  config.logger = LeanplumApi::Logger.new('file.log') # Defaults to STDOUT.  The gem logger class hides passwords.
-  config.timeout_seconds                              # Defaults to 600
-  config.api_version                                  # Defaults to 1.0.6
-  config.developer_mode                               # Defaults to false
+  config.logger = LeanplumApi::Logger.new('my.log') # Defaults to STDOUT; the gem logger class hides passwords.
+  config.timeout_seconds                            # Defaults to 600
+  config.api_version                                # Defaults to 1.0.6
+  config.developer_mode                             # Defaults to false
 
   # S3 export required options
   config.s3_bucket_name = 'my_bucket'
@@ -57,8 +60,8 @@ attribute_hash = {
   first_name: 'Mike',
   last_name: 'Jones',
   gender: 'm',
-  birthday: Date.today, # Dates/times only sort of supported in user attributes
-  email: 'still_tippin@test.com'
+  email: 'still_tippin@test.com',
+  birthday: Date.today  # Dates/times will be converted to ISO8601 format
 }
 api.set_user_attributes(attribute_hash)
 
