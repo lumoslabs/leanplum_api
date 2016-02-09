@@ -33,7 +33,6 @@ LeanplumApi.configure do |config|
   config.logger = LeanplumApi::Logger.new('my.log') # Defaults to STDOUT; the gem logger class hides passwords.
   config.timeout_seconds                            # Defaults to 600
   config.api_version                                # Defaults to 1.0.6
-  config.developer_mode                             # Defaults to false
 
   # S3 export required options
   config.s3_bucket_name = 'my_bucket'
