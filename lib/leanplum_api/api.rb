@@ -115,8 +115,16 @@ module LeanplumApi
       get_export_results(job_id)
     end
 
+    def user_attributes(user_id)
+      export_user(user_id)['userAttributes']
+    end
+
+    def user_events(user_id)
+      export_user(user_id)['events']
+    end
+
     def export_user(user_id)
-      data_export_connection.get(action: 'exportUser', userId: user_id).body['response'].first['userAttributes']
+      data_export_connection.get(action: 'exportUser', userId: user_id).body['response'].first
     end
 
     def get_ab_tests(only_recent = false)

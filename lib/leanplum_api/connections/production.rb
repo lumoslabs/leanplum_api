@@ -41,6 +41,7 @@ module LeanplumApi::Connection
 
       @connection ||= Faraday.new(options) do |connection|
         connection.request :leanplum_response_validation
+        connection.request :json
 
         connection.response :logger, @logger, bodies: true if api_debug?
         connection.response :json, :content_type => /\bjson$/
