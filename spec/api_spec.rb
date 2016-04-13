@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe LeanplumApi::API do
   let(:api) { LeanplumApi::API.new }
+  let(:first_user_id) { 123456 }
   let(:users) do
     [{
-      user_id: 123456,
+      user_id: first_user_id,
       first_name: 'Mike',
       last_name: 'Jones',
       gender: 'm',
@@ -12,12 +13,11 @@ describe LeanplumApi::API do
       create_date: '2010-01-01'.to_date
     }]
   end
-  let(:first_user_id) { users.first[:user_id] }
 
   context 'users' do
     it 'build_user_attributes_hash' do
       expect(api.send(:build_user_attributes_hash, users.first)).to eq({
-        userId: 123456,
+        userId: first_user_id,
         action: 'setUserAttributes',
         userAttributes: HashWithIndifferentAccess.new(
           first_name: 'Mike',
@@ -49,15 +49,14 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'export_user' do
+    context 'user_attributes' do
       it 'should get user attributes for this user' do
         VCR.use_cassette('export_user') do
-          user_info = api.export_user(first_user_id)
-          user_info.keys.each do |k|
+          api.user_attributes(first_user_id).each do |k, v|
             if users.first[k.to_sym].is_a?(Date) || users.first[k.to_sym].is_a?(DateTime)
-              expect(user_info[k]).to eq(users.first[k.to_sym].strftime('%Y-%m-%d'))
+              expect(v).to eq(users.first[k.to_sym].strftime('%Y-%m-%d'))
             else
-              expect(user_info[k]).to eq(users.first[k.to_sym])
+              expect(v).to eq(users.first[k.to_sym])
             end
           end
         end
@@ -79,11 +78,12 @@ describe LeanplumApi::API do
 
   context 'events' do
     let(:timestamp) { '2015-05-01 01:02:03' }
+    let(:purchase) { 'purchase' }
     let(:events) do
       [
         {
-          user_id: 12345,
-          event: 'purchase',
+          user_id: first_user_id,
+          event: purchase,
           time: Time.now.utc,
           some_timestamp: timestamp
         },
@@ -98,10 +98,10 @@ describe LeanplumApi::API do
     context '#build_event_attributes_hash' do
       let(:event_hash) do
         {
-          userId: 12345,
+          userId: first_user_id,
           time: Time.now.utc.strftime('%s'),
           action: 'track',
-          event: 'purchase',
+          event: purchase,
           params: { some_timestamp: timestamp }
         }
       end
@@ -149,6 +149,14 @@ describe LeanplumApi::API do
       it 'should work' do
         VCR.use_cassette('track_events_and_attributes') do
           expect { api.track_multi(events, users) }.to_not raise_error
+        end
+      end
+    end
+
+    context 'user_events' do
+      it 'should get user events for this user' do
+        VCR.use_cassette('export_user') do
+          expect(api.user_events(first_user_id)[purchase].keys).to eq(['count'])
         end
       end
     end

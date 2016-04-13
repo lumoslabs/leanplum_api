@@ -23,18 +23,18 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 04 Nov 2015 20:50:03 GMT
+      - Wed, 13 Apr 2016 02:33:35 GMT
       Server:
       - Google Frontend
       Cache-Control:
       - private
       Alt-Svc:
-      - quic=":443"; p="1"; ma=604800
+      - quic=":443"; ma=2592000; v="32,31,30,29,28,27,26,25"
       Transfer-Encoding:
       - chunked
     body:
       encoding: UTF-8
-      string: '{"response":[{"events":{},"states":{},"success":true,"userAttributes":{"first_name":"Mike","create_date":"2010-01-01","email":"still_tippin@test.com","last_name":"Jones","gender":"m"}}]}'
+      string: '{"response":[{"created":1.43935302887E9,"events":{"purchase":{"count":4}},"states":{},"success":true,"userAttributes":{"first_name":"Mike","create_date":"2010-01-01","email":"still_tippin@test.com","last_name":"Jones","gender":"m"}}]}'
     http_version: 
   recorded_at: Wed, 12 Aug 2015 00:00:00 GMT
 recorded_with: VCR 2.9.3
