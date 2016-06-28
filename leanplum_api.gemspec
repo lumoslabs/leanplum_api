@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 1.9.3'
 
-  gem.add_dependency 'activesupport', '~> 3.0'
+  gem.add_dependency 'activesupport', '>= 3.0'
   gem.add_dependency 'awesome_print', '~> 1'
   gem.add_dependency 'faraday', '~> 0.9', '>= 0.9.1'
   gem.add_dependency 'faraday_middleware', '~> 0.10'
