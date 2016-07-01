@@ -22,14 +22,16 @@ http_interactions:
       - "*"
       Content-Type:
       - application/json
+      X-Cloud-Trace-Context:
+      - 12a07ad33968771fe966d66789f04e87
       Date:
-      - Wed, 04 Nov 2015 20:50:09 GMT
+      - Fri, 01 Jul 2016 14:47:55 GMT
       Server:
       - Google Frontend
       Cache-Control:
       - private
       Alt-Svc:
-      - quic=":443"; p="1"; ma=604800
+      - quic=":443"; ma=2592000; v="35,34,33,32,31,30,29,28,27,26,25"
       Transfer-Encoding:
       - chunked
     body:
@@ -37,5 +39,5 @@ http_interactions:
       string: '{"response":[{"success":true,"messages":[{"id":5670583287676928,"created":1.440091595799E9,"name":"New
         Message","active":false,"messageType":"Push Notification"}]}]}'
     http_version: 
-  recorded_at: Wed, 12 Aug 2015 00:00:00 GMT
-recorded_with: VCR 2.9.3
+  recorded_at: Wed, 12 Aug 2015 04:00:00 GMT
+recorded_with: VCR 3.0.3
