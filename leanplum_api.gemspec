@@ -24,6 +24,6 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'rspec', '~> 3'
   gem.add_development_dependency 'timecop', '~> 0.8'
-  gem.add_development_dependency 'vcr', '~> 3'
+  gem.add_development_dependency 'vcr', '> 2'
   gem.add_development_dependency 'webmock', '> 2'
 end
