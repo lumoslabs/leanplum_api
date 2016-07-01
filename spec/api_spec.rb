@@ -42,9 +42,7 @@ describe LeanplumApi::API do
         let(:broken_users) { users + [{ first_name: 'Moe' }] }
 
         it 'should raise an error' do
-          VCR.use_cassette('set_user_attributes_broken') do
-            expect{ api.set_user_attributes(broken_users) }.to raise_error(/No device_id or user_id in hash/)
-          end
+          expect{ api.set_user_attributes(broken_users) }.to raise_error(/No device_id or user_id in hash/)
         end
       end
     end
@@ -256,8 +254,9 @@ describe LeanplumApi::API do
 
       it 'gets vars' do
         VCR.use_cassette('get_vars') do
-          vars = api.get_vars(first_user_id)
-          expect(vars).to eq({ 'test_var' => 1 })
+          api.set_user_attributes(users)
+
+          expect(api.get_vars(users.first[:user_id])).to eq({ 'test_var' => 1 })
         end
       end
     end
