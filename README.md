@@ -10,7 +10,7 @@ The gem uses the ```multi``` method with a POST for all event tracking and user 
 
 Tested with Leanplum API version 1.0.6.
 
-required_ruby_version is set to 1.9 but this code has only been tested with Ruby 2.1.5!
+`required_ruby_version` is set to 1.9 but this code has only been tested with Ruby 2.1.5 and up!
 
 ## Configuration
 
