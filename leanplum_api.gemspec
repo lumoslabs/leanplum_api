@@ -20,7 +20,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'awesome_print', '~> 1'
   gem.add_dependency 'faraday', '~> 0.9', '>= 0.9.1'
   gem.add_dependency 'faraday_middleware', '~> 0.10'
-  gem.add_dependency 'rake', '~> 10.4'
 
   gem.add_development_dependency 'rspec', '~> 3'
   gem.add_development_dependency 'timecop', '~> 0.8'
