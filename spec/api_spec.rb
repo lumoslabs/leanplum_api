@@ -10,7 +10,8 @@ describe LeanplumApi::API do
       last_name: 'Jones',
       gender: 'm',
       email: 'still_tippin@test.com',
-      create_date: '2010-01-01'.to_date
+      create_date: '2010-01-01'.to_date,
+      is_tipping: true
     }]
   end
 
@@ -24,7 +25,8 @@ describe LeanplumApi::API do
           last_name: 'Jones',
           gender: 'm',
           email: 'still_tippin@test.com',
-          create_date: '2010-01-01'
+          create_date: '2010-01-01',
+          is_tipping: true
         )
       })
     end

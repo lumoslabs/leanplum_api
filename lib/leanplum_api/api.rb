@@ -116,7 +116,18 @@ module LeanplumApi
     end
 
     def user_attributes(user_id)
-      export_user(user_id)['userAttributes']
+      export_user(user_id)['userAttributes'].inject({}) do |attrs, (k, v)|
+        # Leanplum doesn't use true JSON for booleans...
+        if v == 'True'
+          attrs[k] = true
+        elsif v == 'False'
+          attrs[k] = false
+        else
+          attrs[k] = v
+        end
+
+        attrs
+      end
     end
 
     def user_events(user_id)

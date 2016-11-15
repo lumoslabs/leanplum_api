@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.10.0
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -22,19 +22,21 @@ http_interactions:
       - "*"
       Content-Type:
       - application/json
+      X-Cloud-Trace-Context:
+      - b7ed8a2d93f600276bf6f09eddff4c8c
       Date:
-      - Fri, 01 Jul 2016 14:47:49 GMT
+      - Tue, 15 Nov 2016 10:32:36 GMT
       Server:
       - Google Frontend
+      Content-Length:
+      - '303'
+      Expires:
+      - Tue, 15 Nov 2016 10:32:36 GMT
       Cache-Control:
       - private
-      Alt-Svc:
-      - quic=":443"; ma=2592000; v="34,33,32,31,30,29,28,27,26,25"
-      Transfer-Encoding:
-      - chunked
     body:
       encoding: UTF-8
-      string: '{"response":[{"created":1.43935302887E9,"events":{"purchase":{"count":11}},"lastActive":1.446709787966E9,"states":{},"success":true,"userAttributes":{"first_name":"Mike","create_date":"2010-01-01","email":"still_tippin@test.com","last_name":"Jones","gender":"m"}}]}'
-    http_version: 
+      string: '{"response":[{"totalSessions":0,"created":1.43935302887E9,"events":{"purchase":{"count":24}},"lastActive":1.446709787966E9,"states":{},"success":true,"userAttributes":{"first_name":"Mike","create_date":"2010-01-01","email":"still_tippin@test.com","last_name":"Jones","is_tipping":"True","gender":"m"}}]}'
+    http_version:
   recorded_at: Wed, 12 Aug 2015 04:00:00 GMT
 recorded_with: VCR 3.0.3

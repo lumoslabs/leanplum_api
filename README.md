@@ -125,4 +125,14 @@ export LEANPLUM_API_DEBUG=true
 bundle exec whatever
 ```
 
+Alternatively you can configure the same sort of output in the gem config block:
+
+```ruby
+LeanplumApi.configure do |config|
+  config.api_debug = true
+end
+```
+
+### Developer Mode
+
 You can also configure "developer mode".  This will use the `devMode=true` parameter on some requests, which seems to sends them to a separate queue which might not count towards Leanplum's usage billing.

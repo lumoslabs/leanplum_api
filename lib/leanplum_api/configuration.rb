@@ -23,9 +23,9 @@ module LeanplumApi
     attr_accessor :development_key
 
     # Optional
+    attr_accessor :api_debug
     attr_accessor :api_version
     attr_accessor :developer_mode
-    attr_accessor :log_path
     attr_accessor :logger
     attr_accessor :timeout_seconds
 
@@ -36,14 +36,15 @@ module LeanplumApi
     attr_accessor :s3_access_key
     attr_accessor :s3_object_prefix
 
+    # TODO Deprecated; remove in 3.0
+    attr_accessor :log_path
+
     def initialize
       @api_version = DEFAULT_LEANPLUM_API_VERSION
       @developer_mode = false
       @timeout_seconds = 600
       @logger = LeanplumApi::Logger.new(STDOUT)
-
-      # Deprecated
-      @log_path = 'log'
+      @api_debug = ENV['LEANPLUM_API_DEBUG'].to_s =~ /^(true|t|yes|y|1)$/i
     end
   end
 end
