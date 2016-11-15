@@ -43,15 +43,11 @@ module LeanplumApi::Connection
         connection.request :leanplum_response_validation
         connection.request :json
 
-        connection.response :logger, @logger, bodies: true if api_debug?
+        connection.response :logger, @logger, bodies: true if LeanplumApi.configuration.api_debug
         connection.response :json, :content_type => /\bjson$/
 
         connection.adapter Faraday.default_adapter
       end
-    end
-
-    def api_debug?
-      ENV['LEANPLUM_API_DEBUG'].to_s =~ /^(true|1)$/i
     end
 
     def authed_multi_param_string
