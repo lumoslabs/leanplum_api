@@ -26,8 +26,6 @@ http_interactions:
       - application/json
       X-Cloud-Trace-Context:
       - be84cbe23b33980fe7159ca706386efb
-      Set-Cookie:
-      - GOOGAPPUID=xCgsIARDNASC7xqvBBQ; expires=Sun, 05-Jan-2020 06:28:11 GMT; path=/
       Date:
       - Tue, 15 Nov 2016 10:28:11 GMT
       Server:
@@ -42,6 +40,6 @@ http_interactions:
       encoding: UTF-8
       string: '{"response":[{"success":true,"warning":{"message":"Anomaly detected:
         time skew. User will be excluded from analytics."}}]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 12 Aug 2015 04:00:00 GMT
 recorded_with: VCR 3.0.3

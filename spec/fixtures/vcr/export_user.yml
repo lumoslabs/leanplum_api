@@ -24,8 +24,6 @@ http_interactions:
       - application/json
       X-Cloud-Trace-Context:
       - b7ed8a2d93f600276bf6f09eddff4c8c
-      Set-Cookie:
-      - GOOGAPPUID=xCgsIARDGByDEyKvBBQ; expires=Sun, 05-Jan-2020 06:32:36 GMT; path=/
       Date:
       - Tue, 15 Nov 2016 10:32:36 GMT
       Server:
@@ -39,6 +37,6 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"response":[{"totalSessions":0,"created":1.43935302887E9,"events":{"purchase":{"count":24}},"lastActive":1.446709787966E9,"states":{},"success":true,"userAttributes":{"first_name":"Mike","create_date":"2010-01-01","email":"still_tippin@test.com","last_name":"Jones","is_tipping":"True","gender":"m"}}]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 12 Aug 2015 04:00:00 GMT
 recorded_with: VCR 3.0.3
