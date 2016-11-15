@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.summary     = 'Gem for the Leanplum API'
   gem.description = 'Ruby-esque access to Leanplum API'
   gem.licenses    = ['MIT']
-  gem.files       = Dir["lib/**/*"] + ['Gemfile', 'LICENSE.txt', 'Rakefile', 'README.md']
+  gem.files       = Dir["lib/**/*"] + ['Gemfile', 'LICENSE.txt', 'README.md']
   gem.test_files  = Dir["spec/**/*"]
 
   gem.required_ruby_version = '>= 1.9.3'
