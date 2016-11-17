@@ -216,7 +216,7 @@ module LeanplumApi
     def build_event_attributes_hash(event_hash, options = {})
       event_hash = HashWithIndifferentAccess.new(event_hash)
       event_name = event_hash.delete(:event)
-      fail "Event name or timestamp not provided in #{event_hash}" unless event_name
+      fail ":event key not present in #{event_hash}" unless event_name
 
       event = { action: 'track', event: event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
       event.merge!(time: event_hash.delete(:time).strftime('%s')) if event_hash[:time]
