@@ -36,9 +36,6 @@ module LeanplumApi
     attr_accessor :s3_access_key
     attr_accessor :s3_object_prefix
 
-    # TODO Deprecated; remove in 3.0
-    attr_accessor :log_path
-
     def initialize
       @api_version = DEFAULT_LEANPLUM_API_VERSION
       @developer_mode = false
