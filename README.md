@@ -64,9 +64,10 @@ attribute_hash = {
 }
 api.set_user_attributes(attribute_hash)
 
-# You must also provide the :event property for event tracking. :info is an optional property for an extra string.
-# You can optionally provide a :time; if it is not set Leanplum will timestamp the event "now".
-# All other key/values besides :user_id, :device_id, :event, and :time will be sent as event params.
+# You must also provide the :event property for event tracking. 
+## :info is an optional property for an extra string.
+## You can optionally provide a :time; if it is not set Leanplum will timestamp the event "now".
+## All other key/values besides :user_id, :device_id, :event, and :time will be sent as event params.
 event = {
   user_id: 12345,
   event: 'purchase',
