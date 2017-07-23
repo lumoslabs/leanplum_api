@@ -34,7 +34,7 @@ LeanplumApi.configure do |config|
   config.timeout_seconds                            # Defaults to 600
   config.api_version                                # Defaults to 1.0.6
 
-  # S3 export required options
+  # S3 export required options - see note below on the S3 export API
   config.s3_bucket_name = 'my_bucket'
   config.s3_access_id = 'access_id'
   config.s3_access_key = 'access_key'
@@ -88,14 +88,15 @@ api.reset_anomalous_users([12345, 23456])
 api.track_events(event, force_anomalous_override: true)
 ```
 
-API based data export:
+### API based data export:
+
 ```ruby
 api = LeanplumApi::API.new
 job_id = api.export_data(start_time, end_time)
 response = wait_for_job(job_id)
 ```
 
-Note well that Leanplum now officially recommends use of the automated S3 export instead of API based export.  According to a Leanplum engineer these two data export methodologies are completely independent data paths and in our experience we have found API based data export to be missing 10-15% of the data that is eventually returned by the automated export.
+**Note well that Leanplum now officially recommends use of the automated S3 export instead of API based export.**  According to a Leanplum engineer these two data export methodologies are completely independent data paths and in our experience we have found API based data export to be missing 10-15% of the data that is eventually returned by the automated export.
 
 ## Specs
 
