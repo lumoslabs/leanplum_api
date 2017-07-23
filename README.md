@@ -47,7 +47,7 @@ end
 
 ## Usage
 
-Tracking events and user attributes:
+### Tracking events and user attributes:
 
 ```ruby
 api = LeanplumApi::API.new
@@ -101,7 +101,7 @@ Note well that Leanplum now officially recommends use of the automated S3 export
 
 `bundle exec rspec` should work fine at running existing specs.
 
-To write _new__ specs (or regenerate one of VCR's YAML files), you must set the `LEANPLUM_PRODUCTION_KEY`, `LEANPLUM_APP_ID`, `LEANPLUM_CONTENT_READ_ONLY_KEY`, `LEANPLUM_DEVELOPMENT_KEY`, and `LEANPLUM_DATA_EXPORT_KEY` environment variables (preferably to some development only keys) to something and then run rspec.  VCR will create fixture data based on your requests, masking your actual keys so that it's safe to commit the file.
+To write _new_ specs (or regenerate one of [VCR](https://github.com/vcr/vcr)'s YAML files), you must set the `LEANPLUM_PRODUCTION_KEY`, `LEANPLUM_APP_ID`, `LEANPLUM_CONTENT_READ_ONLY_KEY`, `LEANPLUM_DEVELOPMENT_KEY`, and `LEANPLUM_DATA_EXPORT_KEY` environment variables (preferably to some development only keys) to something and then run rspec.  VCR will create fixture data based on your requests, masking your actual keys so that it's safe to commit the file.
 
 > BE AWARE THAT IF YOU WRITE A NEW SPEC OR DELETE A VCR FILE, IT'S POSSIBLE THAT REAL DATA WILL BE WRITTEN TO THE `LEANPLUM_APP_ID` YOU CONFIGURE!  Certainly a real request will be made to rebuild the VCR file, and while specs run with ```devMode=true```, it's usually a good idea to create a fake app for testing/running specs against.
 
