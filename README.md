@@ -6,6 +6,8 @@ Gem for the Leanplum API.
 
 Leanplum calls it a REST API but it is not very RESTful.
 
+Leanplum also likes to change and break stuff in their API without changing the version number, so buyer beware.
+
 The gem uses the ```multi``` method with a POST for all event tracking and user attribute updating requests.  Check Leanplum's docs for more information on ```multi```.
 
 Tested with Leanplum API version 1.0.6.
