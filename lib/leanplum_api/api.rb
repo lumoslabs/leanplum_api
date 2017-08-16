@@ -39,7 +39,7 @@ module LeanplumApi
           #
           # but it has to be:
           if indicator['warning']
-            # The first error was that Leanplum does not return their warnings in order!!!  So we just have
+            # Leanplum does not return their warnings in order!!!  So we just have
             # to reset everyone who had any events.  This is what the code should be:
             # user_ids_to_reset << request_data[i]['userId']
 
