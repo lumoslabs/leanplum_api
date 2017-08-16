@@ -33,9 +33,14 @@ module LeanplumApi
       if options[:force_anomalous_override]
         user_ids_to_reset = []
         response.each_with_index do |indicator, i|
-          if indicator['warning'] && indicator['warning']['message'] =~ /Anomaly detected/i
-            # Leanplum does not return their warnings in order!!!  So we just have to reset everyone who had any events.
-            # This is what the code should be:
+          # Leanplum likes to change their warning messages, so we just reset everyone all the time.
+          # This condition should be:
+          # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
+          #
+          # but it has to be:
+          if indicator['warning']
+            # The first error was that Leanplum does not return their warnings in order!!!  So we just have
+            # to reset everyone who had any events.  This is what the code should be:
             # user_ids_to_reset << request_data[i]['userId']
 
             # This is what it has to be:
