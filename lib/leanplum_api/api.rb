@@ -33,8 +33,9 @@ module LeanplumApi
       if options[:force_anomalous_override]
         user_ids_to_reset = []
         response.each_with_index do |indicator, i|
-          # Leanplum likes to change their warning messages, so we just reset everyone all the time.
-          # This condition should be:
+          # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
+          # and has no idea what "versioning" actually means, so we just reset
+          # everyone all the time. This condition should be:
           # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
           #
           # but it has to be:
