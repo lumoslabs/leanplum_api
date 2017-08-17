@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.10.0
+      - Faraday v0.12.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,22 +21,24 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json
+      - application/json; charset=UTF-8
       X-Cloud-Trace-Context:
-      - b7ed8a2d93f600276bf6f09eddff4c8c
+      - 9f691450e428a0649910cae4aeb29e89
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxDkBiDNi9jMBQ; expires=Tue, 06-Oct-2020 17:08:30 GMT; path=/
       Date:
-      - Tue, 15 Nov 2016 10:32:36 GMT
+      - Thu, 17 Aug 2017 21:08:30 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '303'
+      - '454'
       Expires:
-      - Tue, 15 Nov 2016 10:32:36 GMT
+      - Thu, 17 Aug 2017 21:08:30 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"totalSessions":0,"created":1.43935302887E9,"events":{"purchase":{"count":24}},"lastActive":1.446709787966E9,"states":{},"success":true,"userAttributes":{"first_name":"Mike","create_date":"2010-01-01","email":"still_tippin@test.com","last_name":"Jones","is_tipping":"True","gender":"m"}}]}'
-    http_version:
+      string: '{"response":[{"totalSessions":0,"created":1.43935302887E9,"events":{"purchase":{"firstTime":1.460514593026E9,"count":24,"lastTime":1.479205785342E9}},"unsubscribeChannels":[],"userId":"123456","lastActive":1.446709787966E9,"states":{},"userBucket":358,"devices":[],"success":true,"userAttributes":{"first_name":"Mike","create_date":"2010-01-01","email":"still_tippin@test.com","last_name":"Jones","is_tipping":"True","gender":"m"},"timeSpentInApp":0.0}]}'
+    http_version: 
   recorded_at: Wed, 12 Aug 2015 04:00:00 GMT
 recorded_with: VCR 3.0.3

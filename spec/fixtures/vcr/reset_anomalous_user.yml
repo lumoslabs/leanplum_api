@@ -8,7 +8,7 @@ http_interactions:
       string: '{"data":[{"action":"setUserAttributes","resetAnomalies":true,"userId":123456}]}'
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.12.1
       Content-Type:
       - application/json
       Accept-Encoding:
@@ -23,17 +23,21 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json
+      - application/json; charset=UTF-8
+      X-Cloud-Trace-Context:
+      - 7fc336dc94532d27ed028e63a8fab49e
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxCXAyDOi9jMBQ; expires=Tue, 06-Oct-2020 17:08:31 GMT; path=/
       Date:
-      - Fri, 01 Jul 2016 14:47:50 GMT
+      - Thu, 17 Aug 2017 21:08:31 GMT
       Server:
       - Google Frontend
+      Content-Length:
+      - '31'
+      Expires:
+      - Thu, 17 Aug 2017 21:08:31 GMT
       Cache-Control:
       - private
-      Alt-Svc:
-      - quic=":443"; ma=2592000; v="35,34,33,32,31,30,29,28,27,26,25"
-      Transfer-Encoding:
-      - chunked
     body:
       encoding: UTF-8
       string: '{"response":[{"success":true}]}'

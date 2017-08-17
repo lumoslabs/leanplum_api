@@ -170,7 +170,7 @@ describe LeanplumApi::API do
     context 'user_events' do
       it 'should get user events for this user' do
         VCR.use_cassette('export_user') do
-          expect(api.user_events(first_user_id)[purchase].keys).to eq(['count'])
+          expect(api.user_events(first_user_id)[purchase].keys).to eq(['firstTime', 'count', 'lastTime'])
         end
       end
     end
@@ -252,11 +252,11 @@ describe LeanplumApi::API do
         it 'gets messages' do
           VCR.use_cassette('get_messages') do
             expect(api.get_messages).to eq([{
-              "id" => 5670583287676928,
-              "created" => 1440091595.799,
-              "name" => "New Message",
-              "active" => false,
-              "messageType" => "Push Notification"
+              'id' => 5670583287676928,
+              'created' => 1440091595.799,
+              'name' => 'New Message',
+              'active' => false,
+              'messageType' => 'Push Notification'
             }])
           end
         end

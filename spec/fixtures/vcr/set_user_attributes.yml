@@ -5,10 +5,10 @@ http_interactions:
     uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1439352000
     body:
       encoding: UTF-8
-      string: '{"data":[{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
+      string: '{"data":[{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true},"events":{"eventName1":{"count":1,"firstTime":"2015-08-12T04:00:00Z","lastTime":"2015-08-12T04:00:00Z"}}}]}'
     headers:
       User-Agent:
-      - Faraday v0.10.0
+      - Faraday v0.12.1
       Content-Type:
       - application/json
       Accept-Encoding:
@@ -23,23 +23,26 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json
+      - application/json; charset=UTF-8
       X-Cloud-Trace-Context:
-      - be84cbe23b33980fe7159ca706386efb
+      - cb12f7b84d823ea6ac126dcdb416675f
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxDUASDNi9jMBQ; expires=Tue, 06-Oct-2020 17:08:29 GMT; path=/
       Date:
-      - Tue, 15 Nov 2016 10:28:11 GMT
+      - Thu, 17 Aug 2017 21:08:29 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '122'
+      - '186'
       Expires:
-      - Tue, 15 Nov 2016 10:28:11 GMT
+      - Thu, 17 Aug 2017 21:08:29 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":true,"warning":{"message":"Anomaly detected:
-        time skew. User will be excluded from analytics."}}]}'
-    http_version:
+      string: '{"response":[{"error":{"message":"event ''eventName1'' firstTime is
+        invalid."},"success":false,"warning":{"message":"Device clock skew detected
+        (736 days behind). Rewriting timestamp."}}]}'
+    http_version: 
   recorded_at: Wed, 12 Aug 2015 04:00:00 GMT
 recorded_with: VCR 3.0.3
