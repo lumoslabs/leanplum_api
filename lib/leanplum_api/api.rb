@@ -18,8 +18,8 @@ module LeanplumApi
       track_multi(events, nil, options)
     end
 
-    # This method is for tracking events and/or updating user attributes at the same time, batched together like leanplum
-    # recommends.
+    # This method is for tracking events and/or updating user attributes at the same time, batched together like
+    # leanplum recommends.
     # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events and force them to not
     # be considered anomalous
     def track_multi(events = nil, user_attributes = nil, options = {})
@@ -61,6 +61,7 @@ module LeanplumApi
     # leads to sort of unprocessed information that can be incomplete.
     # They recommend using the automatic export to S3 if possible.
     def export_data(start_time, end_time = nil)
+      LeanplumApi.configuration.logger.warn("You should probably use the direct S3 export instead of exportData")
       fail "Start time #{start_time} after end time #{end_time}" if end_time && start_time > end_time
       LeanplumApi.configuration.logger.info("Requesting data export from #{start_time} to #{end_time}...")
 
@@ -214,7 +215,18 @@ module LeanplumApi
       user_hash = HashWithIndifferentAccess.new(user_hash)
       user_hash.each { |k, v| user_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
 
-      extract_user_id_or_device_id_hash!(user_hash).merge(action: action, userAttributes: user_hash)
+      if (events = user_hash.delete(:events))
+        events.each do |event_name, event_props|
+          event_props.each { |k, v| event_props[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
+        end
+      end
+
+      user_attributes = extract_user_id_or_device_id_hash!(user_hash).merge(
+        action: action,
+        userAttributes: user_hash
+      )
+      user_attributes[:events] = events if events
+      user_attributes
     end
 
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)

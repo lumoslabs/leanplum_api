@@ -62,11 +62,20 @@ attribute_hash = {
   last_name: 'Jones',
   gender: 'm',
   email: 'still_tippin@test.com',
-  birthday: Date.today  # Dates/times will be converted to ISO8601 format
+  birthday: Date.today,  # Dates/times will be converted to ISO8601 format
+  # In 2017, Leanplum implemented the ability to set various first and last event timestamps in their API.
+  events: {
+    event_name: {
+      count: 1,
+      value: 'woodgrain',
+      firstTime: Time.now.utc,
+      lastTime: Time.now.utc
+    }
+  }
 }
 api.set_user_attributes(attribute_hash)
 
-# You must also provide the :event property for event tracking. 
+# You must also provide the :event property for event tracking.
 ## :info is an optional property for an extra string.
 ## You can optionally provide a :time; if it is not set Leanplum will timestamp the event "now".
 ## All other key/values besides :user_id, :device_id, :event, and :time will be sent as event params.

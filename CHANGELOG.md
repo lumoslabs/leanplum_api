@@ -1,3 +1,6 @@
+## 3.1.0
+Add the ability to send events as `userAttributes` properties
+
 ## 3.0.2
 Leanplum changed their "Anomalous timestamp" message again, so now we're just going to reset everyone on any type of warning
 

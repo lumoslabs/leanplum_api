@@ -11,7 +11,14 @@ describe LeanplumApi::API do
       gender: 'm',
       email: 'still_tippin@test.com',
       create_date: '2010-01-01'.to_date,
-      is_tipping: true
+      is_tipping: true,
+      events: {
+        eventName1: {
+          count: 1,
+          firstTime: Time.now.utc,
+          lastTime: Time.now.utc
+        }
+      }
     }]
   end
 
@@ -20,6 +27,13 @@ describe LeanplumApi::API do
       expect(api.send(:build_user_attributes_hash, users.first)).to eq({
         userId: first_user_id,
         action: 'setUserAttributes',
+        events: {
+          'eventName1' => {
+            'count' => 1,
+            'firstTime' => '2015-08-12T04:00:00Z',
+            'lastTime' => '2015-08-12T04:00:00Z'
+          }
+        },
         userAttributes: HashWithIndifferentAccess.new(
           first_name: 'Mike',
           last_name: 'Jones',
