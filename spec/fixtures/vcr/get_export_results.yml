@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.12.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,20 +21,24 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json
+      - application/json; charset=UTF-8
+      X-Cloud-Trace-Context:
+      - 99791af56ed96a2e814f36bba5e43e5c
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxC5ASCvl9jMBQ; expires=Tue, 06-Oct-2020 17:33:35 GMT; path=/
       Date:
-      - Fri, 01 Jul 2016 14:47:53 GMT
+      - Thu, 17 Aug 2017 21:33:35 GMT
       Server:
       - Google Frontend
+      Content-Length:
+      - '268'
+      Expires:
+      - Thu, 17 Aug 2017 21:33:35 GMT
       Cache-Control:
       - private
-      Alt-Svc:
-      - quic=":443"; ma=2592000; v="34,33,32,31,30,29,28,27,26,25"
-      Transfer-Encoding:
-      - chunked
     body:
       encoding: UTF-8
-      string: '{"response":[{"files":["https:\/\/leanplum_export.storage.googleapis.com\/export-4727756026281984-d5969d55-f242-48a6-85a3-165af08e2306-output-0"],"jobId":"export_4727756026281984_2904941266315269120","numBytes":36590,"state":"FINISHED","success":true,"numSessions":101}]}'
+      string: '{"response":[{"files":["https://leanplum_export.storage.googleapis.com/export-4727756026281984-d5969d55-f242-48a6-85a3-165af08e2306-output-0"],"jobId":"export_4727756026281984_2904941266315269120","numBytes":36590,"state":"FINISHED","success":true,"numSessions":101}]}'
     http_version: 
-  recorded_at: Wed, 12 Aug 2015 04:00:00 GMT
+  recorded_at: Sat, 12 Aug 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3

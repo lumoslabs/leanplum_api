@@ -2,39 +2,43 @@
 http_interactions:
 - request:
     method: get
-    uri: https://www.leanplum.com/api?action=exportData&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DATA_EXPORT_KEY>&devMode=false&endDate=20150906&startDate=20150905
+    uri: https://www.leanplum.com/api?action=exportData&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DATA_EXPORT_KEY>&devMode=false&endDate=20170806&startDate=20170805
     body:
       encoding: US-ASCII
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.12.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
   response:
     status:
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
     headers:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json
+      - application/json; charset=UTF-8
+      X-Cloud-Trace-Context:
+      - 8184014402cee4aaa004b8db0c7fa518
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxD-BCCul9jMBQ; expires=Tue, 06-Oct-2020 17:33:34 GMT; path=/
       Date:
-      - Fri, 01 Jul 2016 14:47:53 GMT
+      - Thu, 17 Aug 2017 21:33:34 GMT
       Server:
       - Google Frontend
+      Content-Length:
+      - '85'
+      Expires:
+      - Thu, 17 Aug 2017 21:33:34 GMT
       Cache-Control:
       - private
-      Alt-Svc:
-      - quic=":443"; ma=2592000; v="34,33,32,31,30,29,28,27,26,25"
-      Transfer-Encoding:
-      - chunked
     body:
       encoding: UTF-8
-      string: '{"response":[{"error":{"message":"No matching data found."},"success":false}]}'
+      string: '{"response":[{"jobId":"export_4727756026281984_1504277415450767360","success":true}]}'
     http_version: 
-  recorded_at: Wed, 12 Aug 2015 04:00:00 GMT
+  recorded_at: Sat, 12 Aug 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3

@@ -18,7 +18,7 @@ RSpec.configure do |config|
     end
 
     # Leanplum requires passing the time in some requests so we freeze it.
-    Timecop.freeze('2015-08-12'.to_time.utc)
+    Timecop.freeze('2017-08-12'.to_time.utc)
   end
 end
 
