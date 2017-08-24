@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.files       = Dir["lib/**/*"] + ['Gemfile', 'LICENSE.txt', 'README.md']
   gem.test_files  = Dir["spec/**/*"]
 
-  gem.required_ruby_version = '>= 1.9.3'
+  gem.required_ruby_version = '>= 2.3'
 
   gem.add_dependency 'activesupport', '> 3.0', '< 5'
   gem.add_dependency 'awesome_print', '~> 1'
