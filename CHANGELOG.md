@@ -1,4 +1,4 @@
-## HEAD
+## 3.0.3
 * Refactor some methods
 
 ## 3.0.2
