@@ -1,15 +1,15 @@
 module LeanplumApi
   class << self
     attr_accessor :configuration
-  end
 
-  def self.configure
-    self.configuration ||= Configuration.new
-    yield(configuration) if block_given?
-  end
+    def configure
+      self.configuration ||= Configuration.new
+      yield(configuration) if block_given?
+    end
 
-  def self.reset!
-    self.configuration = Configuration.new
+    def reset!
+      self.configuration = Configuration.new
+    end
   end
 
   class Configuration

@@ -1,7 +1,7 @@
-require 'leanplum_api/connections/production'
+require 'leanplum_api/connections/base_connection'
 
 module LeanplumApi::Connection
-  class ContentReadOnly < Production
+  class ContentReadOnly < BaseConnection
     def initialize(options = {})
       raise 'Content read only key not configured!' unless LeanplumApi.configuration.content_read_only_key
       super

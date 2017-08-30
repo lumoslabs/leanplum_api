@@ -4,7 +4,9 @@ describe LeanplumApi::Connection::Production do
   context 'regular mode' do
     it 'should build the right multi url' do
       http = described_class.new
-      expect(http.send(:authed_multi_param_string)).to eq("appId=#{LeanplumApi.configuration.app_id}&clientKey=#{LeanplumApi.configuration.production_key}&apiVersion=1.0.6&devMode=false&action=multi&time=#{Time.now.utc.strftime('%s')}")
+      expect(http.send(:authed_multi_param_string)).to eq(
+        "appId=#{LeanplumApi.configuration.app_id}&apiVersion=1.0.6&devMode=false&clientKey=#{LeanplumApi.configuration.production_key}&action=multi&time=#{Time.now.utc.strftime('%s')}"
+      )
     end
   end
 
@@ -17,7 +19,9 @@ describe LeanplumApi::Connection::Production do
 
     it 'should build the right developer mode url' do
       http = described_class.new
-      expect(http.send(:authed_multi_param_string)).to eq("appId=#{LeanplumApi.configuration.app_id}&clientKey=#{LeanplumApi.configuration.production_key}&apiVersion=1.0.6&devMode=true&action=multi&time=#{Time.now.utc.strftime('%s')}")
+      expect(http.send(:authed_multi_param_string)).to eq(
+        "appId=#{LeanplumApi.configuration.app_id}&apiVersion=1.0.6&devMode=true&clientKey=#{LeanplumApi.configuration.production_key}&action=multi&time=#{Time.now.utc.strftime('%s')}"
+      )
     end
   end
 end

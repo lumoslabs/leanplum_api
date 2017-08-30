@@ -1,5 +1,7 @@
 module LeanplumApi
   class API
+    extend Gem::Deprecate
+
     EXPORT_PENDING = 'PENDING'
     EXPORT_RUNNING = 'RUNNING'
     EXPORT_FINISHED = 'FINISHED'
@@ -18,10 +20,10 @@ module LeanplumApi
       track_multi(events, nil, options)
     end
 
-    # This method is for tracking events and/or updating user attributes at the same time, batched together like leanplum
-    # recommends.
-    # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events and force them to not
-    # be considered anomalous
+    # This method is for tracking events and/or updating user attributes at the same time, batched together like
+    # leanplum recommends.
+    # Set the :force_anomalous_override option to catch warnings from leanplum about anomalous events and force them to
+    # not be considered anomalous.
     def track_multi(events = nil, user_attributes = nil, options = {})
       events = Array.wrap(events)
       user_attributes = Array.wrap(user_attributes)
@@ -98,6 +100,7 @@ module LeanplumApi
 
     def get_export_results(job_id)
       response = data_export_connection.get(action: 'getExportResults', jobId: job_id).body['response'].first
+
       if response['state'] == EXPORT_FINISHED
         LeanplumApi.configuration.logger.info("Export finished.")
         LeanplumApi.configuration.logger.debug("  Response: #{response}")
@@ -113,13 +116,18 @@ module LeanplumApi
       end
     end
 
-    def wait_for_job(job_id, polling_interval = 60)
+    def wait_for_export_job(job_id, polling_interval = 60)
       while get_export_results(job_id)[:state] != EXPORT_FINISHED
         LeanplumApi.configuration.logger.debug("Polling job #{job_id}: #{get_export_results(job_id)}")
         sleep(polling_interval)
       end
       get_export_results(job_id)
     end
+
+    def wait_for_job(job_id, polling_interval = 60)
+      wait_for_export_job(job_id, polling_interval)
+    end
+    deprecate :wait_for_job, 'wait_for_export_job', 2018, 6
 
     def user_attributes(user_id)
       export_user(user_id)['userAttributes'].inject({}) do |attrs, (k, v)|
