@@ -25,13 +25,14 @@ module LeanplumApi
       }
     end
 
+    private
+
+    # Use the clientKey corresponding to the name of the connection class
     def client_key
       key_type = self.class.to_s.split('::').last.underscore
       raise "#{key_type} key not configured" unless LeanplumApi.configuration.public_send(:"#{key_type}_key")
       LeanplumApi.configuration.public_send(:"#{key_type}_key")
     end
-
-    private
 
     def connection
       fail 'APP_ID not configured!' unless LeanplumApi.configuration.app_id
