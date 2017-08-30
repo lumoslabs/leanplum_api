@@ -1,5 +1,5 @@
-module LeanplumApi::Connection
-  class BaseConnection
+module LeanplumApi
+  class Connection
     LEANPLUM_API_PATH = '/api'
 
     def initialize(options = {})
@@ -22,6 +22,12 @@ module LeanplumApi::Connection
         apiVersion: LeanplumApi.configuration.api_version,
         devMode: LeanplumApi.configuration.developer_mode
       }
+    end
+
+    def client_key
+      key_type = self.class.to_s.underscore
+      raise "#{key_type} key not configured" unless LeanplumApi.configuration.public_send(:"#{key_type}_key")
+      LeanplumApi.configuration.public_send(:"#{key_type}_key")
     end
 
     private

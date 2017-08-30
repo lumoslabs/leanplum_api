@@ -1,7 +1,7 @@
-require 'leanplum_api/connections/base_connection'
+require 'leanplum_api/connection'
 
-module LeanplumApi::Connection
-  class Production < BaseConnection
+module LeanplumApi::Connections
+  class Production < LeanplumApi::Connection
     def authentication_params
       super.merge(clientKey: LeanplumApi.configuration.production_key)
     end

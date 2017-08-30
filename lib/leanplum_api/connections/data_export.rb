@@ -1,7 +1,7 @@
-require 'leanplum_api/connections/base_connection'
+require 'leanplum_api/connection'
 
-module LeanplumApi::Connection
-  class DataExport < BaseConnection
+module LeanplumApi::Connections
+  class DataExport < LeanplumApi::Connection
     def initialize(options = {})
       raise 'Data export key not configured' unless LeanplumApi.configuration.data_export_key
       super

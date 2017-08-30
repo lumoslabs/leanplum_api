@@ -189,21 +189,21 @@ module LeanplumApi
     private
 
     def production_connection
-      @production ||= Connection::Production.new
+      @production ||= Connections::Production.new
     end
 
     # Only instantiated for data export endpoint calls
     def data_export_connection
-      @data_export ||= Connection::DataExport.new
+      @data_export ||= Connections::DataExport.new
     end
 
     # Only instantiated for ContentReadOnly calls (AB tests)
     def content_read_only_connection
-      @content_read_only ||= Connection::ContentReadOnly.new
+      @content_read_only ||= Connections::ContentReadOnly.new
     end
 
     def development_connection
-      @development ||= Connection::Development.new
+      @development ||= Connections::Development.new
     end
 
     # Deletes the user_id and device_id key/value pairs from the hash parameter.

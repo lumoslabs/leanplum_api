@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LeanplumApi::Connection::Production do
+describe LeanplumApi::Connections::Production do
   context 'regular mode' do
     it 'should build the right multi url' do
       http = described_class.new
