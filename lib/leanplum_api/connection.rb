@@ -1,10 +1,9 @@
 module LeanplumApi
   class Connection
-    LEANPLUM_API_PATH = '/api'
+    LEANPLUM_API_PATH = '/api'.freeze
 
-    def initialize(client_key, options = {})
+    def initialize(client_key)
       @client_key = client_key
-      @logger = options[:logger] || Logger.new(STDERR)
     end
 
     def get(query)
@@ -43,7 +42,7 @@ module LeanplumApi
         connection.request :leanplum_response_validation
         connection.request :json
 
-        connection.response :logger, @logger, bodies: true if LeanplumApi.configuration.api_debug
+        connection.response :logger, LeanplumApi.configuration.logger, bodies: true if LeanplumApi.configuration.api_debug
         connection.response :json, :content_type => /\bjson$/
 
         connection.adapter Faraday.default_adapter

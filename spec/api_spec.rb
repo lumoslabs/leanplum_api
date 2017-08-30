@@ -171,14 +171,6 @@ describe LeanplumApi::API do
     end
 
     context 'data export methods' do
-      around(:all) do |example|
-        LeanplumApi.configure do |c|
-          c.developer_mode = false
-        end
-        example.run
-        LeanplumApi.configure { |c| c.developer_mode = true }
-      end
-
       context 'export_data' do
         context 'regular export' do
           it 'should request a data export job with a starttime' do
