@@ -2,7 +2,8 @@ module LeanplumApi
   class Connection
     LEANPLUM_API_PATH = '/api'
 
-    def initialize(options = {})
+    def initialize(client_key, options = {})
+      @client_key = client_key
       @logger = options[:logger] || Logger.new(STDERR)
     end
 
@@ -16,22 +17,15 @@ module LeanplumApi
       end
     end
 
+    private
+
     def authentication_params
       {
         appId: LeanplumApi.configuration.app_id,
-        clientKey: client_key,
+        clientKey: @client_key,
         apiVersion: LeanplumApi.configuration.api_version,
         devMode: LeanplumApi.configuration.developer_mode
       }
-    end
-
-    private
-
-    # Use the clientKey corresponding to the name of the connection class
-    def client_key
-      key_type = self.class.to_s.split('::').last.underscore
-      raise "#{key_type} key not configured" unless LeanplumApi.configuration.public_send(:"#{key_type}_key")
-      LeanplumApi.configuration.public_send(:"#{key_type}_key")
     end
 
     def connection

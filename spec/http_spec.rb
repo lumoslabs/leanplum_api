@@ -1,9 +1,10 @@
 require 'spec_helper'
 
-describe LeanplumApi::Connections::Production do
+describe LeanplumApi::Connection do
+  let(:http) { described_class.new(LeanplumApi.configuration.production_key) }
+
   context 'regular mode' do
     it 'should build the right multi url' do
-      http = described_class.new
       expect(http.send(:authed_multi_param_string)).to eq(
         "appId=#{LeanplumApi.configuration.app_id}&clientKey=#{LeanplumApi.configuration.production_key}&apiVersion=1.0.6&devMode=false&action=multi&time=#{Time.now.utc.strftime('%s')}"
       )
@@ -18,7 +19,6 @@ describe LeanplumApi::Connections::Production do
     end
 
     it 'should build the right developer mode url' do
-      http = described_class.new
       expect(http.send(:authed_multi_param_string)).to eq(
         "appId=#{LeanplumApi.configuration.app_id}&clientKey=#{LeanplumApi.configuration.production_key}&apiVersion=1.0.6&devMode=true&action=multi&time=#{Time.now.utc.strftime('%s')}"
       )
