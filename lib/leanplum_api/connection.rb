@@ -19,13 +19,14 @@ module LeanplumApi
     def authentication_params
       {
         appId: LeanplumApi.configuration.app_id,
+        clientKey: client_key,
         apiVersion: LeanplumApi.configuration.api_version,
         devMode: LeanplumApi.configuration.developer_mode
       }
     end
 
     def client_key
-      key_type = self.class.to_s.underscore
+      key_type = self.class.to_s.split('::').last.underscore
       raise "#{key_type} key not configured" unless LeanplumApi.configuration.public_send(:"#{key_type}_key")
       LeanplumApi.configuration.public_send(:"#{key_type}_key")
     end
