@@ -36,7 +36,6 @@ module LeanplumApi
 
     def connection
       fail 'APP_ID not configured!' unless LeanplumApi.configuration.app_id
-      fail 'PRODUCTION_KEY not configured!' unless LeanplumApi.configuration.production_key
 
       options = {
         url: 'https://www.leanplum.com',

@@ -13,7 +13,7 @@ module LeanplumApi
   end
 
   class Configuration
-    DEFAULT_LEANPLUM_API_VERSION = '1.0.6'
+    DEFAULT_LEANPLUM_API_VERSION = '1.0.6'.freeze
 
     # Required IDs and access keys provided by leanplum
     attr_accessor :app_id

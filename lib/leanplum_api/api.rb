@@ -2,11 +2,11 @@ module LeanplumApi
   class API
     extend Gem::Deprecate
 
+    class LeanplumValidationException < RuntimeError; end
+
     EXPORT_PENDING = 'PENDING'
     EXPORT_RUNNING = 'RUNNING'
     EXPORT_FINISHED = 'FINISHED'
-
-    class LeanplumValidationException < RuntimeError; end
 
     def initialize(options = {})
       fail 'LeanplumApi not configured yet!' unless LeanplumApi.configuration
@@ -25,11 +25,8 @@ module LeanplumApi
     # Set the :force_anomalous_override option to catch warnings from leanplum about anomalous events and force them to
     # not be considered anomalous.
     def track_multi(events = nil, user_attributes = nil, options = {})
-      events = Array.wrap(events)
-      user_attributes = Array.wrap(user_attributes)
-
-      request_data = user_attributes.map { |h| build_user_attributes_hash(h) }
-      request_data += events.map { |h| build_event_attributes_hash(h, options) }
+      request_data = Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) }
+      request_data += Array.wrap(events).map { |h| build_event_attributes_hash(h, options) }
       response = production_connection.multi(request_data).body['response']
 
       if options[:force_anomalous_override]
