@@ -187,20 +187,24 @@ module LeanplumApi
     private
 
     def production_connection
+      fail "production_key not configured!" unless LeanplumApi.configuration.production_key
       @production ||= Connection.new(LeanplumApi.configuration.production_key)
     end
 
     # Only instantiated for data export endpoint calls
     def data_export_connection
+      fail "data_export_key not configured!" unless LeanplumApi.configuration.data_export_key
       @data_export ||= Connection.new(LeanplumApi.configuration.data_export_key)
     end
 
     # Only instantiated for ContentReadOnly calls (AB tests)
     def content_read_only_connection
+      fail "content_read_only_key not configured!" unless LeanplumApi.configuration.content_read_only_key
       @content_read_only ||= Connection.new(LeanplumApi.configuration.content_read_only_key)
     end
 
     def development_connection
+      fail "development_key not configured!" unless LeanplumApi.configuration.development_key
       @development ||= Connection.new(LeanplumApi.configuration.development_key)
     end
 
