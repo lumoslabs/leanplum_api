@@ -25,8 +25,8 @@ module LeanplumApi
     # Set the :force_anomalous_override option to catch warnings from leanplum about anomalous events and force them to
     # not be considered anomalous.
     def track_multi(events = nil, user_attributes = nil, options = {})
-      request_data = Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) }
-      request_data += Array.wrap(events).map { |h| build_event_attributes_hash(h, options) }
+      request_data = Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) } +
+                     Array.wrap(events).map { |h| build_event_attributes_hash(h, options) }
       response = production_connection.multi(request_data).body['response']
 
       if options[:force_anomalous_override]
@@ -121,6 +121,7 @@ module LeanplumApi
       get_export_results(job_id)
     end
 
+    # Remove in version 4.x
     def wait_for_job(job_id, polling_interval = 60)
       wait_for_export_job(job_id, polling_interval)
     end
