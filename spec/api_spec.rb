@@ -203,7 +203,7 @@ describe LeanplumApi::API do
     context 'user_events' do
       it 'should get user events for this user' do
         VCR.use_cassette('export_user') do
-          expect(api.user_events(first_user_id)[purchase].keys).to eq(['firstTime', 'count', 'lastTime'])
+          expect(api.user_events(first_user_id)[purchase].keys.sort).to eq(['firstTime', 'count', 'lastTime'].sort)
         end
       end
     end
