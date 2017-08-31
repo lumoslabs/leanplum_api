@@ -5,8 +5,8 @@ require 'leanplum_api/version'
 Gem::Specification.new do |gem|
   gem.name        = 'leanplum_api'
   gem.version     = LeanplumApi::VERSION
-  gem.authors     = ['Lumos Labs, Inc.']
-  gem.email       = ['analytics-dev@lumoslabs.com']
+  gem.authors     = ['Lumos Labs, Inc.', 'Countable Corp']
+  gem.email       = ['analytics-dev@lumoslabs.com', 'eng@countable.us']
   gem.homepage    = 'http://www.github.com/lumoslabs/leanplum_api'
   gem.summary     = 'Gem for the Leanplum API'
   gem.description = 'Ruby-esque access to Leanplum API'
