@@ -82,7 +82,7 @@ api.track_events(event)
 api.track_events(event, allow_offline: true)
 
 # You can also track events and user attributes at the same time
-api.track_multi(event, attribute_hash)
+api.track_multi(events: event, user_attributes: attribute_hash)
 
 # If your event is sufficiently far in the past, leanplum will mark your user as "Anomalous"
 # To force a reset of this flag, either call the method directly

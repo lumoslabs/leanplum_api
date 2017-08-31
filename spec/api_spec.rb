@@ -171,13 +171,13 @@ describe LeanplumApi::API do
     context 'along with user attributes' do
       it 'does not raise error' do
         VCR.use_cassette('track_events_and_attributes') do
-          expect { api.track_multi(events, users) }.to_not raise_error
+          expect { api.track_multi(events: events, user_attributes: users) }.to_not raise_error
         end
       end
 
       it 'returns success response' do
         VCR.use_cassette('track_events_and_attributes') do
-          response = api.track_multi(events, users)
+          response = api.track_multi(events: events, user_attributes: users)
           expect(response.first['success']).to be true
         end
       end

@@ -11,22 +11,36 @@ module LeanplumApi
     end
 
     def set_user_attributes(user_attributes, options = {})
-      track_multi(nil, user_attributes, options)
+      track_multi(user_attributes: user_attributes, options: options)
+    end
+
+    def set_device_attributes(device_attributes, options = {})
+      track_multi(device_attributes: device_attributes, options: options)
     end
 
     def track_events(events, options = {})
-      track_multi(events, nil, options)
+      track_multi(events: events, options: options)
     end
 
     # This method is for tracking events and/or updating user attributes at the same time,
     # batched together like leanplum recommends.
     # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events
     # and force them to not be considered anomalous.
-    def track_multi(events = nil, user_attributes = nil, options = {})
+    def track_multi(events: nil, user_attributes: nil, device_attributes: nil, options: {})
       events = Array.wrap(events)
-      user_attributes = Array.wrap(user_attributes)
 
-      request_data = user_attributes.map { |h| build_user_attributes_hash(h) }
+      request_data = []
+      if user_attributes.present?
+        user_attributes = Array.wrap(user_attributes)
+        user_request_data = user_attributes.map { |h| build_user_attributes_hash(h) }
+        request_data.concat(user_request_data)
+      end
+
+      if device_attributes.present?
+        device_attributes = Array.wrap(device_attributes)
+        request_data.concat(device_attributes.map { |h| build_device_attributes_hash(h) })
+      end
+
       request_data += events.map { |h| build_event_attributes_hash(h, options) }
       response = production_connection.multi(request_data).body['response']
 
