@@ -23,10 +23,10 @@ module LeanplumApi
       track_multi(events: events, options: options)
     end
 
-    # This method is for tracking events and/or updating user attributes at the same time,
-    # batched together like leanplum recommends.
-    # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events
-    # and force them to not be considered anomalous.
+    # This method is for tracking events and/or updating user attributes
+    # at the same time, batched together like leanplum recommends.
+    # Set the :force_anomalous_override option to catch warnings from leanplum
+    # Ôabout anomalous events and force them to not be considered anomalous.
     def track_multi(events: nil, user_attributes: nil, device_attributes: nil, options: {})
       events = Array.wrap(events)
 
@@ -170,18 +170,13 @@ module LeanplumApi
     end
 
     # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
-    # and has no idea what "versioning" actually means, so we just reset
-    # everyone all the time. This condition should be:
-    # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
+    # and has no idea what "versioning" actually means, so we just reset everyone all the time.
     def force_anomalous_override(response, events)
       user_ids_to_reset = []
 
       response.each_with_index do |indicator, i|
-        # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
-        # and has no idea what "versioning" actually means, so we just reset
-        # everyone all the time. This condition should be:
+        # This condition should be:
         # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
-        #
         # but it has to be:
         if indicator['warning']
           # Leanplum does not return their warnings in order!!!  So we just have
