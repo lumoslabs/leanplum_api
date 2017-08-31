@@ -3,6 +3,13 @@ require 'rspec'
 require 'timecop'
 require 'webmock'
 require 'vcr'
+require 'dotenv/load'
+
+# ENV['LEANPLUM_PRODUCTION_KEY']='prod_I02AwsAsRGi7g0NNc2YA2lyUceOROrkDLDHcheWBNk4'
+# ENV['LEANPLUM_APP_ID']='app_bQZEF70IGUuPPYSLcZEON5nlihNa9N9GukO93mSpT48'
+# ENV['LEANPLUM_DATA_EXPORT_KEY']='exp_cE5FTknMFAJhs1gSfTFdmzZKIdRg8wrApNQrWBIUkpE'
+# ENV['LEANPLUM_CONTENT_READ_ONLY_KEY']='cro_cOeztxvLaNxsMO7utHtBgLU4soDvY9kEQ9xTahMgPY4'
+# ENV['LEANPLUM_DEVELOPMENT_KEY']='dev_SpoLlzMkNeRziG0Tee6S1gDgjIB2PgnoJ3RKhGcJAPk'
 
 DEFAULT_SPEC_KEY = 'JUNKTASTIC_SPASMASTIC'
 

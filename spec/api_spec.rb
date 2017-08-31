@@ -13,6 +13,29 @@ describe LeanplumApi::API do
       create_date: '2010-01-01'.to_date,
       is_tipping: true
     }]
+   end
+
+  let(:devices) do
+    [{
+       device_id: 'fu123',
+       appVersion: 'x42x',
+       deviceModel: 'p0d',
+       create_date: '2018-01-01'.to_date
+     }]
+  end
+
+  context 'devices' do
+    it 'build_device_attributes_hash' do
+      expect(api.send(:build_device_attributes_hash, devices.first)).to eq({
+         deviceId: devices.first[:device_id],
+         action: 'setDeviceAttributes',
+         deviceAttributes: HashWithIndifferentAccess.new(
+           appVersion: devices.first[:appVersion],
+           deviceModel: devices.first[:deviceModel],
+           create_date: devices.first[:create_date].iso8601
+         )
+       })
+    end
   end
 
   context 'users' do
@@ -146,9 +169,16 @@ describe LeanplumApi::API do
     end
 
     context 'along with user attributes' do
-      it 'should work' do
+      it 'does not raise error' do
         VCR.use_cassette('track_events_and_attributes') do
           expect { api.track_multi(events, users) }.to_not raise_error
+        end
+      end
+
+      it 'returns success response' do
+        VCR.use_cassette('track_events_and_attributes') do
+          response = api.track_multi(events, users)
+          expect(response.first['success']).to be true
         end
       end
     end

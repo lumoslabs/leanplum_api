@@ -230,11 +230,10 @@ module LeanplumApi
       extract_user_id_or_device_id_hash!(user_hash).merge(action: 'setUserAttributes', userAttributes: user_hash)
     end
 
-    # def build_attributes_hash(attr_hash:, action:)
-    #   user_hash = HashWithIndifferentAccess.new(user_hash)
-    #   user_hash.each { |k, v| user_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
-    #   extract_user_id_or_device_id_hash!(user_hash).merge(action: action, userAttributes: user_hash)
-    # end
+    def build_device_attributes_hash(device_hash)
+      device_hash = fix_iso8601(device_hash)
+      extract_user_id_or_device_id_hash!(device_hash).merge(action: 'setDeviceAttributes', deviceAttributes: device_hash)
+    end
 
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)
     # Use the :allow_offline option to send events without creating a new session
