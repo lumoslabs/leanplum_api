@@ -1,3 +1,3 @@
 module LeanplumApi
-  VERSION = '4.0.0'
+  VERSION = '3.0.4'
 end

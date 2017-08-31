@@ -3,6 +3,7 @@ module LeanplumApi
     EXPORT_PENDING = 'PENDING'.freeze
     EXPORT_RUNNING = 'RUNNING'.freeze
     EXPORT_FINISHED = 'FINISHED'.freeze
+    extend Gem::Deprecate
 
     class LeanplumValidationException < RuntimeError; end
 
@@ -91,6 +92,7 @@ module LeanplumApi
 
     def get_export_results(job_id)
       response = data_export_connection.get(action: 'getExportResults', jobId: job_id).body['response'].first
+
       if response['state'] == EXPORT_FINISHED
         LeanplumApi.configuration.logger.info("Export finished.")
         LeanplumApi.configuration.logger.debug("  Response: #{response}")
@@ -106,13 +108,19 @@ module LeanplumApi
       end
     end
 
-    def wait_for_job(job_id, polling_interval = 60)
+    def wait_for_export_job(job_id, polling_interval = 60)
       while get_export_results(job_id)[:state] != EXPORT_FINISHED
         LeanplumApi.configuration.logger.debug("Polling job #{job_id}: #{get_export_results(job_id)}")
         sleep(polling_interval)
       end
       get_export_results(job_id)
     end
+
+    # Remove in version 4.x
+    def wait_for_job(job_id, polling_interval = 60)
+      wait_for_export_job(job_id, polling_interval)
+    end
+    deprecate :wait_for_job, 'wait_for_export_job', 2018, 6
 
     def user_attributes(user_id)
       export_user(user_id)['userAttributes'].inject({}) do |attrs, (k, v)|
@@ -204,21 +212,25 @@ module LeanplumApi
     private
 
     def production_connection
-      @production ||= Connection::Production.new
+      fail "production_key not configured!" unless LeanplumApi.configuration.production_key
+      @production ||= Connection.new(LeanplumApi.configuration.production_key)
     end
 
     # Only instantiated for data export endpoint calls
     def data_export_connection
-      @data_export ||= Connection::DataExport.new
+      fail "data_export_key not configured!" unless LeanplumApi.configuration.data_export_key
+      @data_export ||= Connection.new(LeanplumApi.configuration.data_export_key)
     end
 
     # Only instantiated for ContentReadOnly calls (AB tests)
     def content_read_only_connection
-      @content_read_only ||= Connection::ContentReadOnly.new
+      fail "content_read_only_key not configured!" unless LeanplumApi.configuration.content_read_only_key
+      @content_read_only ||= Connection.new(LeanplumApi.configuration.content_read_only_key)
     end
 
     def development_connection
-      @development ||= Connection::Development.new
+      fail "development_key not configured!" unless LeanplumApi.configuration.development_key
+      @development ||= Connection.new(LeanplumApi.configuration.development_key)
     end
 
     # Deletes the user_id and device_id key/value pairs from the hash parameter.
