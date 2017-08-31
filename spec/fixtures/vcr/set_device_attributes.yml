@@ -1,0 +1,47 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1502521200
+    body:
+      encoding: UTF-8
+      string: '{"data":[{"deviceId":"fu123","action":"setDeviceAttributes","deviceAttributes":{"appVersion":"x42x","deviceModel":"p0d","create_date":"2018-01-01"}}]}'
+    headers:
+      User-Agent:
+      - Faraday v0.9.2
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json;charset=utf-8
+      X-Cloud-Trace-Context:
+      - 01b2a87cb2fb8c80d48e2339fbe648ba
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxCxBSDmjKHNBQ; expires=Tue, 20-Oct-2020 13:24:54 GMT; path=/
+      Date:
+      - Thu, 31 Aug 2017 17:24:54 GMT
+      Server:
+      - Google Frontend
+      Content-Length:
+      - '121'
+      Expires:
+      - Thu, 31 Aug 2017 17:24:54 GMT
+      Cache-Control:
+      - private
+    body:
+      encoding: UTF-8
+      string: '{"response":[{"success":true,"warning":{"message":"Device clock skew
+        detected (19 days behind). Rewriting timestamp."}}]}'
+    http_version: 
+  recorded_at: Sat, 12 Aug 2017 07:00:00 GMT
+recorded_with: VCR 3.0.3
