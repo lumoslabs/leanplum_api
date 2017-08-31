@@ -1,8 +1,8 @@
 module LeanplumApi
   class API
-    EXPORT_PENDING = 'PENDING'
-    EXPORT_RUNNING = 'RUNNING'
-    EXPORT_FINISHED = 'FINISHED'
+    EXPORT_PENDING = 'PENDING'.freeze
+    EXPORT_RUNNING = 'RUNNING'.freeze
+    EXPORT_FINISHED = 'FINISHED'.freeze
 
     class LeanplumValidationException < RuntimeError; end
 
@@ -18,10 +18,40 @@ module LeanplumApi
       track_multi(events, nil, options)
     end
 
-    # This method is for tracking events and/or updating user attributes at the same time, batched together like leanplum
-    # recommends.
-    # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events and force them to not
-    # be considered anomalous
+    # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
+    # and has no idea what "versioning" actually means, so we just reset
+    # everyone all the time. This condition should be:
+    # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
+    def force_anomalous_override(response, events)
+      user_ids_to_reset = []
+      
+      response.each_with_index do |indicator, i|
+        # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
+        # and has no idea what "versioning" actually means, so we just reset
+        # everyone all the time. This condition should be:
+        # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
+        #
+        # but it has to be:
+        if indicator['warning']
+          # Leanplum does not return their warnings in order!!!  So we just have
+          # to reset everyone who had any events.  This is what the code should be:
+          # user_ids_to_reset << request_data[i]['userId']
+
+          # This is what it has to be:
+          user_ids_to_reset = events.map { |e| e[:user_id] }.uniq
+        end
+      end
+
+      unless user_ids_to_reset.empty?
+        LeanplumApi.configuration.logger.debug("Resetting anomalous user ids: #{user_ids_to_reset}")
+        reset_anomalous_users(user_ids_to_reset)
+      end
+    end
+    
+    # This method is for tracking events and/or updating user attributes at the same time,
+    # batched together like leanplum recommends.
+    # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events
+    # and force them to not be considered anomalous.
     def track_multi(events = nil, user_attributes = nil, options = {})
       events = Array.wrap(events)
       user_attributes = Array.wrap(user_attributes)
@@ -30,30 +60,9 @@ module LeanplumApi
       request_data += events.map { |h| build_event_attributes_hash(h, options) }
       response = production_connection.multi(request_data).body['response']
 
-      if options[:force_anomalous_override]
-        user_ids_to_reset = []
-        response.each_with_index do |indicator, i|
-          # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
-          # and has no idea what "versioning" actually means, so we just reset
-          # everyone all the time. This condition should be:
-          # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
-          #
-          # but it has to be:
-          if indicator['warning']
-            # Leanplum does not return their warnings in order!!!  So we just have
-            # to reset everyone who had any events.  This is what the code should be:
-            # user_ids_to_reset << request_data[i]['userId']
+      force_anomalous_override(response, events) if options[:force_anomalous_override]
 
-            # This is what it has to be:
-            user_ids_to_reset = events.map { |e| e[:user_id] }.uniq
-          end
-        end
-
-        unless user_ids_to_reset.empty?
-          LeanplumApi.configuration.logger.debug("Resetting anomalous user ids: #{user_ids_to_reset}")
-          reset_anomalous_users(user_ids_to_reset)
-        end
-      end
+      response
     end
 
     # Returns the jobId
