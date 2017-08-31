@@ -18,36 +18,6 @@ module LeanplumApi
       track_multi(events, nil, options)
     end
 
-    # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
-    # and has no idea what "versioning" actually means, so we just reset
-    # everyone all the time. This condition should be:
-    # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
-    def force_anomalous_override(response, events)
-      user_ids_to_reset = []
-      
-      response.each_with_index do |indicator, i|
-        # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
-        # and has no idea what "versioning" actually means, so we just reset
-        # everyone all the time. This condition should be:
-        # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
-        #
-        # but it has to be:
-        if indicator['warning']
-          # Leanplum does not return their warnings in order!!!  So we just have
-          # to reset everyone who had any events.  This is what the code should be:
-          # user_ids_to_reset << request_data[i]['userId']
-
-          # This is what it has to be:
-          user_ids_to_reset = events.map { |e| e[:user_id] }.uniq
-        end
-      end
-
-      unless user_ids_to_reset.empty?
-        LeanplumApi.configuration.logger.debug("Resetting anomalous user ids: #{user_ids_to_reset}")
-        reset_anomalous_users(user_ids_to_reset)
-      end
-    end
-    
     # This method is for tracking events and/or updating user attributes at the same time,
     # batched together like leanplum recommends.
     # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events
@@ -177,6 +147,36 @@ module LeanplumApi
       production_connection.get(action: 'getVars', userId: user_id).body['response'].first['vars']
     end
 
+    # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
+    # and has no idea what "versioning" actually means, so we just reset
+    # everyone all the time. This condition should be:
+    # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
+    def force_anomalous_override(response, events)
+      user_ids_to_reset = []
+
+      response.each_with_index do |indicator, i|
+        # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
+        # and has no idea what "versioning" actually means, so we just reset
+        # everyone all the time. This condition should be:
+        # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
+        #
+        # but it has to be:
+        if indicator['warning']
+          # Leanplum does not return their warnings in order!!!  So we just have
+          # to reset everyone who had any events.  This is what the code should be:
+          # user_ids_to_reset << request_data[i]['userId']
+
+          # This is what it has to be:
+          user_ids_to_reset = events.map { |e| e[:user_id] }.uniq
+        end
+      end
+
+      unless user_ids_to_reset.empty?
+        LeanplumApi.configuration.logger.debug("Resetting anomalous user ids: #{user_ids_to_reset}")
+        reset_anomalous_users(user_ids_to_reset)
+      end
+    end
+    
     # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark
     # them 'anomalous' and exclude them from your data set.
     # Calling this method after you pass old events will fix that for all events for the specified user_id
@@ -216,15 +216,25 @@ module LeanplumApi
       user_id ? { userId: user_id } : { deviceId: device_id }
     end
 
+    def fix_iso8601(attr_hash)
+      attr_hash = HashWithIndifferentAccess.new(attr_hash)
+      attr_hash.each { |k, v| attr_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
+      attr_hash
+    end
+    
     # Action can be any command that takes a userAttributes param.  "start" (a session) is the other command that most
     # obviously takes userAttributes.
     # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
-    def build_user_attributes_hash(user_hash, action = 'setUserAttributes')
-      user_hash = HashWithIndifferentAccess.new(user_hash)
-      user_hash.each { |k, v| user_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
-
-      extract_user_id_or_device_id_hash!(user_hash).merge(action: action, userAttributes: user_hash)
+    def build_user_attributes_hash(user_hash)
+      user_hash = fix_iso8601(user_hash)
+      extract_user_id_or_device_id_hash!(user_hash).merge(action: 'setUserAttributes', userAttributes: user_hash)
     end
+
+    # def build_attributes_hash(attr_hash:, action:)
+    #   user_hash = HashWithIndifferentAccess.new(user_hash)
+    #   user_hash.each { |k, v| user_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
+    #   extract_user_id_or_device_id_hash!(user_hash).merge(action: action, userAttributes: user_hash)
+    # end
 
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)
     # Use the :allow_offline option to send events without creating a new session
