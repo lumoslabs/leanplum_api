@@ -222,7 +222,7 @@ module LeanplumApi
 
     # Deletes the user_id and device_id key/value pairs from the hash parameter.
     def extract_user_id_or_device_id_hash!(hash)
-      user_id = hash.delete(:user_id) || hash.delete(:userIid)
+      user_id = hash.delete(:user_id) || hash.delete(:userId)
       device_id = hash.delete(:device_id) || hash.delete(:deviceId)
       fail "No device_id or user_id in hash #{hash}" unless user_id || device_id
 
