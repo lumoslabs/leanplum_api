@@ -1,11 +1,12 @@
 module LeanplumApi
   class API
-    EXPORT_PENDING = 'PENDING'.freeze
-    EXPORT_RUNNING = 'RUNNING'.freeze
-    EXPORT_FINISHED = 'FINISHED'.freeze
     extend Gem::Deprecate
 
     class LeanplumValidationException < RuntimeError; end
+
+    EXPORT_PENDING = 'PENDING'.freeze
+    EXPORT_RUNNING = 'RUNNING'.freeze
+    EXPORT_FINISHED = 'FINISHED'.freeze
 
     def initialize(options = {})
       fail 'LeanplumApi not configured yet!' unless LeanplumApi.configuration
@@ -23,7 +24,7 @@ module LeanplumApi
       track_multi(events: events, options: options)
     end
 
-    # This method is for tracking events and/or updating user attributes
+    # This method is for tracking events and/or updating user and/or device attributes
     # at the same time, batched together like leanplum recommends.
     # Set the :force_anomalous_override option to catch warnings from leanplum
     # Ôabout anomalous events and force them to not be considered anomalous.
