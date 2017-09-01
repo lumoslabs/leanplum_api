@@ -31,9 +31,9 @@ module LeanplumApi
     def track_multi(events: nil, user_attributes: nil, device_attributes: nil, options: {})
       events = Array.wrap(events)
 
-      request_data = Array.wrap(events).map { |h| build_event_attributes_hash(h, options) }
-      request_data += Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) }
-      request_data += Array.wrap(device_attributes).map { |h| build_device_attributes_hash(h) }
+      request_data = Array.wrap(events).map { |h| build_event_attributes_hash(h, options) } +
+                     Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) } +
+                     Array.wrap(device_attributes).map { |h| build_device_attributes_hash(h) }
 
       response = production_connection.multi(request_data).body['response']
 
@@ -240,8 +240,9 @@ module LeanplumApi
     # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
     def build_user_attributes_hash(user_hash)
       user_hash = fix_iso8601(user_hash)
+      devices = user_hash.delete(:devices)
       user_attributes_hash = extract_user_id_or_device_id_hash!(user_hash).merge(action: 'setUserAttributes', userAttributes: user_hash)
-      user_attributes_hash[:devices] = user_hash[:devices] if user_hash[:devices].present?
+      user_attributes_hash[:devices] = devices unless devices.nil?
       user_attributes_hash
     end
 
