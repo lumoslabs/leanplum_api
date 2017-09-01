@@ -31,9 +31,9 @@ module LeanplumApi
     def track_multi(events: nil, user_attributes: nil, device_attributes: nil, options: {})
       events = Array.wrap(events)
 
-      request_data = Array.wrap(events).map { |h| build_event_attributes_hash(h, options) }
-      request_data += Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) }
-      request_data += Array.wrap(device_attributes).map { |h| build_device_attributes_hash(h) }
+      request_data = Array.wrap(events).map { |h| build_event_attributes_hash(h, options) } +
+                     Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) } +
+                     Array.wrap(device_attributes).map { |h| build_device_attributes_hash(h) }
 
       response = production_connection.multi(request_data).body['response']
 
