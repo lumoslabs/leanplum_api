@@ -5,13 +5,13 @@ describe LeanplumApi::API do
   let(:first_user_id) { 123456 }
   let(:users) do
     [{
-      user_id: first_user_id,
-      first_name: 'Mike',
-      last_name: 'Jones',
-      gender: 'm',
-      email: 'still_tippin@test.com',
-      create_date: '2010-01-01'.to_date,
-      is_tipping: true
+       user_id: first_user_id,
+       first_name: 'Mike',
+       last_name: 'Jones',
+       gender: 'm',
+       email: 'still_tippin@test.com',
+       create_date: '2010-01-01'.to_date,
+       is_tipping: true
     }]
    end
 
