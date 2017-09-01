@@ -30,19 +30,10 @@ module LeanplumApi
     def track_multi(events: nil, user_attributes: nil, device_attributes: nil, options: {})
       events = Array.wrap(events)
 
-      request_data = []
-      if user_attributes.present?
-        user_attributes = Array.wrap(user_attributes)
-        user_request_data = user_attributes.map { |h| build_user_attributes_hash(h) }
-        request_data.concat(user_request_data)
-      end
+      request_data = Array.wrap(events).map { |h| build_event_attributes_hash(h, options) }
+                   + Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) }
+                   + Array.wrap(device_attributes).map { |h| build_device_attributes_hash(h) }
 
-      if device_attributes.present?
-        device_attributes = Array.wrap(device_attributes)
-        request_data.concat(device_attributes.map { |h| build_device_attributes_hash(h) })
-      end
-
-      request_data += events.map { |h| build_event_attributes_hash(h, options) }
       response = production_connection.multi(request_data).body['response']
 
       force_anomalous_override(response, events) if options[:force_anomalous_override]
@@ -230,8 +221,8 @@ module LeanplumApi
 
     # Deletes the user_id and device_id key/value pairs from the hash parameter.
     def extract_user_id_or_device_id_hash!(hash)
-      user_id = hash.delete(:user_id)
-      device_id = hash.delete(:device_id)
+      user_id = hash.delete(:user_id) || hash.delete(:userIid)
+      device_id = hash.delete(:device_id) || hash.delete(:deviceId)
       fail "No device_id or user_id in hash #{hash}" unless user_id || device_id
 
       user_id ? { userId: user_id } : { deviceId: device_id }

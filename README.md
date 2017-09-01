@@ -81,8 +81,8 @@ api.track_events(event)
 # Events tracked like this will be made part of a session; for independent events use :allow_offline
 api.track_events(event, allow_offline: true)
 
-# You can also track events and user attributes at the same time
-api.track_multi(events: event, user_attributes: attribute_hash)
+# You can also track events, user attributes, and device attributes at the same time. magic!
+api.track_multi(events: event, user_attributes: user_attributes, device_attributes: device_attributes)
 
 # If your event is sufficiently far in the past, leanplum will mark your user as "Anomalous"
 # To force a reset of this flag, either call the method directly
