@@ -78,6 +78,7 @@ describe LeanplumApi::API do
                                                            appVersion: 'x42x',
                                                            deviceModel: 'p0d',
                                                            create_date: '2018-01-01'.to_date }.with_indifferent_access )
+      expect(user_attributes_hash[:userAttributes][:devices]).to be nil
     end
 
     context 'set_user_attributes' do
