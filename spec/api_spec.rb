@@ -71,16 +71,6 @@ describe LeanplumApi::API do
       })
     end
 
-    it 'builds user_attributes_hash with device' do
-      user = users.first.merge(devices: devices)
-      user_attributes_hash = api.send(:build_user_attributes_hash, user)
-      expect(user_attributes_hash[:devices].first).to eq({ device_id: 'fu123',
-                                                           appVersion: 'x42x',
-                                                           deviceModel: 'p0d',
-                                                           create_date: '2018-01-01'.to_date }.with_indifferent_access )
-      expect(user_attributes_hash[:userAttributes][:devices]).to be nil
-    end
-
     context 'set_user_attributes' do
       context 'valid request' do
         it 'should successfully set user attributes' do

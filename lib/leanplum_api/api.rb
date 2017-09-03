@@ -240,10 +240,7 @@ module LeanplumApi
     # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
     def build_user_attributes_hash(user_hash)
       user_hash = fix_iso8601(user_hash)
-      devices = user_hash.delete(:devices)
-      user_attributes_hash = extract_user_id_or_device_id_hash!(user_hash).merge(action: 'setUserAttributes', userAttributes: user_hash)
-      user_attributes_hash[:devices] = devices unless devices.nil?
-      user_attributes_hash
+      extract_user_id_or_device_id_hash!(user_hash).merge(action: 'setUserAttributes', userAttributes: user_hash)
     end
 
     def build_device_attributes_hash(device_hash)
