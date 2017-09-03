@@ -161,6 +161,10 @@ module LeanplumApi
       production_connection.get(action: 'getVars', userId: user_id).body['response'].first['vars']
     end
 
+    def delete_user(user_id)
+      development_connection.get(action: 'deleteUser', userId: user_id).body['response'].first['vars']
+    end
+
     # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
     # and has no idea what "versioning" actually means, so we just reset everyone all the time.
     def force_anomalous_override(response, events)
