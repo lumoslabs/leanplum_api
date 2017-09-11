@@ -21,25 +21,19 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - b12423b4eca6f685de6435c756b180bc
-      Set-Cookie:
-      - GOOGAPPUID=xCgsIAxC0BCDXi9jMBQ; expires=Tue, 06-Oct-2020 17:08:39 GMT; path=/
+      - 0ea27d2442d0693fa2c5e2980fa83d1f
       Date:
-      - Thu, 17 Aug 2017 21:08:39 GMT
+      - Mon, 11 Sep 2017 06:00:22 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '96'
-      Expires:
-      - Thu, 17 Aug 2017 21:08:39 GMT
-      Cache-Control:
-      - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"error":{"message":"You cannot export data older than
-        60 days"},"success":false}]}'
+      string: '{"response":[{"success":false,"error":{"message":"You cannot export
+        data older than 60 days"}}]}'
     http_version: 
-  recorded_at: Wed, 12 Aug 2015 04:00:00 GMT
+  recorded_at: Mon, 11 Sep 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3

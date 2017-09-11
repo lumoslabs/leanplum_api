@@ -21,25 +21,19 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 61bbedb0d86dff4dc9f63b0146910c52
-      Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDMBiDbi9jMBQ; expires=Tue, 06-Oct-2020 17:08:43 GMT; path=/
+      - 58ad84753d7d90e4e86e97e2487fa2e0
       Date:
-      - Thu, 17 Aug 2017 21:08:43 GMT
+      - Mon, 11 Sep 2017 06:00:24 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '165'
-      Expires:
-      - Thu, 17 Aug 2017 21:08:43 GMT
-      Cache-Control:
-      - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":true,"messages":[{"id":5670583287676928,"created":1.440091595799E9,"name":"New
-        Message","active":false,"messageType":"Push Notification"}]}]}'
+      string: '{"response":[{"success":true,"messages":[{"messageType":"Push Notification","created":1.440091595799E9,"name":"New
+        Message","active":false,"id":5670583287676928}]}]}'
     http_version: 
-  recorded_at: Wed, 12 Aug 2015 04:00:00 GMT
+  recorded_at: Mon, 11 Sep 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3

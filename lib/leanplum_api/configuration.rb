@@ -1,19 +1,19 @@
 module LeanplumApi
   class << self
     attr_accessor :configuration
-  end
 
-  def self.configure
-    self.configuration ||= Configuration.new
-    yield(configuration) if block_given?
-  end
+    def configure
+      self.configuration ||= Configuration.new
+      yield(configuration) if block_given?
+    end
 
-  def self.reset!
-    self.configuration = Configuration.new
+    def reset!
+      self.configuration = Configuration.new
+    end
   end
 
   class Configuration
-    DEFAULT_LEANPLUM_API_VERSION = '1.0.6'
+    DEFAULT_LEANPLUM_API_VERSION = '1.0.6'.freeze
 
     # Required IDs and access keys provided by leanplum
     attr_accessor :app_id

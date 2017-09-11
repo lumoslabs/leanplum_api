@@ -30,8 +30,8 @@ describe LeanplumApi::API do
         events: {
           'eventName1' => {
             'count' => 1,
-            'firstTime' => '2015-08-12T04:00:00Z',
-            'lastTime' => '2015-08-12T04:00:00Z'
+            'firstTime' => Time.now.utc.strftime('%s'),
+            'lastTime' => Time.now.utc.strftime('%s')
           }
         },
         userAttributes: HashWithIndifferentAccess.new(
@@ -170,7 +170,7 @@ describe LeanplumApi::API do
     context 'user_events' do
       it 'should get user events for this user' do
         VCR.use_cassette('export_user') do
-          expect(api.user_events(first_user_id)[purchase].keys).to eq(['firstTime', 'count', 'lastTime'])
+          expect(api.user_events(first_user_id)[purchase].keys).to eq(%w(firstTime lastTime count))
         end
       end
     end
@@ -185,25 +185,17 @@ describe LeanplumApi::API do
     end
 
     context 'data export methods' do
-      around(:all) do |example|
-        LeanplumApi.configure do |c|
-          c.developer_mode = false
-        end
-        example.run
-        LeanplumApi.configure { |c| c.developer_mode = true }
-      end
-
       context 'export_data' do
         context 'regular export' do
           it 'should request a data export job with a starttime' do
             VCR.use_cassette('export_data') do
-              expect { api.export_data(Time.at(1438660800).utc) }.to raise_error LeanplumApi::ResourceNotFoundError
+              expect { api.export_data(Time.at(1438660800).utc) }.to raise_error LeanplumApi::BadResponseError
             end
           end
 
           it 'should request a data export job with start and end dates' do
             VCR.use_cassette('export_data_dates') do
-              expect { api.export_data(Date.new(2015, 9, 5), Date.new(2015, 9, 6)) }.to raise_error LeanplumApi::ResourceNotFoundError
+              expect { api.export_data(Date.new(2017, 8, 5), Date.new(2017, 8, 6)) }.to_not raise_error
             end
           end
         end

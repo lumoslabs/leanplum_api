@@ -1,10 +1,12 @@
 module LeanplumApi
   class API
+    extend Gem::Deprecate
+
+    class LeanplumValidationException < RuntimeError; end
+
     EXPORT_PENDING = 'PENDING'
     EXPORT_RUNNING = 'RUNNING'
     EXPORT_FINISHED = 'FINISHED'
-
-    class LeanplumValidationException < RuntimeError; end
 
     def initialize(options = {})
       fail 'LeanplumApi not configured yet!' unless LeanplumApi.configuration
@@ -20,22 +22,19 @@ module LeanplumApi
 
     # This method is for tracking events and/or updating user attributes at the same time, batched together like
     # leanplum recommends.
-    # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events and force them to not
+    # Set force_anomalous_override: true to catch warnings from leanplum about anomalous events and force them to not
     # be considered anomalous
     def track_multi(events = nil, user_attributes = nil, options = {})
-      events = Array.wrap(events)
-      user_attributes = Array.wrap(user_attributes)
-
-      request_data = user_attributes.map { |h| build_user_attributes_hash(h) }
-      request_data += events.map { |h| build_event_attributes_hash(h, options) }
+      request_data = Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) } +
+                     Array.wrap(events).map { |h| build_event_attributes_hash(h, options) }
       response = production_connection.multi(request_data).body['response']
 
       if options[:force_anomalous_override]
         user_ids_to_reset = []
         response.each_with_index do |indicator, i|
           # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
-          # and has no idea what "versioning" actually means, so we just reset
-          # everyone all the time. This condition should be:
+          # and has no idea what "versioning" actually means, so we just reset everyone all the time.
+          # This condition should be:
           # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
           #
           # but it has to be:
@@ -99,6 +98,7 @@ module LeanplumApi
 
     def get_export_results(job_id)
       response = data_export_connection.get(action: 'getExportResults', jobId: job_id).body['response'].first
+
       if response['state'] == EXPORT_FINISHED
         LeanplumApi.configuration.logger.info("Export finished.")
         LeanplumApi.configuration.logger.debug("  Response: #{response}")
@@ -114,13 +114,19 @@ module LeanplumApi
       end
     end
 
-    def wait_for_job(job_id, polling_interval = 60)
+    def wait_for_export_job(job_id, polling_interval = 60)
       while get_export_results(job_id)[:state] != EXPORT_FINISHED
         LeanplumApi.configuration.logger.debug("Polling job #{job_id}: #{get_export_results(job_id)}")
         sleep(polling_interval)
       end
       get_export_results(job_id)
     end
+
+    # Remove in version 4.x
+    def wait_for_job(job_id, polling_interval = 60)
+      wait_for_export_job(job_id, polling_interval)
+    end
+    deprecate :wait_for_job, 'wait_for_export_job', 2018, 6
 
     def user_attributes(user_id)
       export_user(user_id)['userAttributes'].inject({}) do |attrs, (k, v)|
@@ -182,21 +188,25 @@ module LeanplumApi
     private
 
     def production_connection
-      @production ||= Connection::Production.new
+      fail "production_key not configured!" unless LeanplumApi.configuration.production_key
+      @production ||= Connection.new(LeanplumApi.configuration.production_key)
     end
 
     # Only instantiated for data export endpoint calls
     def data_export_connection
-      @data_export ||= Connection::DataExport.new
+      fail "data_export_key not configured!" unless LeanplumApi.configuration.data_export_key
+      @data_export ||= Connection.new(LeanplumApi.configuration.data_export_key)
     end
 
     # Only instantiated for ContentReadOnly calls (AB tests)
     def content_read_only_connection
-      @content_read_only ||= Connection::ContentReadOnly.new
+      fail "content_read_only_key not configured!" unless LeanplumApi.configuration.content_read_only_key
+      @content_read_only ||= Connection.new(LeanplumApi.configuration.content_read_only_key)
     end
 
     def development_connection
-      @development ||= Connection::Development.new
+      fail "development_key not configured!" unless LeanplumApi.configuration.development_key
+      @development ||= Connection.new(LeanplumApi.configuration.development_key)
     end
 
     # Deletes the user_id and device_id key/value pairs from the hash parameter.
@@ -217,7 +227,7 @@ module LeanplumApi
 
       if (events = user_hash.delete(:events))
         events.each do |event_name, event_props|
-          event_props.each { |k, v| event_props[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
+          event_props.each { |k, v| event_props[k] = v.strftime('%s') if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
         end
       end
 
