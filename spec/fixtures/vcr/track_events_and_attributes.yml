@@ -5,7 +5,7 @@ http_interactions:
     uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505102400
     body:
       encoding: UTF-8
-      string: '{"data":[{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true},"events":{"eventName1":{"count":1,"firstTime":"1505102400","lastTime":"1505102400"}}},{"action":"track","event":"purchase","userId":123456,"time":"1505102400","params":{"some_timestamp":"2015-05-01
+      string: '{"data":[{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true},"events":{"eventName1":{"count":1,"firstTime":"1505016000","lastTime":"1505102400"}}},{"action":"track","event":"purchase","userId":123456,"time":"1505102400","params":{"some_timestamp":"2015-05-01
         01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":"1505101800"}]}'
     headers:
       User-Agent:
@@ -26,13 +26,19 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 8a9017f44cd74849fdafcfbdec5c841a
+      - 21cf5f8299c8e9adc6a8f12d8ad351e2
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxClAiDCttzNBQ; expires=Sat, 31-Oct-2020 19:24:50 GMT; path=/
       Date:
-      - Mon, 11 Sep 2017 06:04:07 GMT
+      - Mon, 11 Sep 2017 23:24:50 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '99'
+      Expires:
+      - Mon, 11 Sep 2017 23:24:50 GMT
+      Cache-Control:
+      - private
     body:
       encoding: UTF-8
       string: '{"response":[{"success":true},{"success":true,"isOffline":true},{"success":true,"isOffline":true}]}'

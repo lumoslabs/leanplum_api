@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe LeanplumApi::API do
-  let(:api) { LeanplumApi::API.new }
+  let(:api) { described_class.new }
   let(:first_user_id) { 123456 }
+  let(:first_event_time) { Time.now.utc - 1.day }
+  let(:last_event_time) { Time.now.utc }
   let(:users) do
     [{
       user_id: first_user_id,
@@ -15,8 +17,8 @@ describe LeanplumApi::API do
       events: {
         eventName1: {
           count: 1,
-          firstTime: Time.now.utc,
-          lastTime: Time.now.utc
+          firstTime: first_event_time,
+          lastTime: last_event_time
         }
       }
     }]
@@ -30,8 +32,8 @@ describe LeanplumApi::API do
         events: {
           'eventName1' => {
             'count' => 1,
-            'firstTime' => Time.now.utc.strftime('%s'),
-            'lastTime' => Time.now.utc.strftime('%s')
+            'firstTime' => first_event_time.strftime('%s'),
+            'lastTime' => last_event_time.strftime('%s')
           }
         },
         userAttributes: HashWithIndifferentAccess.new(

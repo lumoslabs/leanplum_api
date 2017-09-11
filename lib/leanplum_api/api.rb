@@ -231,10 +231,7 @@ module LeanplumApi
         end
       end
 
-      user_attributes = extract_user_id_or_device_id_hash!(user_hash).merge(
-        action: action,
-        userAttributes: user_hash
-      )
+      user_attributes = extract_user_id_or_device_id_hash!(user_hash).merge(action: action, userAttributes: user_hash)
       user_attributes[:events] = events if events
       user_attributes
     end
