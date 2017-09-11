@@ -223,11 +223,11 @@ module LeanplumApi
     # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
     def build_user_attributes_hash(user_hash, action = 'setUserAttributes')
       user_hash = HashWithIndifferentAccess.new(user_hash)
-      user_hash.each { |k, v| user_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
+      user_hash.each { |k, v| user_hash[k] = v.iso8601 if is_date_or_time?(v) }
 
       if (events = user_hash.delete(:events))
         events.each do |event_name, event_props|
-          event_props.each { |k, v| event_props[k] = v.strftime('%s') if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
+          event_props.each { |k, v| event_props[k] = v.strftime('%s') if is_date_or_time?(v) }
         end
       end
 
@@ -252,6 +252,10 @@ module LeanplumApi
       event.merge!(allowOffline: true) if options[:allow_offline]
 
       event_hash.keys.size > 0 ? event.merge(params: event_hash.symbolize_keys ) : event
+    end
+
+    def is_date_or_time?(obj)
+      obj.is_a?(Date) || obj.is_a?(Time) || obj.is_a?(DateTime)
     end
   end
 end
