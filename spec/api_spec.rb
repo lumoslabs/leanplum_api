@@ -37,7 +37,7 @@ describe LeanplumApi::API do
     let(:expected_response_hash) do
       {
         deviceId: devices.first[:device_id],
-        action: 'setDeviceAttributes',
+        action: described_class::SET_DEVICE_ATTRIBUTES,
         deviceAttributes: api.send(:fix_iso8601, devices.first.except(:device_id))
       }
     end
@@ -78,7 +78,7 @@ describe LeanplumApi::API do
     let(:built_attributes) do
       {
         userId: first_user_id,
-        action: 'setUserAttributes',
+        action: described_class::SET_USER_ATTRIBUTES,
         userAttributes: api.send(:fix_iso8601, user.except(:events, :user_id)),
         events: expected_event_hash
       }

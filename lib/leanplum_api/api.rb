@@ -4,6 +4,8 @@ module LeanplumApi
 
     class LeanplumValidationException < RuntimeError; end
 
+    SET_USER_ATTRIBUTES = 'setUserAttributes'.freeze
+    SET_DEVICE_ATTRIBUTES = 'setDeviceAttributes'.freeze
     EXPORT_PENDING = 'PENDING'.freeze
     EXPORT_RUNNING = 'RUNNING'.freeze
     EXPORT_FINISHED = 'FINISHED'.freeze
@@ -191,7 +193,7 @@ module LeanplumApi
     # For some reason this API feature requires the developer key
     def reset_anomalous_users(user_ids)
       user_ids = Array.wrap(user_ids)
-      request_data = user_ids.map { |user_id| { action: 'setUserAttributes', resetAnomalies: true, userId: user_id } }
+      request_data = user_ids.map { |user_id| { action: SET_USER_ATTRIBUTES, resetAnomalies: true, userId: user_id } }
       development_connection.multi(request_data)
     end
 
@@ -240,7 +242,7 @@ module LeanplumApi
     def build_user_attributes_hash(user_hash)
       user_hash = fix_iso8601(user_hash)
       user_attr_hash = extract_user_id_or_device_id_hash!(user_hash)
-      user_attr_hash[:action] = 'setUserAttributes'
+      user_attr_hash[:action] = SET_USER_ATTRIBUTES
       user_attr_hash[:devices] = user_hash.delete(:devices) if user_hash.key?(:devices)
       if user_hash.key?(:events)
         user_attr_hash[:events] = user_hash.delete(:events)
@@ -256,7 +258,10 @@ module LeanplumApi
     # @param [Hash] device_hash device attributes to set into LP device
     def build_device_attributes_hash(device_hash)
       device_hash = fix_iso8601(device_hash)
-      extract_user_id_or_device_id_hash!(device_hash).merge(action: 'setDeviceAttributes', deviceAttributes: device_hash)
+      extract_user_id_or_device_id_hash!(device_hash).merge(
+        action: SET_DEVICE_ATTRIBUTES,
+        deviceAttributes: device_hash
+      )
     end
 
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)

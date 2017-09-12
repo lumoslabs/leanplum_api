@@ -26,5 +26,4 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'vcr', '> 2'
   gem.add_development_dependency 'webmock', '> 2'
   gem.add_development_dependency 'dotenv', '~> 2.2', '>= 2.2.1'
-
 end
