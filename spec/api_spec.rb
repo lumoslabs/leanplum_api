@@ -89,8 +89,10 @@ describe LeanplumApi::API do
     end
 
     context 'with devices' do
+      let(:user_with_devices) { user.merge(devices: devices) }
+
       it 'builds user_attributes_hash with devices' do
-        expect(api.send(:build_user_attributes_hash, user.merge(devices: devices))).to eq(
+        expect(api.send(:build_user_attributes_hash, user_with_devices)).to eq(
           built_attributes.merge(devices: [devices.first.with_indifferent_access])
         )
       end
