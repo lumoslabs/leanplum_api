@@ -2,14 +2,14 @@
 http_interactions:
 - request:
     method: post
-    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505102400
+    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505188800
     body:
       encoding: UTF-8
-      string: '{"data":[{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true},"events":{"eventName1":{"count":1,"firstTime":"1505016000","lastTime":"1505102400"}}},{"action":"track","event":"purchase","userId":123456,"time":"1505102400","params":{"some_timestamp":"2015-05-01
-        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":"1505101800"}]}'
+      string: '{"data":[{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true},"events":{"eventName1":{"count":1,"firstTime":1505102400,"lastTime":1505188800}}},{"action":"track","event":"purchase","userId":123456,"time":1505188800,"params":{"some_timestamp":"2015-05-01
+        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1505188200}]}'
     headers:
       User-Agent:
-      - Faraday v0.12.1
+      - Faraday v0.13.1
       Content-Type:
       - application/json
       Accept-Encoding:
@@ -26,22 +26,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 21cf5f8299c8e9adc6a8f12d8ad351e2
+      - e30df8f39eca3f77705e8ae2c82d76d8
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxClAiDCttzNBQ; expires=Sat, 31-Oct-2020 19:24:50 GMT; path=/
+      - GOOGAPPUID=xCgsIAxDCByDil-HNBQ; expires=Sun, 01-Nov-2020 17:04:35 GMT; path=/
       Date:
-      - Mon, 11 Sep 2017 23:24:50 GMT
+      - Tue, 12 Sep 2017 21:04:35 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '99'
       Expires:
-      - Mon, 11 Sep 2017 23:24:50 GMT
+      - Tue, 12 Sep 2017 21:04:35 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
       string: '{"response":[{"success":true},{"success":true,"isOffline":true},{"success":true,"isOffline":true}]}'
     http_version: 
-  recorded_at: Mon, 11 Sep 2017 04:00:00 GMT
+  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3

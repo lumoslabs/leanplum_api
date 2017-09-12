@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.12.1
+      - Faraday v0.13.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -23,16 +23,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 37cdf77cad983b683746bcb77c3747b9
+      - 70e27b29a0e132e9b020b3c58861a123
+      Set-Cookie:
+      - GOOGAPPUID=xCgoIAxBmIN-X4c0F; expires=Sun, 01-Nov-2020 17:04:31 GMT; path=/
       Date:
-      - Mon, 11 Sep 2017 06:00:21 GMT
+      - Tue, 12 Sep 2017 21:04:31 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '454'
+      - '526'
+      Expires:
+      - Tue, 12 Sep 2017 21:04:31 GMT
+      Cache-Control:
+      - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"totalSessions":0,"timeSpentInApp":0.0,"userAttributes":{"is_tipping":"True","gender":"m","last_name":"Jones","create_date":"2010-01-01","first_name":"Mike","email":"still_tippin@test.com"},"lastActive":1.446709787966E9,"devices":[],"success":true,"created":1.43935302887E9,"unsubscribeChannels":[],"userId":"123456","events":{"purchase":{"firstTime":1.460514593026E9,"lastTime":1.505109593627E9,"count":56}},"userBucket":358,"states":{}}]}'
+      string: '{"response":[{"totalSessions":0,"timeSpentInApp":0.0,"userAttributes":{"is_tipping":"True","gender":"m","last_name":"Jones","create_date":"2010-01-01","first_name":"Mike","email":"still_tippin@test.com"},"lastActive":1.446709787966E9,"devices":[],"success":true,"created":1.43935302887E9,"unsubscribeChannels":[],"userId":"123456","events":{"purchase":{"firstTime":1.460514593026E9,"lastTime":1.505189741992E9,"count":70},"eventName1":{"firstTime":1.4735664E9,"lastTime":1.5051888E9,"count":1}},"userBucket":358,"states":{}}]}'
     http_version: 
-  recorded_at: Mon, 11 Sep 2017 04:00:00 GMT
+  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3

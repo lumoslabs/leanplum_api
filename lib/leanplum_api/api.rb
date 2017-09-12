@@ -227,7 +227,7 @@ module LeanplumApi
 
       if (events = user_hash.delete(:events))
         events.each do |event_name, event_props|
-          event_props.each { |k, v| event_props[k] = v.strftime('%s') if is_date_or_time?(v) }
+          event_props.each { |k, v| event_props[k] = v.strftime('%s').to_i if is_date_or_time?(v) }
         end
       end
 
@@ -244,7 +244,7 @@ module LeanplumApi
       fail ":event key not present in #{event_hash}" unless event_name
 
       event = { action: 'track', event: event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
-      event.merge!(time: event_hash.delete(:time).strftime('%s')) if event_hash[:time]
+      event.merge!(time: event_hash.delete(:time).strftime('%s').to_i) if event_hash[:time]
       event.merge!(info: event_hash.delete(:info)) if event_hash[:info]
       event.merge!(allowOffline: true) if options[:allow_offline]
 

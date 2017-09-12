@@ -32,8 +32,8 @@ describe LeanplumApi::API do
         events: {
           'eventName1' => {
             'count' => 1,
-            'firstTime' => first_event_time.strftime('%s'),
-            'lastTime' => last_event_time.strftime('%s')
+            'firstTime' => first_event_time.strftime('%s').to_i,
+            'lastTime' => last_event_time.strftime('%s').to_i
           }
         },
         userAttributes: HashWithIndifferentAccess.new(
@@ -115,7 +115,7 @@ describe LeanplumApi::API do
       let(:event_hash) do
         {
           userId: first_user_id,
-          time: Time.now.utc.strftime('%s'),
+          time: Time.now.utc.strftime('%s').to_i,
           action: 'track',
           event: purchase,
           params: { some_timestamp: timestamp }
@@ -153,9 +153,11 @@ describe LeanplumApi::API do
       end
 
       context 'anomalous data force_anomalous_override' do
+        let(:old_events) { events.map { |e| e[:time] -= 1.year; e } }
+
         it 'should successfully force the anomalous data override events' do
           VCR.use_cassette('track_events_anomaly_overrider') do
-            expect { api.track_events(events, force_anomalous_override: true) }.to_not raise_error
+            expect { api.track_events(old_events, force_anomalous_override: true) }.to_not raise_error
           end
         end
       end
@@ -214,8 +216,7 @@ describe LeanplumApi::API do
       context 'get_export_results' do
         it 'should get a status for a data export job' do
           VCR.use_cassette('get_export_results') do
-            response = api.get_export_results('export_4727756026281984_2904941266315269120')
-            expect(response).to eq({
+            expect(api.get_export_results('export_4727756026281984_2904941266315269120')).to eq({
               files: ['https://leanplum_export.storage.googleapis.com/export-4727756026281984-d5969d55-f242-48a6-85a3-165af08e2306-output-0'],
               number_of_bytes: 36590,
               number_of_sessions: 101,

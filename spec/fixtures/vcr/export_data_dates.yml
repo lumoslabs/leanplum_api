@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.12.1
+      - Faraday v0.13.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -23,16 +23,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - f0bdf8cc23811babb06560a2dab3ff5c
+      - 5f52126aafee5383ee9c42dcbc363208
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxDFBSDkl-HNBQ; expires=Sun, 01-Nov-2020 17:04:36 GMT; path=/
       Date:
-      - Mon, 11 Sep 2017 06:00:23 GMT
+      - Tue, 12 Sep 2017 21:04:36 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '85'
+      Expires:
+      - Tue, 12 Sep 2017 21:04:36 GMT
+      Cache-Control:
+      - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"jobId":"export_4727756026281984_3895841445613986816","success":true}]}'
+      string: '{"response":[{"jobId":"export_4727756026281984_6485639014313861120","success":true}]}'
     http_version: 
-  recorded_at: Mon, 11 Sep 2017 04:00:00 GMT
+  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3
