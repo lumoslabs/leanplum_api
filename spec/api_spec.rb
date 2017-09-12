@@ -74,24 +74,31 @@ describe LeanplumApi::API do
     it 'builds user_attributes_hash with devices' do
       user = users.first
       user[:devices] = devices
-      expect(api.send(:build_user_attributes_hash, users.first)).to eq({
-                                                                         userId: first_user_id,
-                                                                         action: 'setUserAttributes',
-                                                                         devices: [HashWithIndifferentAccess.new(
-                                                                                                              device_id: devices.first[:device_id],
-                                                                                                              appVersion: devices.first[:appVersion],
-                                                                                                              deviceModel: devices.first[:deviceModel],
-                                                                                                              create_date: devices.first[:create_date])],
-                                                                         userAttributes: HashWithIndifferentAccess.new(
-                                                                           first_name: 'Mike',
-                                                                           last_name: 'Jones',
-                                                                           gender: 'm',
-                                                                           email: 'still_tippin@test.com',
-                                                                           create_date: '2010-01-01',
-                                                                           is_tipping: true
-                                                                         )
-                                                                       })
+
+      expected_ua_hash = HashWithIndifferentAccess.new(
+        first_name: 'Mike',
+        last_name: 'Jones',
+        gender: 'm',
+        email: 'still_tippin@test.com',
+        create_date: '2010-01-01',
+        is_tipping: true)
+
+      expected_device_hash = HashWithIndifferentAccess.new(
+        device_id: devices.first[:device_id],
+        appVersion: devices.first[:appVersion],
+        deviceModel: devices.first[:deviceModel],
+        create_date: devices.first[:create_date])
+
+      expected_response_hash = {
+        userId: first_user_id,
+        action: 'setUserAttributes',
+        devices: [expected_device_hash],
+        userAttributes: expected_ua_hash
+      }
+
+      expect(api.send(:build_user_attributes_hash, users.first)).to eq(expected_response_hash)
     end
+
     context 'set_user_attributes' do
       context 'valid request' do
         it 'should successfully set user attributes' do
