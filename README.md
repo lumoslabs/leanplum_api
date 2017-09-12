@@ -95,6 +95,7 @@ event = {
 }
 api.track_events(event)
 # Events tracked like that will be made part of a session; for independent events use :allow_offline
+#   Ed. note 2017-09-12 - looks like Leanplum changed their API and everything is considered offline now
 api.track_events(event, allow_offline: true)
 
 # You can also track events and user attributes at the same time
