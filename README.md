@@ -44,6 +44,9 @@ LeanplumApi.configure do |config|
   # Set this to true to send events and user attributes to the test environment.
   # Defaults to false.  See "Debugging" below for more info.
   config.developer_mode = true
+  
+  # Override validations for leanplum response. True by default. Useful when stubbing LP responses in application tests.  
+  config.validate_response = true
 end
 ```
 
@@ -81,8 +84,8 @@ api.track_events(event)
 # Events tracked like this will be made part of a session; for independent events use :allow_offline
 api.track_events(event, allow_offline: true)
 
-# You can also track events and user attributes at the same time
-api.track_multi(event, attribute_hash)
+# You can also track events, user attributes, and device attributes at the same time. magic!
+api.track_multi(events: event, user_attributes: user_attributes, device_attributes: device_attributes, options: {force_anomalous_override: true})
 
 # If your event is sufficiently far in the past, leanplum will mark your user as "Anomalous"
 # To force a reset of this flag, either call the method directly

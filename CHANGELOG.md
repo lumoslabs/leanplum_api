@@ -1,3 +1,7 @@
+## 4.0.0
+* Added support for setDeviceAttributes 
+BREAKING CHANGE - track_multi method signature has changed.
+
 ## 3.0.3
 * Single connection class; rename `wait_for_job` to `wait_for_export_job`
 
