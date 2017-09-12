@@ -1,6 +1,9 @@
 ## 4.0.0
-* Added support for setDeviceAttributes 
-BREAKING CHANGE - track_multi method signature has changed.
+* **BREAKING CHANGE** - `track_multi` method signature has changed.
+* *New Feature* - Added support for setDeviceAttributes (thanks @beingmattlevy)
+
+## 3.1.0
+* Add the ability to send events as `userAttributes` properties
 
 ## 3.0.3
 * Single connection class; rename `wait_for_job` to `wait_for_export_job`

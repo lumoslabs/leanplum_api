@@ -1,17 +1,26 @@
 require 'spec_helper'
 
 describe LeanplumApi::API do
-  let(:api) { LeanplumApi::API.new }
+  let(:api) { described_class.new }
   let(:first_user_id) { 123456 }
+  let(:first_event_time) { Time.now.utc - 1.day }
+  let(:last_event_time) { Time.now.utc }
   let(:users) do
     [{
-       user_id: first_user_id,
-       first_name: 'Mike',
-       last_name: 'Jones',
-       gender: 'm',
-       email: 'still_tippin@test.com',
-       create_date: '2010-01-01'.to_date,
-       is_tipping: true
+      user_id: first_user_id,
+      first_name: 'Mike',
+      last_name: 'Jones',
+      gender: 'm',
+      email: 'still_tippin@test.com',
+      create_date: '2010-01-01'.to_date,
+      is_tipping: true,
+      events: {
+        eventName1: {
+          count: 1,
+          firstTime: first_event_time,
+          lastTime: last_event_time
+        }
+      }
     }]
    end
 
@@ -25,18 +34,22 @@ describe LeanplumApi::API do
   end
 
   context 'devices' do
-    it 'build_device_attributes_hash' do
-      expected_device_hash = HashWithIndifferentAccess.new(
+    let(:expected_device_hash) do
+      HashWithIndifferentAccess.new(
         appVersion: devices.first[:appVersion],
         deviceModel: devices.first[:deviceModel],
-        create_date: devices.first[:create_date].iso8601)
-
-      expected_response_hash = {
+        create_date: devices.first[:create_date].iso8601
+      )
+    end
+    let(:expected_response_hash) do
+      {
         deviceId: devices.first[:device_id],
         action: 'setDeviceAttributes',
         deviceAttributes: expected_device_hash
       }
+    end
 
+    it 'build_device_attributes_hash' do
       expect(api.send(:build_device_attributes_hash, devices.first)).to eq(expected_response_hash)
     end
 
@@ -59,19 +72,33 @@ describe LeanplumApi::API do
   end
 
   context 'users' do
-    it 'builds user_attributes_hash' do
+    let(:expected_ua_hash) do
       expected_ua_hash = HashWithIndifferentAccess.new(
         first_name: 'Mike',
         last_name: 'Jones',
         gender: 'm',
         email: 'still_tippin@test.com',
         create_date: '2010-01-01',
-        is_tipping: true)
+        is_tipping: true
+      )
+    end
 
+    let(:expected_event_hash) do
+      {
+        'eventName1' => {
+          'count' => 1,
+          'firstTime' => first_event_time.strftime('%s').to_i,
+          'lastTime' => last_event_time.strftime('%s').to_i
+        }
+      }
+    end
+
+    it 'builds user_attributes_hash' do
       expected_response_hash = {
         userId: first_user_id,
         action: 'setUserAttributes',
-        userAttributes: expected_ua_hash
+        userAttributes: expected_ua_hash,
+        events: expected_event_hash
       }
 
       expect(api.send(:build_user_attributes_hash, users.first)).to eq(expected_response_hash)
@@ -81,24 +108,18 @@ describe LeanplumApi::API do
       user = users.first
       user[:devices] = devices
 
-      expected_ua_hash = HashWithIndifferentAccess.new(
-        first_name: 'Mike',
-        last_name: 'Jones',
-        gender: 'm',
-        email: 'still_tippin@test.com',
-        create_date: '2010-01-01',
-        is_tipping: true)
-
       expected_device_hash = HashWithIndifferentAccess.new(
         device_id: devices.first[:device_id],
         appVersion: devices.first[:appVersion],
         deviceModel: devices.first[:deviceModel],
-        create_date: devices.first[:create_date])
+        create_date: devices.first[:create_date]
+      )
 
       expected_response_hash = {
         userId: first_user_id,
         action: 'setUserAttributes',
         devices: [expected_device_hash],
+        events: expected_event_hash,
         userAttributes: expected_ua_hash
       }
 
@@ -173,7 +194,7 @@ describe LeanplumApi::API do
       let(:event_hash) do
         {
           userId: first_user_id,
-          time: Time.now.utc.strftime('%s'),
+          time: Time.now.utc.strftime('%s').to_i,
           action: 'track',
           event: purchase,
           params: { some_timestamp: timestamp }
@@ -211,9 +232,11 @@ describe LeanplumApi::API do
       end
 
       context 'anomalous data force_anomalous_override' do
+        let(:old_events) { events.map { |e| e[:time] -= 1.year; e } }
+
         it 'should successfully force the anomalous data override events' do
           VCR.use_cassette('track_events_anomaly_overrider') do
-            expect { api.track_events(events, force_anomalous_override: true) }.to_not raise_error
+            expect { api.track_events(old_events, force_anomalous_override: true) }.to_not raise_error
           end
         end
       end
@@ -279,8 +302,7 @@ describe LeanplumApi::API do
       context 'get_export_results' do
         it 'should get a status for a data export job' do
           VCR.use_cassette('get_export_results') do
-            response = api.get_export_results('export_4727756026281984_2904941266315269120')
-            expect(response).to eq({
+            expect(api.get_export_results('export_4727756026281984_2904941266315269120')).to eq({
               files: ['https://leanplum_export.storage.googleapis.com/export-4727756026281984-d5969d55-f242-48a6-85a3-165af08e2306-output-0'],
               number_of_bytes: 36590,
               number_of_sessions: 101,
@@ -311,11 +333,11 @@ describe LeanplumApi::API do
         it 'gets messages' do
           VCR.use_cassette('get_messages') do
             expect(api.get_messages).to eq([{
-              "id" => 5670583287676928,
-              "created" => 1440091595.799,
-              "name" => "New Message",
-              "active" => false,
-              "messageType" => "Push Notification"
+              'id' => 5670583287676928,
+              'created' => 1440091595.799,
+              'name' => 'New Message',
+              'active' => false,
+              'messageType' => 'Push Notification'
             }])
           end
         end

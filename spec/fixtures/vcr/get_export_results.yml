@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.12.1
+      - Faraday v0.13.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,24 +21,24 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 99791af56ed96a2e814f36bba5e43e5c
+      - 2ff4869e2bfcab9b3ad3a206e525fc3e
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxC5ASCvl9jMBQ; expires=Tue, 06-Oct-2020 17:33:35 GMT; path=/
+      - GOOGAPPUID=xCgsIAxDTBCCSw-HNBQ; expires=Sun, 01-Nov-2020 18:37:06 GMT; path=/
       Date:
-      - Thu, 17 Aug 2017 21:33:35 GMT
+      - Tue, 12 Sep 2017 22:37:06 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '268'
       Expires:
-      - Thu, 17 Aug 2017 21:33:35 GMT
+      - Tue, 12 Sep 2017 22:37:06 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"files":["https://leanplum_export.storage.googleapis.com/export-4727756026281984-d5969d55-f242-48a6-85a3-165af08e2306-output-0"],"jobId":"export_4727756026281984_2904941266315269120","numBytes":36590,"state":"FINISHED","success":true,"numSessions":101}]}'
+      string: '{"response":[{"numBytes":36590,"jobId":"export_4727756026281984_2904941266315269120","numSessions":101,"success":true,"files":["https://leanplum_export.storage.googleapis.com/export-4727756026281984-d5969d55-f242-48a6-85a3-165af08e2306-output-0"],"state":"FINISHED"}]}'
     http_version: 
-  recorded_at: Sat, 12 Aug 2017 04:00:00 GMT
+  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3

@@ -31,7 +31,7 @@ module LeanplumApi
     def track_multi(events: nil, user_attributes: nil, device_attributes: nil, options: {})
       events = Array.wrap(events)
 
-      request_data = Array.wrap(events).map { |h| build_event_attributes_hash(h, options) } +
+      request_data = events.map { |h| build_event_attributes_hash(h, options) } +
                      Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) } +
                      Array.wrap(device_attributes).map { |h| build_device_attributes_hash(h) }
 
@@ -47,6 +47,7 @@ module LeanplumApi
     # leads to sort of unprocessed information that can be incomplete.
     # They recommend using the automatic export to S3 if possible.
     def export_data(start_time, end_time = nil)
+      LeanplumApi.configuration.logger.warn("You should probably use the direct S3 export instead of exportData")
       fail "Start time #{start_time} after end time #{end_time}" if end_time && start_time > end_time
       LeanplumApi.configuration.logger.info("Requesting data export from #{start_time} to #{end_time}...")
 
@@ -183,7 +184,7 @@ module LeanplumApi
         reset_anomalous_users(user_ids_to_reset)
       end
     end
-    
+
     # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark
     # them 'anomalous' and exclude them from your data set.
     # Calling this method after you pass old events will fix that for all events for the specified user_id
@@ -240,7 +241,13 @@ module LeanplumApi
       user_hash = fix_iso8601(user_hash)
       user_attr_hash = extract_user_id_or_device_id_hash!(user_hash)
       user_attr_hash[:action] = 'setUserAttributes'
-      user_attr_hash[:devices] = user_hash.delete(:devices) if user_hash.has_key?(:devices)
+      user_attr_hash[:devices] = user_hash.delete(:devices) if user_hash.key?(:devices)
+      if user_hash.key?(:events)
+        user_attr_hash[:events] = user_hash.delete(:events)
+        user_attr_hash[:events].each do |event_name, event_props|
+          event_props.each { |k, v| event_props[k] = v.strftime('%s').to_i if is_date_or_time?(v) }
+        end
+      end
       user_attr_hash[:userAttributes] = user_hash
       user_attr_hash
     end
@@ -260,11 +267,15 @@ module LeanplumApi
       fail ":event key not present in #{event_hash}" unless event_name
 
       event = { action: 'track', event: event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
-      event.merge!(time: event_hash.delete(:time).strftime('%s')) if event_hash[:time]
+      event.merge!(time: event_hash.delete(:time).strftime('%s').to_i) if event_hash[:time]
       event.merge!(info: event_hash.delete(:info)) if event_hash[:info]
       event.merge!(allowOffline: true) if options[:allow_offline]
 
       event_hash.keys.size > 0 ? event.merge(params: event_hash.symbolize_keys ) : event
+    end
+
+    def is_date_or_time?(obj)
+      obj.is_a?(Date) || obj.is_a?(Time) || obj.is_a?(DateTime)
     end
   end
 end

@@ -2,11 +2,11 @@
 http_interactions:
 - request:
     method: post
-    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1502521200
+    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505188800
     body:
       encoding: UTF-8
-      string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":"1502521200","params":{"some_timestamp":"2015-05-01
-        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":"1502520600"},{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
+      string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":1505188800,"params":{"some_timestamp":"2015-05-01
+        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1505188200},{"userId":123456,"action":"setUserAttributes","events":{"eventName1":{"count":1,"firstTime":1505102400,"lastTime":1505188800}},"userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
     headers:
       User-Agent:
       - Faraday v0.13.1
@@ -26,25 +26,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 198f119a1461d31ade3793da07677d84
+      - 5759ed0b888b377e1cc9f8c2885a5937
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxCSBCDNyKPNBQ; expires=Wed, 21-Oct-2020 00:38:38 GMT; path=/
+      - GOOGAPPUID=xCgoIAxAUII_D4c0F; expires=Sun, 01-Nov-2020 18:37:03 GMT; path=/
       Date:
-      - Fri, 01 Sep 2017 04:38:38 GMT
+      - Tue, 12 Sep 2017 22:37:03 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '369'
+      - '99'
       Expires:
-      - Fri, 01 Sep 2017 04:38:38 GMT
+      - Tue, 12 Sep 2017 22:37:03 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":true,"warning":{"message":"Device clock skew
-        detected (19 days behind). Rewriting timestamp."},"isOffline":true},{"success":true,"warning":{"message":"Device
-        clock skew detected (19 days behind). Rewriting timestamp."},"isOffline":true},{"success":true,"warning":{"message":"Device
-        clock skew detected (19 days behind). Rewriting timestamp."}}]}'
+      string: '{"response":[{"success":true,"isOffline":true},{"success":true,"isOffline":true},{"success":true}]}'
     http_version: 
-  recorded_at: Sat, 12 Aug 2017 07:00:00 GMT
+  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3

@@ -2,13 +2,13 @@
 http_interactions:
 - request:
     method: post
-    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DEVELOPMENT_KEY>&devMode=false&time=1502521200
+    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DEVELOPMENT_KEY>&devMode=false&time=1505188800
     body:
       encoding: UTF-8
       string: '{"data":[{"action":"setUserAttributes","resetAnomalies":true,"userId":123456}]}'
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.13.1
       Content-Type:
       - application/json
       Accept-Encoding:
@@ -25,22 +25,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - ff5bf5830f2d5360c4cdf74f90c1f35b
+      - b74aa587cced0528a2426b232cd740ec
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDQAyD6kKHNBQ; expires=Tue, 20-Oct-2020 13:33:46 GMT; path=/
+      - GOOGAPPUID=xCgsIAxCjAiCLw-HNBQ; expires=Sun, 01-Nov-2020 18:36:59 GMT; path=/
       Date:
-      - Thu, 31 Aug 2017 17:33:46 GMT
+      - Tue, 12 Sep 2017 22:36:59 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '31'
       Expires:
-      - Thu, 31 Aug 2017 17:33:46 GMT
+      - Tue, 12 Sep 2017 22:36:59 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
       string: '{"response":[{"success":true}]}'
     http_version: 
-  recorded_at: Sat, 12 Aug 2017 07:00:00 GMT
+  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3

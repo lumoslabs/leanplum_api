@@ -2,14 +2,14 @@
 http_interactions:
 - request:
     method: post
-    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1502521200
+    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505188800
     body:
       encoding: UTF-8
-      string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":"1502521200","params":{"some_timestamp":"2015-05-01
-        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":"1502520600"}]}'
+      string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":1473652800,"params":{"some_timestamp":"2015-05-01
+        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1473652200}]}'
     headers:
       User-Agent:
-      - Faraday v0.12.1
+      - Faraday v0.13.1
       Content-Type:
       - application/json
       Accept-Encoding:
@@ -24,37 +24,36 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - a90e4c3f6da128e404bdf0b1affc16e0
+      - 8ed07346ad6aee90ca986c553a6a8dc3
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDrBCCrl9jMBQ; expires=Tue, 06-Oct-2020 17:33:31 GMT; path=/
+      - GOOGAPPUID=xCgsIAxCDBCCNw-HNBQ; expires=Sun, 01-Nov-2020 18:37:01 GMT; path=/
       Date:
-      - Thu, 17 Aug 2017 21:33:31 GMT
+      - Tue, 12 Sep 2017 22:37:01 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '260'
+      - '163'
       Expires:
-      - Thu, 17 Aug 2017 21:33:31 GMT
+      - Tue, 12 Sep 2017 22:37:01 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"isOffline":true,"success":true,"warning":{"message":"Device
-        clock skew detected (5 days behind). Rewriting timestamp."}},{"isOffline":true,"success":true,"warning":{"message":"Device
-        clock skew detected (5 days behind). Rewriting timestamp."}}]}'
+      string: '{"response":[{"success":true,"isOffline":true},{"success":true,"warning":{"message":"Past
+        event detected (365 days ago). Rewriting timestamp."},"isOffline":true}]}'
     http_version: 
-  recorded_at: Sat, 12 Aug 2017 04:00:00 GMT
+  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
 - request:
     method: post
-    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DEVELOPMENT_KEY>&devMode=false&time=1502521200
+    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DEVELOPMENT_KEY>&devMode=false&time=1505188800
     body:
       encoding: UTF-8
       string: '{"data":[{"action":"setUserAttributes","resetAnomalies":true,"userId":123456},{"action":"setUserAttributes","resetAnomalies":true,"userId":54321}]}'
     headers:
       User-Agent:
-      - Faraday v0.12.1
+      - Faraday v0.13.1
       Content-Type:
       - application/json
       Accept-Encoding:
@@ -69,24 +68,24 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 8890d27564945450410dd64dd6ac16ce
+      - d2007a2494ab0b39abe2c860b8408963
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDOByCsl9jMBQ; expires=Tue, 06-Oct-2020 17:33:32 GMT; path=/
+      - GOOGAPPUID=xCgsIAxC2ByCNw-HNBQ; expires=Sun, 01-Nov-2020 18:37:02 GMT; path=/
       Date:
-      - Thu, 17 Aug 2017 21:33:32 GMT
+      - Tue, 12 Sep 2017 22:37:02 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '48'
       Expires:
-      - Thu, 17 Aug 2017 21:33:32 GMT
+      - Tue, 12 Sep 2017 22:37:02 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
       string: '{"response":[{"success":true},{"success":true}]}'
     http_version: 
-  recorded_at: Sat, 12 Aug 2017 04:00:00 GMT
+  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3

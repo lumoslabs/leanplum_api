@@ -28,13 +28,13 @@ module LeanplumApi
     def validate_operation_success(operations, response)
       success_indicators = response.body['response']
       if success_indicators.size != operations.size
-        fail "Attempted to update #{operations.size} records but only received confirmation for #{success_indicators.size}!"
+        fail "Attempted to do #{operations.size} operations but only received confirmation for #{success_indicators.size}!"
       end
 
       failures = []
       success_indicators.each_with_index do |s, i|
         if s['success'].to_s != 'true'
-          LeanplumApi.configuration.logger.error("Unsuccessful attempt to update at position #{i}: #{operations[i]}")
+          LeanplumApi.configuration.logger.error("Unsuccessful request at position #{i}: #{operations[i]}")
           failures << { operation: operations[i], error: s }
         end
         LeanplumApi.configuration.logger.warn("Warning for operation #{operations[i]}: #{s['warning']}") if s['warning']
