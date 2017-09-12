@@ -62,13 +62,19 @@ attribute_hash = {
   last_name: 'Jones',
   gender: 'm',
   email: 'still_tippin@test.com',
-  birthday: Date.today,  # Dates/times will be converted to ISO8601 format
-  # In 2017, Leanplum implemented the ability to set various first and last event timestamps in their API.
+  birthday: Date.today  # Dates/times will be converted to ISO8601 format
+}
+api.set_user_attributes(attribute_hash)
+
+# In 2017, Leanplum implemented the ability to set various first and last event timestamps in their API.
+# This is what it would look like to push data about an event that happened 5 times between 2015-02-01 and today.
+attribute_hash = {
+  user_id: 12345,
   events: {
-    event_name: {
+    my_event_name: {
       count: 1,
       value: 'woodgrain',
-      firstTime: Time.now.utc,
+      firstTime: '2015-02-01'.to_time,
       lastTime: Time.now.utc
     }
   }
@@ -87,7 +93,7 @@ event = {
   some_event_property: 'boss_hog_on_candy'
 }
 api.track_events(event)
-# Events tracked like this will be made part of a session; for independent events use :allow_offline
+# Events tracked like that will be made part of a session; for independent events use :allow_offline
 api.track_events(event, allow_offline: true)
 
 # You can also track events and user attributes at the same time
