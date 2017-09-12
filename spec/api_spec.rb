@@ -26,15 +26,18 @@ describe LeanplumApi::API do
 
   context 'devices' do
     it 'build_device_attributes_hash' do
-      expect(api.send(:build_device_attributes_hash, devices.first)).to eq({
-         deviceId: devices.first[:device_id],
-         action: 'setDeviceAttributes',
-         deviceAttributes: HashWithIndifferentAccess.new(
-           appVersion: devices.first[:appVersion],
-           deviceModel: devices.first[:deviceModel],
-           create_date: devices.first[:create_date].iso8601
-         )
-       })
+      expected_device_hash = HashWithIndifferentAccess.new(
+        appVersion: devices.first[:appVersion],
+        deviceModel: devices.first[:deviceModel],
+        create_date: devices.first[:create_date].iso8601)
+
+      expected_response_hash = {
+        deviceId: devices.first[:device_id],
+        action: 'setDeviceAttributes',
+        deviceAttributes: expected_device_hash
+      }
+
+      expect(api.send(:build_device_attributes_hash, devices.first)).to eq(expected_response_hash)
     end
 
     context 'set_device_attributes' do
@@ -57,18 +60,21 @@ describe LeanplumApi::API do
 
   context 'users' do
     it 'builds user_attributes_hash' do
-      expect(api.send(:build_user_attributes_hash, users.first)).to eq({
+      expected_ua_hash = HashWithIndifferentAccess.new(
+        first_name: 'Mike',
+        last_name: 'Jones',
+        gender: 'm',
+        email: 'still_tippin@test.com',
+        create_date: '2010-01-01',
+        is_tipping: true)
+
+      expected_response_hash = {
         userId: first_user_id,
         action: 'setUserAttributes',
-        userAttributes: HashWithIndifferentAccess.new(
-          first_name: 'Mike',
-          last_name: 'Jones',
-          gender: 'm',
-          email: 'still_tippin@test.com',
-          create_date: '2010-01-01',
-          is_tipping: true
-        )
-      })
+        userAttributes: expected_ua_hash
+      }
+
+      expect(api.send(:build_user_attributes_hash, users.first)).to eq(expected_response_hash)
     end
 
     it 'builds user_attributes_hash with devices' do
