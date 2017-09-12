@@ -5,13 +5,13 @@ describe LeanplumApi::API do
   let(:first_user_id) { 123456 }
   let(:users) do
     [{
-      user_id: first_user_id,
-      first_name: 'Mike',
-      last_name: 'Jones',
-      gender: 'm',
-      email: 'still_tippin@test.com',
-      create_date: '2010-01-01'.to_date,
-      is_tipping: true
+       user_id: first_user_id,
+       first_name: 'Mike',
+       last_name: 'Jones',
+       gender: 'm',
+       email: 'still_tippin@test.com',
+       create_date: '2010-01-01'.to_date,
+       is_tipping: true
     }]
    end
 
@@ -71,16 +71,27 @@ describe LeanplumApi::API do
       })
     end
 
-    it 'builds user_attributes_hash with device' do
-      user = users.first.merge(devices: devices)
-      user_attributes_hash = api.send(:build_user_attributes_hash, user)
-      expect(user_attributes_hash[:devices].first).to eq({ device_id: 'fu123',
-                                                           appVersion: 'x42x',
-                                                           deviceModel: 'p0d',
-                                                           create_date: '2018-01-01'.to_date }.with_indifferent_access )
-      expect(user_attributes_hash[:userAttributes][:devices]).to be nil
+    it 'builds user_attributes_hash with devices' do
+      user = users.first
+      user[:devices] = devices
+      expect(api.send(:build_user_attributes_hash, users.first)).to eq({
+                                                                         userId: first_user_id,
+                                                                         action: 'setUserAttributes',
+                                                                         devices: [HashWithIndifferentAccess.new(
+                                                                                                              device_id: devices.first[:device_id],
+                                                                                                              appVersion: devices.first[:appVersion],
+                                                                                                              deviceModel: devices.first[:deviceModel],
+                                                                                                              create_date: devices.first[:create_date])],
+                                                                         userAttributes: HashWithIndifferentAccess.new(
+                                                                           first_name: 'Mike',
+                                                                           last_name: 'Jones',
+                                                                           gender: 'm',
+                                                                           email: 'still_tippin@test.com',
+                                                                           create_date: '2010-01-01',
+                                                                           is_tipping: true
+                                                                         )
+                                                                       })
     end
-
     context 'set_user_attributes' do
       context 'valid request' do
         it 'should successfully set user attributes' do

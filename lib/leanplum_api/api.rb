@@ -161,6 +161,10 @@ module LeanplumApi
       production_connection.get(action: 'getVars', userId: user_id).body['response'].first['vars']
     end
 
+    def delete_user(user_id)
+      development_connection.get(action: 'deleteUser', userId: user_id).body['response'].first['vars']
+    end
+
     # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
     # and has no idea what "versioning" actually means, so we just reset everyone all the time.
     def force_anomalous_override(response, events)
@@ -240,10 +244,11 @@ module LeanplumApi
     # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
     def build_user_attributes_hash(user_hash)
       user_hash = fix_iso8601(user_hash)
-      devices = user_hash.delete(:devices)
-      user_attributes_hash = extract_user_id_or_device_id_hash!(user_hash).merge(action: 'setUserAttributes', userAttributes: user_hash)
-      user_attributes_hash[:devices] = devices unless devices.nil?
-      user_attributes_hash
+      user_attr_hash = extract_user_id_or_device_id_hash!(user_hash)
+      user_attr_hash[:action] = 'setUserAttributes'
+      user_attr_hash[:devices] = user_hash.delete(:devices) if user_hash.has_key?(:devices)
+      user_attr_hash[:userAttributes] = user_hash
+      user_attr_hash
     end
 
     def build_device_attributes_hash(device_hash)
