@@ -108,12 +108,6 @@ module LeanplumApi
       get_export_results(job_id)
     end
 
-    # Remove in version 4.x
-    def wait_for_job(job_id, polling_interval = 60)
-      wait_for_export_job(job_id, polling_interval)
-    end
-    deprecate :wait_for_job, 'wait_for_export_job', 2018, 6
-
     def user_attributes(user_id)
       export_user(user_id)['userAttributes'].inject({}) do |attrs, (k, v)|
         # Leanplum doesn't use true JSON for booleans...
@@ -233,15 +227,15 @@ module LeanplumApi
       user_id ? { userId: user_id } : { deviceId: device_id }
     end
 
+    # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
     def fix_iso8601(attr_hash)
       attr_hash = HashWithIndifferentAccess.new(attr_hash)
       attr_hash.each { |k, v| attr_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
       attr_hash
     end
-    
-    # Action can be any command that takes a userAttributes param.  "start" (a session) is the other command that most
-    # obviously takes userAttributes.
-    # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
+
+    # build a user attributes hash
+    # @param [Hash] user_hash user attributes to set into LP user
     def build_user_attributes_hash(user_hash)
       user_hash = fix_iso8601(user_hash)
       user_attr_hash = extract_user_id_or_device_id_hash!(user_hash)
@@ -251,6 +245,8 @@ module LeanplumApi
       user_attr_hash
     end
 
+    # build a user attributes hash
+    # @param [Hash] device_hash device attributes to set into LP device
     def build_device_attributes_hash(device_hash)
       device_hash = fix_iso8601(device_hash)
       extract_user_id_or_device_id_hash!(device_hash).merge(action: 'setDeviceAttributes', deviceAttributes: device_hash)
