@@ -10,7 +10,7 @@ Leanplum also likes to change and break stuff in their API without changing the 
 
 The gem uses the ```multi``` method with a POST for all event tracking and user attribute updating requests.  Check Leanplum's docs for more information on ```multi```.
 
-Tested with Leanplum API version 1.0.6.
+Tested with Leanplum API version 1.0.6 - which is actually totally meaningless because the version is always 1.0.6, even when they make major revisions to how the API works.
 
 `required_ruby_version` is set to 1.9 but this code has only been tested with Ruby 2.1.5 and up!
 
