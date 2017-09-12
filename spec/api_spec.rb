@@ -70,14 +70,8 @@ describe LeanplumApi::API do
 
   context 'users' do
     let(:expected_attributes_hash) do
-      HashWithIndifferentAccess.new(
-        first_name: 'Mike',
-        last_name: 'Jones',
-        gender: 'm',
-        email: 'still_tippin@test.com',
-        create_date: '2010-01-01',
-        is_tipping: true
-      )
+      user = users.first.except(:events, :devices, :user_id)
+      HashWithIndifferentAccess.new(described_class.new.send(:fix_iso8601, user))
     end
     let(:expected_event_hash) do
       {
@@ -90,29 +84,22 @@ describe LeanplumApi::API do
     end
 
     it 'builds user_attributes_hash' do
-      expected_response_hash = {
+      expect(api.send(:build_user_attributes_hash, users.first)).to eq(
         userId: first_user_id,
         action: 'setUserAttributes',
         userAttributes: expected_attributes_hash,
         events: expected_event_hash
-      }
-
-      expect(api.send(:build_user_attributes_hash, users.first)).to eq(expected_response_hash)
+      )
     end
 
     it 'builds user_attributes_hash with devices' do
-      user = users.first
-      user[:devices] = devices
-
-      expected_response_hash = {
+      expect(api.send(:build_user_attributes_hash, users.first.merge(devices: devices))).to eq(
         userId: first_user_id,
         action: 'setUserAttributes',
         devices: [devices.first.with_indifferent_access],
         events: expected_event_hash,
         userAttributes: expected_attributes_hash
-      }
-
-      expect(api.send(:build_user_attributes_hash, users.first)).to eq(expected_response_hash)
+      )
     end
 
     context 'set_user_attributes' do
