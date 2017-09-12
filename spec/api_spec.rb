@@ -5,6 +5,7 @@ describe LeanplumApi::API do
   let(:first_user_id) { 123456 }
   let(:first_event_time) { Time.now.utc - 1.day }
   let(:last_event_time) { Time.now.utc }
+  let(:user) { users.first }
   let(:users) do
     [{
       user_id: first_user_id,
@@ -70,9 +71,9 @@ describe LeanplumApi::API do
 
   context 'users' do
     let(:expected_attributes_hash) do
-      user = users.first.except(:events, :devices, :user_id)
-      HashWithIndifferentAccess.new(described_class.new.send(:fix_iso8601, user))
+      HashWithIndifferentAccess.new(described_class.new.send(:fix_iso8601, user.except(:events, :user_id)))
     end
+
     let(:expected_event_hash) do
       {
         'eventName1' => {
@@ -83,23 +84,25 @@ describe LeanplumApi::API do
       }
     end
 
-    it 'builds user_attributes_hash' do
-      expect(api.send(:build_user_attributes_hash, users.first)).to eq(
+    let(:built_attributes) do
+      {
         userId: first_user_id,
         action: 'setUserAttributes',
         userAttributes: expected_attributes_hash,
         events: expected_event_hash
-      )
+      }
     end
 
-    it 'builds user_attributes_hash with devices' do
-      expect(api.send(:build_user_attributes_hash, users.first.merge(devices: devices))).to eq(
-        userId: first_user_id,
-        action: 'setUserAttributes',
-        devices: [devices.first.with_indifferent_access],
-        events: expected_event_hash,
-        userAttributes: expected_attributes_hash
-      )
+    it 'builds user_attributes_hash' do
+      expect(api.send(:build_user_attributes_hash, user)).to eq(built_attributes)
+    end
+
+    context 'with devices' do
+      it 'builds user_attributes_hash with devices' do
+        expect(api.send(:build_user_attributes_hash, user.merge(devices: devices))).to eq(
+          built_attributes.merge(devices: [devices.first.with_indifferent_access])
+        )
+      end
     end
 
     context 'set_user_attributes' do
@@ -124,10 +127,10 @@ describe LeanplumApi::API do
       it 'should get user attributes for this user' do
         VCR.use_cassette('export_user') do
           api.user_attributes(first_user_id).each do |k, v|
-            if users.first[k.to_sym].is_a?(Date) || users.first[k.to_sym].is_a?(DateTime)
-              expect(v).to eq(users.first[k.to_sym].strftime('%Y-%m-%d'))
+            if user[k.to_sym].is_a?(Date) || user[k.to_sym].is_a?(DateTime)
+              expect(v).to eq(user[k.to_sym].strftime('%Y-%m-%d'))
             else
-              expect(v).to eq(users.first[k.to_sym])
+              expect(v).to eq(user[k.to_sym])
             end
           end
         end
@@ -329,7 +332,7 @@ describe LeanplumApi::API do
         pending 'Docs are extremely unclear about what getVars and setVars even do'
 
         VCR.use_cassette('get_vars') do
-          expect(api.get_vars(users.first[:user_id])).to eq({ 'test_var' => 1 })
+          expect(api.get_vars(user[:user_id])).to eq({ 'test_var' => 1 })
         end
       end
     end
