@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe LeanplumApi::API do
-  let(:api) { LeanplumApi::API.new }
+  let(:api) { described_class.new }
   let(:first_user_id) { 123456 }
+  let(:first_event_time) { Time.now.utc - 1.day }
+  let(:last_event_time) { Time.now.utc }
   let(:users) do
     [{
       user_id: first_user_id,
@@ -11,7 +13,14 @@ describe LeanplumApi::API do
       gender: 'm',
       email: 'still_tippin@test.com',
       create_date: '2010-01-01'.to_date,
-      is_tipping: true
+      is_tipping: true,
+      events: {
+        eventName1: {
+          count: 1,
+          firstTime: first_event_time,
+          lastTime: last_event_time
+        }
+      }
     }]
   end
 
@@ -20,6 +29,13 @@ describe LeanplumApi::API do
       expect(api.send(:build_user_attributes_hash, users.first)).to eq({
         userId: first_user_id,
         action: 'setUserAttributes',
+        events: {
+          'eventName1' => {
+            'count' => 1,
+            'firstTime' => first_event_time.strftime('%s').to_i,
+            'lastTime' => last_event_time.strftime('%s').to_i
+          }
+        },
         userAttributes: HashWithIndifferentAccess.new(
           first_name: 'Mike',
           last_name: 'Jones',
@@ -99,7 +115,7 @@ describe LeanplumApi::API do
       let(:event_hash) do
         {
           userId: first_user_id,
-          time: Time.now.utc.strftime('%s'),
+          time: Time.now.utc.strftime('%s').to_i,
           action: 'track',
           event: purchase,
           params: { some_timestamp: timestamp }
@@ -137,9 +153,11 @@ describe LeanplumApi::API do
       end
 
       context 'anomalous data force_anomalous_override' do
+        let(:old_events) { events.map { |e| e[:time] -= 1.year; e } }
+
         it 'should successfully force the anomalous data override events' do
           VCR.use_cassette('track_events_anomaly_overrider') do
-            expect { api.track_events(events, force_anomalous_override: true) }.to_not raise_error
+            expect { api.track_events(old_events, force_anomalous_override: true) }.to_not raise_error
           end
         end
       end
@@ -156,7 +174,7 @@ describe LeanplumApi::API do
     context 'user_events' do
       it 'should get user events for this user' do
         VCR.use_cassette('export_user') do
-          expect(api.user_events(first_user_id)[purchase].keys).to eq(['firstTime', 'count', 'lastTime'])
+          expect(api.user_events(first_user_id)[purchase].keys).to eq(%w(firstTime lastTime count))
         end
       end
     end
@@ -198,8 +216,7 @@ describe LeanplumApi::API do
       context 'get_export_results' do
         it 'should get a status for a data export job' do
           VCR.use_cassette('get_export_results') do
-            response = api.get_export_results('export_4727756026281984_2904941266315269120')
-            expect(response).to eq({
+            expect(api.get_export_results('export_4727756026281984_2904941266315269120')).to eq({
               files: ['https://leanplum_export.storage.googleapis.com/export-4727756026281984-d5969d55-f242-48a6-85a3-165af08e2306-output-0'],
               number_of_bytes: 36590,
               number_of_sessions: 101,
@@ -230,11 +247,11 @@ describe LeanplumApi::API do
         it 'gets messages' do
           VCR.use_cassette('get_messages') do
             expect(api.get_messages).to eq([{
-              "id" => 5670583287676928,
-              "created" => 1440091595.799,
-              "name" => "New Message",
-              "active" => false,
-              "messageType" => "Push Notification"
+              'id' => 5670583287676928,
+              'created' => 1440091595.799,
+              'name' => 'New Message',
+              'active' => false,
+              'messageType' => 'Push Notification'
             }])
           end
         end

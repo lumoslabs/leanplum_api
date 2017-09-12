@@ -1,3 +1,6 @@
+## 3.1.0
+Add the ability to send events as `userAttributes` properties
+
 ## 3.0.3
 * Single connection class; rename `wait_for_job` to `wait_for_export_job`
 
