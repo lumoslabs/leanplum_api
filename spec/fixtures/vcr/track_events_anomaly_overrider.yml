@@ -26,16 +26,67 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 415ade7b4b36334f3ff8e0f63150feaf
+      - f2a895ac46b31a94f25bf4643b273e64
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxCbAyDtvt3NBQ; expires=Sun, 01-Nov-2020 00:15:42 GMT; path=/
       Date:
-      - Mon, 11 Sep 2017 06:00:22 GMT
+      - Tue, 12 Sep 2017 04:15:42 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '82'
+      - '260'
+      Expires:
+      - Tue, 12 Sep 2017 04:15:42 GMT
+      Cache-Control:
+      - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":true,"isOffline":true},{"success":true,"isOffline":true}]}'
+      string: '{"response":[{"success":true,"warning":{"message":"Device clock skew
+        detected (1 days behind). Rewriting timestamp."},"isOffline":true},{"success":true,"warning":{"message":"Device
+        clock skew detected (1 days behind). Rewriting timestamp."},"isOffline":true}]}'
+    http_version: 
+  recorded_at: Mon, 11 Sep 2017 04:00:00 GMT
+- request:
+    method: post
+    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DEVELOPMENT_KEY>&devMode=false&time=1505102400
+    body:
+      encoding: UTF-8
+      string: '{"data":[{"action":"setUserAttributes","resetAnomalies":true,"userId":123456},{"action":"setUserAttributes","resetAnomalies":true,"userId":54321}]}'
+    headers:
+      User-Agent:
+      - Faraday v0.12.1
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json;charset=utf-8
+      X-Cloud-Trace-Context:
+      - 5c7c70c5b976da012c82777dda0dbf37
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxDgASDuvt3NBQ; expires=Sun, 01-Nov-2020 00:15:42 GMT; path=/
+      Date:
+      - Tue, 12 Sep 2017 04:15:42 GMT
+      Server:
+      - Google Frontend
+      Content-Length:
+      - '48'
+      Expires:
+      - Tue, 12 Sep 2017 04:15:42 GMT
+      Cache-Control:
+      - private
+    body:
+      encoding: UTF-8
+      string: '{"response":[{"success":true},{"success":true}]}'
     http_version: 
   recorded_at: Mon, 11 Sep 2017 04:00:00 GMT
 recorded_with: VCR 3.0.3
