@@ -66,13 +66,14 @@ attribute_hash = {
 }
 api.set_user_attributes(attribute_hash)
 
-# In 2017, Leanplum implemented the ability to set various first and last event timestamps in their API.
+# In 2017, Leanplum implemented the ability to set various first and last timestamps for event occurrences, as well as
+# counts for that event in their API at the same time as you set various attributes for that user.
 # This is what it would look like to push data about an event that happened 5 times between 2015-02-01 and today.
 attribute_hash = {
   user_id: 12345,
   events: {
     my_event_name: {
-      count: 1,
+      count: 5,
       value: 'woodgrain',
       firstTime: '2015-02-01'.to_time,
       lastTime: Time.now.utc
