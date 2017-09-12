@@ -22,30 +22,27 @@ describe LeanplumApi::API do
         }
       }
     }]
-   end
-
+  end
   let(:devices) do
     [{
-       device_id: 'fu123',
-       appVersion: 'x42x',
-       deviceModel: 'p0d',
-       create_date: '2018-01-01'.to_date
-     }]
+      device_id: 'fu123',
+      appVersion: 'x42x',
+      deviceModel: 'p0d',
+      create_date: '2018-01-01'.to_date
+    }]
   end
 
   context 'devices' do
-    let(:expected_device_hash) do
-      HashWithIndifferentAccess.new(
-        appVersion: devices.first[:appVersion],
-        deviceModel: devices.first[:deviceModel],
-        create_date: devices.first[:create_date].iso8601
-      )
+    let(:device_attributes) do
+      device = devices.first.except(:device_id).with_indifferent_access
+      device[:create_date] = device[:create_date].iso8601
+      device
     end
     let(:expected_response_hash) do
       {
         deviceId: devices.first[:device_id],
         action: 'setDeviceAttributes',
-        deviceAttributes: expected_device_hash
+        deviceAttributes: device_attributes
       }
     end
 
@@ -72,8 +69,8 @@ describe LeanplumApi::API do
   end
 
   context 'users' do
-    let(:expected_ua_hash) do
-      expected_ua_hash = HashWithIndifferentAccess.new(
+    let(:expected_attributes_hash) do
+      HashWithIndifferentAccess.new(
         first_name: 'Mike',
         last_name: 'Jones',
         gender: 'm',
@@ -82,7 +79,6 @@ describe LeanplumApi::API do
         is_tipping: true
       )
     end
-
     let(:expected_event_hash) do
       {
         'eventName1' => {
@@ -97,7 +93,7 @@ describe LeanplumApi::API do
       expected_response_hash = {
         userId: first_user_id,
         action: 'setUserAttributes',
-        userAttributes: expected_ua_hash,
+        userAttributes: expected_attributes_hash,
         events: expected_event_hash
       }
 
@@ -108,19 +104,12 @@ describe LeanplumApi::API do
       user = users.first
       user[:devices] = devices
 
-      expected_device_hash = HashWithIndifferentAccess.new(
-        device_id: devices.first[:device_id],
-        appVersion: devices.first[:appVersion],
-        deviceModel: devices.first[:deviceModel],
-        create_date: devices.first[:create_date]
-      )
-
       expected_response_hash = {
         userId: first_user_id,
         action: 'setUserAttributes',
-        devices: [expected_device_hash],
+        devices: [devices.first.with_indifferent_access],
         events: expected_event_hash,
-        userAttributes: expected_ua_hash
+        userAttributes: expected_attributes_hash
       }
 
       expect(api.send(:build_user_attributes_hash, users.first)).to eq(expected_response_hash)
