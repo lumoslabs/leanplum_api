@@ -44,6 +44,9 @@ LeanplumApi.configure do |config|
   # Set this to true to send events and user attributes to the test environment.
   # Defaults to false.  See "Debugging" below for more info.
   config.developer_mode = true
+  
+  # Override validations for leanplum response. True by default. Useful when stubbing LP responses in application tests.  
+  config.validate_response = true
 end
 ```
 
