@@ -65,10 +65,6 @@ describe LeanplumApi::API do
   end
 
   context 'users' do
-    let(:expected_attributes_hash) do
-      HashWithIndifferentAccess.new(described_class.new.send(:fix_iso8601, user.except(:events, :user_id)))
-    end
-
     let(:expected_event_hash) do
       {
         'eventName1' => {
@@ -83,7 +79,7 @@ describe LeanplumApi::API do
       {
         userId: first_user_id,
         action: 'setUserAttributes',
-        userAttributes: expected_attributes_hash,
+        userAttributes: described_class.new.send(:fix_iso8601, user.except(:events, :user_id)),
         events: expected_event_hash
       }
     end
