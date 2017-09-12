@@ -1,9 +1,13 @@
-module LeanplumApi::Connection
-  class Production
-    LEANPLUM_API_PATH = '/api'
+module LeanplumApi
+  class Connection
+    LEANPLUM_API_PATH = '/api'.freeze
 
-    def initialize(options = {})
-      @logger = options[:logger] || Logger.new(STDERR)
+    def initialize(client_key)
+      @client_key = client_key
+    end
+
+    def get(query)
+      connection.get(LEANPLUM_API_PATH, query.merge(authentication_params))
     end
 
     def multi(payload)
@@ -12,24 +16,19 @@ module LeanplumApi::Connection
       end
     end
 
-    def get(query)
-      connection.get(LEANPLUM_API_PATH, query.merge(authentication_params))
-    end
+    private
 
     def authentication_params
       {
         appId: LeanplumApi.configuration.app_id,
-        clientKey: LeanplumApi.configuration.production_key,
+        clientKey: @client_key,
         apiVersion: LeanplumApi.configuration.api_version,
         devMode: LeanplumApi.configuration.developer_mode
       }
     end
 
-    private
-
     def connection
       fail 'APP_ID not configured!' unless LeanplumApi.configuration.app_id
-      fail 'PRODUCTION_KEY not configured!' unless LeanplumApi.configuration.production_key
 
       options = {
         url: 'https://www.leanplum.com',
@@ -43,7 +42,7 @@ module LeanplumApi::Connection
         connection.request :leanplum_response_validation
         connection.request :json
 
-        connection.response :logger, @logger, bodies: true if LeanplumApi.configuration.api_debug
+        connection.response :logger, LeanplumApi.configuration.logger, bodies: true if LeanplumApi.configuration.api_debug
         connection.response :json, :content_type => /\bjson$/
 
         connection.adapter Faraday.default_adapter

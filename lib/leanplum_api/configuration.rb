@@ -1,19 +1,19 @@
 module LeanplumApi
   class << self
     attr_accessor :configuration
-  end
 
-  def self.configure
-    self.configuration ||= Configuration.new
-    yield(configuration) if block_given?
-  end
+    def configure
+      self.configuration ||= Configuration.new
+      yield(configuration) if block_given?
+    end
 
-  def self.reset!
-    self.configuration = Configuration.new
+    def reset!
+      self.configuration = Configuration.new
+    end
   end
 
   class Configuration
-    DEFAULT_LEANPLUM_API_VERSION = '1.0.6'
+    DEFAULT_LEANPLUM_API_VERSION = '1.0.6'.freeze
 
     # Required IDs and access keys provided by leanplum
     attr_accessor :app_id
@@ -29,6 +29,9 @@ module LeanplumApi
     attr_accessor :logger
     attr_accessor :timeout_seconds
 
+    # Override validations for leanplum response. On by default.
+    attr_accessor :validate_response
+
     # Optional configuration for exporting raw data to S3.
     # If s3_bucket_name is provided, s3_access_id and s3_access_key must also be provided.
     attr_accessor :s3_bucket_name
@@ -39,6 +42,7 @@ module LeanplumApi
     def initialize
       @api_version = DEFAULT_LEANPLUM_API_VERSION
       @developer_mode = false
+      @validate_response = true
       @timeout_seconds = 600
       @logger = LeanplumApi::Logger.new(STDOUT)
       @api_debug = ENV['LEANPLUM_API_DEBUG'].to_s =~ /^(true|t|yes|y|1)$/i

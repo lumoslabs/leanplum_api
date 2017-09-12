@@ -1,59 +1,45 @@
 module LeanplumApi
   class API
-    EXPORT_PENDING = 'PENDING'
-    EXPORT_RUNNING = 'RUNNING'
-    EXPORT_FINISHED = 'FINISHED'
+    extend Gem::Deprecate
 
     class LeanplumValidationException < RuntimeError; end
+
+    EXPORT_PENDING = 'PENDING'.freeze
+    EXPORT_RUNNING = 'RUNNING'.freeze
+    EXPORT_FINISHED = 'FINISHED'.freeze
 
     def initialize(options = {})
       fail 'LeanplumApi not configured yet!' unless LeanplumApi.configuration
     end
 
     def set_user_attributes(user_attributes, options = {})
-      track_multi(nil, user_attributes, options)
+      track_multi(user_attributes: user_attributes, options: options)
+    end
+
+    def set_device_attributes(device_attributes, options = {})
+      track_multi(device_attributes: device_attributes, options: options)
     end
 
     def track_events(events, options = {})
-      track_multi(events, nil, options)
+      track_multi(events: events, options: options)
     end
 
-    # This method is for tracking events and/or updating user attributes at the same time, batched together like leanplum
-    # recommends.
-    # Set the :force_anomalous_override to catch warnings from leanplum about anomalous events and force them to not
-    # be considered anomalous
-    def track_multi(events = nil, user_attributes = nil, options = {})
+    # This method is for tracking events and/or updating user and/or device attributes
+    # at the same time, batched together like leanplum recommends.
+    # Set the :force_anomalous_override option to catch warnings from leanplum
+    # Ôabout anomalous events and force them to not be considered anomalous.
+    def track_multi(events: nil, user_attributes: nil, device_attributes: nil, options: {})
       events = Array.wrap(events)
-      user_attributes = Array.wrap(user_attributes)
 
-      request_data = user_attributes.map { |h| build_user_attributes_hash(h) }
-      request_data += events.map { |h| build_event_attributes_hash(h, options) }
+      request_data = Array.wrap(events).map { |h| build_event_attributes_hash(h, options) } +
+                     Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) } +
+                     Array.wrap(device_attributes).map { |h| build_device_attributes_hash(h) }
+
       response = production_connection.multi(request_data).body['response']
 
-      if options[:force_anomalous_override]
-        user_ids_to_reset = []
-        response.each_with_index do |indicator, i|
-          # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
-          # and has no idea what "versioning" actually means, so we just reset
-          # everyone all the time. This condition should be:
-          # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
-          #
-          # but it has to be:
-          if indicator['warning']
-            # Leanplum does not return their warnings in order!!!  So we just have
-            # to reset everyone who had any events.  This is what the code should be:
-            # user_ids_to_reset << request_data[i]['userId']
+      force_anomalous_override(response, events) if options[:force_anomalous_override]
 
-            # This is what it has to be:
-            user_ids_to_reset = events.map { |e| e[:user_id] }.uniq
-          end
-        end
-
-        unless user_ids_to_reset.empty?
-          LeanplumApi.configuration.logger.debug("Resetting anomalous user ids: #{user_ids_to_reset}")
-          reset_anomalous_users(user_ids_to_reset)
-        end
-      end
+      response
     end
 
     # Returns the jobId
@@ -98,6 +84,7 @@ module LeanplumApi
 
     def get_export_results(job_id)
       response = data_export_connection.get(action: 'getExportResults', jobId: job_id).body['response'].first
+
       if response['state'] == EXPORT_FINISHED
         LeanplumApi.configuration.logger.info("Export finished.")
         LeanplumApi.configuration.logger.debug("  Response: #{response}")
@@ -113,7 +100,7 @@ module LeanplumApi
       end
     end
 
-    def wait_for_job(job_id, polling_interval = 60)
+    def wait_for_export_job(job_id, polling_interval = 60)
       while get_export_results(job_id)[:state] != EXPORT_FINISHED
         LeanplumApi.configuration.logger.debug("Polling job #{job_id}: #{get_export_results(job_id)}")
         sleep(polling_interval)
@@ -168,6 +155,35 @@ module LeanplumApi
       production_connection.get(action: 'getVars', userId: user_id).body['response'].first['vars']
     end
 
+    def delete_user(user_id)
+      development_connection.get(action: 'deleteUser', userId: user_id).body['response'].first['vars']
+    end
+
+    # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
+    # and has no idea what "versioning" actually means, so we just reset everyone all the time.
+    def force_anomalous_override(response, events)
+      user_ids_to_reset = []
+
+      response.each_with_index do |indicator, i|
+        # This condition should be:
+        # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
+        # but it has to be:
+        if indicator['warning']
+          # Leanplum does not return their warnings in order!!!  So we just have
+          # to reset everyone who had any events.  This is what the code should be:
+          # user_ids_to_reset << request_data[i]['userId']
+
+          # This is what it has to be:
+          user_ids_to_reset = events.map { |e| e[:user_id] }.uniq
+        end
+      end
+
+      unless user_ids_to_reset.empty?
+        LeanplumApi.configuration.logger.debug("Resetting anomalous user ids: #{user_ids_to_reset}")
+        reset_anomalous_users(user_ids_to_reset)
+      end
+    end
+    
     # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark
     # them 'anomalous' and exclude them from your data set.
     # Calling this method after you pass old events will fix that for all events for the specified user_id
@@ -181,40 +197,59 @@ module LeanplumApi
     private
 
     def production_connection
-      @production ||= Connection::Production.new
+      fail "production_key not configured!" unless LeanplumApi.configuration.production_key
+      @production ||= Connection.new(LeanplumApi.configuration.production_key)
     end
 
     # Only instantiated for data export endpoint calls
     def data_export_connection
-      @data_export ||= Connection::DataExport.new
+      fail "data_export_key not configured!" unless LeanplumApi.configuration.data_export_key
+      @data_export ||= Connection.new(LeanplumApi.configuration.data_export_key)
     end
 
     # Only instantiated for ContentReadOnly calls (AB tests)
     def content_read_only_connection
-      @content_read_only ||= Connection::ContentReadOnly.new
+      fail "content_read_only_key not configured!" unless LeanplumApi.configuration.content_read_only_key
+      @content_read_only ||= Connection.new(LeanplumApi.configuration.content_read_only_key)
     end
 
     def development_connection
-      @development ||= Connection::Development.new
+      fail "development_key not configured!" unless LeanplumApi.configuration.development_key
+      @development ||= Connection.new(LeanplumApi.configuration.development_key)
     end
 
     # Deletes the user_id and device_id key/value pairs from the hash parameter.
     def extract_user_id_or_device_id_hash!(hash)
-      user_id = hash.delete(:user_id)
-      device_id = hash.delete(:device_id)
+      user_id = hash.delete(:user_id) || hash.delete(:userId)
+      device_id = hash.delete(:device_id) || hash.delete(:deviceId)
       fail "No device_id or user_id in hash #{hash}" unless user_id || device_id
 
       user_id ? { userId: user_id } : { deviceId: device_id }
     end
 
-    # Action can be any command that takes a userAttributes param.  "start" (a session) is the other command that most
-    # obviously takes userAttributes.
     # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
-    def build_user_attributes_hash(user_hash, action = 'setUserAttributes')
-      user_hash = HashWithIndifferentAccess.new(user_hash)
-      user_hash.each { |k, v| user_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
+    def fix_iso8601(attr_hash)
+      attr_hash = HashWithIndifferentAccess.new(attr_hash)
+      attr_hash.each { |k, v| attr_hash[k] = v.iso8601 if v.is_a?(Date) || v.is_a?(Time) || v.is_a?(DateTime) }
+      attr_hash
+    end
 
-      extract_user_id_or_device_id_hash!(user_hash).merge(action: action, userAttributes: user_hash)
+    # build a user attributes hash
+    # @param [Hash] user_hash user attributes to set into LP user
+    def build_user_attributes_hash(user_hash)
+      user_hash = fix_iso8601(user_hash)
+      user_attr_hash = extract_user_id_or_device_id_hash!(user_hash)
+      user_attr_hash[:action] = 'setUserAttributes'
+      user_attr_hash[:devices] = user_hash.delete(:devices) if user_hash.has_key?(:devices)
+      user_attr_hash[:userAttributes] = user_hash
+      user_attr_hash
+    end
+
+    # build a user attributes hash
+    # @param [Hash] device_hash device attributes to set into LP device
+    def build_device_attributes_hash(device_hash)
+      device_hash = fix_iso8601(device_hash)
+      extract_user_id_or_device_id_hash!(device_hash).merge(action: 'setDeviceAttributes', deviceAttributes: device_hash)
     end
 
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)

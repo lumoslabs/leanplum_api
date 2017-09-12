@@ -5,18 +5,58 @@ describe LeanplumApi::API do
   let(:first_user_id) { 123456 }
   let(:users) do
     [{
-      user_id: first_user_id,
-      first_name: 'Mike',
-      last_name: 'Jones',
-      gender: 'm',
-      email: 'still_tippin@test.com',
-      create_date: '2010-01-01'.to_date,
-      is_tipping: true
+       user_id: first_user_id,
+       first_name: 'Mike',
+       last_name: 'Jones',
+       gender: 'm',
+       email: 'still_tippin@test.com',
+       create_date: '2010-01-01'.to_date,
+       is_tipping: true
     }]
+   end
+
+  let(:devices) do
+    [{
+       device_id: 'fu123',
+       appVersion: 'x42x',
+       deviceModel: 'p0d',
+       create_date: '2018-01-01'.to_date
+     }]
+  end
+
+  context 'devices' do
+    it 'build_device_attributes_hash' do
+      expect(api.send(:build_device_attributes_hash, devices.first)).to eq({
+         deviceId: devices.first[:device_id],
+         action: 'setDeviceAttributes',
+         deviceAttributes: HashWithIndifferentAccess.new(
+           appVersion: devices.first[:appVersion],
+           deviceModel: devices.first[:deviceModel],
+           create_date: devices.first[:create_date].iso8601
+         )
+       })
+    end
+
+    context 'set_device_attributes' do
+      context 'valid request' do
+        it 'sets device attributes without error' do
+          VCR.use_cassette('set_device_attributes') do
+            expect { api.set_device_attributes(devices) }.to_not raise_error
+          end
+        end
+
+        it 'sets device attributes without error' do
+          VCR.use_cassette('set_device_attributes') do
+            response = api.set_device_attributes(devices)
+            expect(response.first['success']).to be true
+          end
+        end
+      end
+    end
   end
 
   context 'users' do
-    it 'build_user_attributes_hash' do
+    it 'builds user_attributes_hash' do
       expect(api.send(:build_user_attributes_hash, users.first)).to eq({
         userId: first_user_id,
         action: 'setUserAttributes',
@@ -31,6 +71,27 @@ describe LeanplumApi::API do
       })
     end
 
+    it 'builds user_attributes_hash with devices' do
+      user = users.first
+      user[:devices] = devices
+      expect(api.send(:build_user_attributes_hash, users.first)).to eq({
+                                                                         userId: first_user_id,
+                                                                         action: 'setUserAttributes',
+                                                                         devices: [HashWithIndifferentAccess.new(
+                                                                                                              device_id: devices.first[:device_id],
+                                                                                                              appVersion: devices.first[:appVersion],
+                                                                                                              deviceModel: devices.first[:deviceModel],
+                                                                                                              create_date: devices.first[:create_date])],
+                                                                         userAttributes: HashWithIndifferentAccess.new(
+                                                                           first_name: 'Mike',
+                                                                           last_name: 'Jones',
+                                                                           gender: 'm',
+                                                                           email: 'still_tippin@test.com',
+                                                                           create_date: '2010-01-01',
+                                                                           is_tipping: true
+                                                                         )
+                                                                       })
+    end
     context 'set_user_attributes' do
       context 'valid request' do
         it 'should successfully set user attributes' do
@@ -146,9 +207,16 @@ describe LeanplumApi::API do
     end
 
     context 'along with user attributes' do
-      it 'should work' do
+      it 'does not raise error' do
         VCR.use_cassette('track_events_and_attributes') do
-          expect { api.track_multi(events, users) }.to_not raise_error
+          expect { api.track_multi(events: events, user_attributes: users) }.to_not raise_error
+        end
+      end
+
+      it 'returns success response' do
+        VCR.use_cassette('track_events_and_attributes') do
+          response = api.track_multi(events: events, user_attributes: users)
+          expect(response.first['success']).to be true
         end
       end
     end
@@ -156,7 +224,7 @@ describe LeanplumApi::API do
     context 'user_events' do
       it 'should get user events for this user' do
         VCR.use_cassette('export_user') do
-          expect(api.user_events(first_user_id)[purchase].keys).to eq(['firstTime', 'count', 'lastTime'])
+          expect(api.user_events(first_user_id)[purchase].keys.sort).to eq(['firstTime', 'count', 'lastTime'].sort)
         end
       end
     end
@@ -171,14 +239,6 @@ describe LeanplumApi::API do
     end
 
     context 'data export methods' do
-      around(:all) do |example|
-        LeanplumApi.configure do |c|
-          c.developer_mode = false
-        end
-        example.run
-        LeanplumApi.configure { |c| c.developer_mode = true }
-      end
-
       context 'export_data' do
         context 'regular export' do
           it 'should request a data export job with a starttime' do

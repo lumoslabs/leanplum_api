@@ -18,7 +18,8 @@ module LeanplumApi
         fail BadResponseError, response.inspect unless response.status == 200 && response.body['response']
         fail BadResponseError, "No :success key in #{response.inspect}!" unless response.body['response'].is_a?(Array) && response.body['response'].first.has_key?('success')
         fail BadResponseError, "Not a success! Response: #{response.inspect}" unless response.body['response'].first['success'] == true
-        validate_operation_success(operations, response) if operations
+
+        validate_operation_success(operations, response) if operations && LeanplumApi.configuration.validate_response
       end
     end
 

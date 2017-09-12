@@ -10,7 +10,7 @@ Leanplum also likes to change and break stuff in their API without changing the 
 
 The gem uses the ```multi``` method with a POST for all event tracking and user attribute updating requests.  Check Leanplum's docs for more information on ```multi```.
 
-Tested with Leanplum API version 1.0.6.
+Tested with Leanplum API version 1.0.6 - which is actually totally meaningless because the version is always 1.0.6, even when they make major revisions to how the API works.
 
 `required_ruby_version` is set to 1.9 but this code has only been tested with Ruby 2.1.5 and up!
 
@@ -44,6 +44,9 @@ LeanplumApi.configure do |config|
   # Set this to true to send events and user attributes to the test environment.
   # Defaults to false.  See "Debugging" below for more info.
   config.developer_mode = true
+  
+  # Override validations for leanplum response. True by default. Useful when stubbing LP responses in application tests.  
+  config.validate_response = true
 end
 ```
 
@@ -66,7 +69,7 @@ attribute_hash = {
 }
 api.set_user_attributes(attribute_hash)
 
-# You must also provide the :event property for event tracking. 
+# You must also provide the :event property for event tracking.
 ## :info is an optional property for an extra string.
 ## You can optionally provide a :time; if it is not set Leanplum will timestamp the event "now".
 ## All other key/values besides :user_id, :device_id, :event, and :time will be sent as event params.
@@ -81,8 +84,8 @@ api.track_events(event)
 # Events tracked like this will be made part of a session; for independent events use :allow_offline
 api.track_events(event, allow_offline: true)
 
-# You can also track events and user attributes at the same time
-api.track_multi(event, attribute_hash)
+# You can also track events, user attributes, and device attributes at the same time. magic!
+api.track_multi(events: event, user_attributes: user_attributes, device_attributes: device_attributes)
 
 # If your event is sufficiently far in the past, leanplum will mark your user as "Anomalous"
 # To force a reset of this flag, either call the method directly
@@ -96,7 +99,7 @@ api.track_events(event, force_anomalous_override: true)
 ```ruby
 api = LeanplumApi::API.new
 job_id = api.export_data(start_time, end_time)
-response = wait_for_job(job_id)
+response = wait_for_export_job(job_id)
 ```
 
 **Note well that Leanplum now officially recommends use of the automated S3 export instead of API based export.**  According to a Leanplum engineer these two data export methodologies are completely independent data paths and in our experience we have found API based data export to be missing 10-15% of the data that is eventually returned by the automated export.
@@ -110,8 +113,8 @@ To write _new_ specs (or regenerate one of [VCR](https://github.com/vcr/vcr)'s Y
 > BE AWARE THAT IF YOU WRITE A NEW SPEC OR DELETE A VCR FILE, IT'S POSSIBLE THAT REAL DATA WILL BE WRITTEN TO THE `LEANPLUM_APP_ID` YOU CONFIGURE!  Certainly a real request will be made to rebuild the VCR file, and while specs run with ```devMode=true```, it's usually a good idea to create a fake app for testing/running specs against.
 
 ```bash
-export LEANPLUM_PRODUCTION_KEY=dev_somethingsomeg123456
 export LEANPLUM_APP_ID=app_somethingsomething2039410238
+export LEANPLUM_PRODUCTION_KEY=dev_somethingsomeg123456
 export LEANPLUM_DATA_EXPORT_KEY=data_something_3238mmmX
 export LEANPLUM_CONTENT_READ_ONLY_KEY=sometingsome23xx9
 export LEANPLUM_DEVELOPMENT_KEY=sometingsome23xx923n23i
