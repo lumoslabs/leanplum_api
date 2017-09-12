@@ -34,16 +34,11 @@ describe LeanplumApi::API do
   end
 
   context 'devices' do
-    let(:device_attributes) do
-      device = devices.first.except(:device_id).with_indifferent_access
-      device[:create_date] = device[:create_date].iso8601
-      device
-    end
     let(:expected_response_hash) do
       {
         deviceId: devices.first[:device_id],
         action: 'setDeviceAttributes',
-        deviceAttributes: device_attributes
+        deviceAttributes: described_class.new.send(:fix_iso8601, devices.first.except(:device_id))
       }
     end
 
