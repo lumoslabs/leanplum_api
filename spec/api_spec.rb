@@ -206,6 +206,7 @@ describe LeanplumApi::API do
         let(:old_events) { events.map { |e| e[:time] -= 1.year; e } }
 
         it 'should successfully force the anomalous data override events' do
+          #puts "old events: #{old_events}"
           VCR.use_cassette('track_events_anomaly_overrider') do
             expect { api.track_events(old_events, force_anomalous_override: true) }.to_not raise_error
           end
@@ -283,6 +284,22 @@ describe LeanplumApi::API do
           expect(api.get_vars(user[:user_id])).to eq({ 'test_var' => 1 })
         end
       end
+    end
+  end
+
+  context 'hash utility methods' do
+    let(:hash_with_times) { { not_time: 'grippin', time: Time.now.utc, date: Time.now.utc.to_date } }
+
+    it 'turns datetimes into seconds from the epoch' do
+      expect(api.send(:fix_seconds_since_epoch, hash_with_times)).to eq(
+        hash_with_times.merge(time: Time.now.utc.strftime('%s').to_i, date: Time.now.utc.to_date.strftime('%s').to_i)
+      )
+    end
+
+    it 'turns datetimes into iso8601 format' do
+      expect(api.send(:fix_iso8601, hash_with_times)).to eq(
+        hash_with_times.merge(time: Time.now.utc.iso8601, date: Time.now.utc.to_date.iso8601)
+      )
     end
   end
 end

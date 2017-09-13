@@ -105,10 +105,9 @@ module LeanplumApi
       development_connection.get(action: 'deleteUser', userId: user_id).body['response'].first['vars']
     end
 
-    # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark
-    # them 'anomalous' and exclude them from your data set.
-    # Calling this method after you pass old events will fix that for all events for the specified user_id
-    # For some reason this API feature requires the developer key
+    # If you pass old events OR users with old date attributes (i.e. create_date for an old users), Leanplum
+    # wil mark them 'anomalous' and exclude them from your data set.
+    # Calling this method after you pass old events will fix that for all events for the specified user_id.
     def reset_anomalous_users(user_ids)
       user_ids = Array.wrap(user_ids)
       request_data = user_ids.map { |user_id| { action: SET_USER_ATTRIBUTES, resetAnomalies: true, userId: user_id } }
@@ -177,11 +176,10 @@ module LeanplumApi
     # Events have a :user_id or :device id, a name (:event) and an optional time (:time)
     # Use the :allow_offline option to send events without creating a new session
     def build_event_attributes_hash(event_hash, options = {})
-      event_hash = HashWithIndifferentAccess.new(event_hash)
       event_name = event_hash.delete(:event)
       fail ":event key not present in #{event_hash}" unless event_name
 
-      event = { action: 'track', event: event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
+      event = { action: TRACK, event: event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
       event.merge!(time: event_hash.delete(:time).strftime('%s').to_i) if event_hash[:time]
       event.merge!(info: event_hash.delete(:info)) if event_hash[:info]
       event.merge!(allowOffline: true) if options[:allow_offline]

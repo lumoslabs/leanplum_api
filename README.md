@@ -78,8 +78,8 @@ attribute_hash = {
     my_event_name: {
       count: 5,
       value: 'woodgrain',
-      firstTime: '2015-02-01'.to_time,
-      lastTime: Time.now.utc
+      firstTime: '2015-02-01'.to_time, # Dates/times be converted to epoch milliseconds
+      lastTime: Time.now.utc           # Dates/times be converted to epoch milliseconds
     }
   }
 }
