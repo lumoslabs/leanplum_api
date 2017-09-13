@@ -14,7 +14,7 @@ module LeanplumApi
     EXPORT_RUNNING = 'RUNNING'.freeze
     EXPORT_FINISHED = 'FINISHED'.freeze
 
-    def initialize(options = {})
+    def initialize
       fail 'LeanplumApi not configured yet!' unless LeanplumApi.configuration
     end
 
