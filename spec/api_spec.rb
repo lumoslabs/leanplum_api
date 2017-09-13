@@ -49,7 +49,7 @@ describe LeanplumApi::API do
     let(:user_with_devices) { user.merge(devices: devices) }
     let(:user_with_events) { user.merge(events: events) }
 
-    context 'building attributes' do
+    context '#build_user_attributes_hash' do
       let(:built_attributes) do
         {
           userId: first_user_id,
@@ -58,12 +58,12 @@ describe LeanplumApi::API do
         }
       end
 
-      it 'builds user_attributes_hash' do
+      it 'builds the right hash' do
         expect(api.send(:build_user_attributes_hash, user)).to eq(built_attributes)
       end
 
       context 'with events' do
-        it 'builds user_attributes_hash' do
+        it 'builds the right hash' do
           expect(api.send(:build_user_attributes_hash, user_with_events)).to eq(
             built_attributes.merge(events: events_with_timestamps)
           )
@@ -71,7 +71,7 @@ describe LeanplumApi::API do
       end
 
       context 'with devices' do
-        it 'builds user_attributes_hash with devices' do
+        it 'builds the right hash' do
           expect(api.send(:build_user_attributes_hash, user_with_devices)).to eq(
             built_attributes.merge(devices: devices)
           )
@@ -79,7 +79,7 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'set_user_attributes' do
+    context '#set_user_attributes' do
       context 'valid request' do
         it 'should successfully set user attributes' do
           VCR.use_cassette('set_user_attributes') do
@@ -115,7 +115,7 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'user_attributes' do
+    context '#user_attributes' do
       it 'should get user attributes for this user' do
         VCR.use_cassette('export_user') do
           api.user_attributes(first_user_id).each do |k, v|
@@ -129,11 +129,11 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'export_users' do
+    context '#export_users' do
       it 'should export users'
     end
 
-    context 'reset_anomalous_users' do
+    context '#reset_anomalous_users' do
       it 'should successfully call setUserAttributes with resetAnomalies' do
         VCR.use_cassette('reset_anomalous_user') do
           expect { api.reset_anomalous_users(first_user_id) }.to_not raise_error
@@ -177,7 +177,7 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'without user attributes' do
+    context '#track_events' do
       context 'valid request' do
         it 'should successfully track session events' do
           VCR.use_cassette('track_events') do
@@ -213,8 +213,8 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'along with user attributes' do
-      it 'does not raise error and has a success response' do
+    context '#track_multi' do
+      it 'tracks users and events at the same time' do
         VCR.use_cassette('track_events_and_attributes') do
           expect do
             response = api.track_multi(events: events, user_attributes: users)
@@ -224,7 +224,7 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'user_events' do
+    context '#user_events' do
       it 'should get user events for this user' do
         VCR.use_cassette('export_user') do
           expect(api.user_events(first_user_id)[purchase].keys.sort).to eq(%w(firstTime lastTime count).sort)
