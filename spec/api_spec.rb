@@ -43,7 +43,7 @@ describe LeanplumApi::API do
     end
   end
 
-  context 'users' do
+  context 'user attributes' do
     let(:events) { { eventName1: { count: 1, firstTime: first_event_time, lastTime: last_event_time } } }
     let(:events_with_timestamps) { Hash[events.map { |k, v| [k, api.send(:fix_seconds_since_epoch, v)] }] }
     let(:user_with_devices) { user.merge(devices: devices) }
@@ -142,7 +142,7 @@ describe LeanplumApi::API do
     end
   end
 
-  context 'events' do
+  context 'event tracking' do
     let(:timestamp) { '2015-05-01 01:02:03' }
     let(:purchase) { 'purchase' }
     let(:events) do
