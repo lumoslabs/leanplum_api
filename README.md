@@ -139,7 +139,7 @@ response = data_export_api.wait_for_export_job(job_id)
 ### Other Available Methods
 These are mostly simple wrappers around Leanplum's API methods.
 
-* `api.export_user`
+* `api.export_user(user_id)`
 * `api.user_attributes(user_id)` (gives you the attributes section of `exportUser`)
 * `api.user_events(user_id)` (gives you the events section of `exportUser`)
 * `api.get_ab_tests(only_recent)`
