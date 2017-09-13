@@ -98,6 +98,12 @@ describe LeanplumApi::API do
             expect { api.set_user_attributes([user_with_devices]) }.to_not raise_error
           end
         end
+
+        it 'should successfully set user attributes and devices and events' do
+          VCR.use_cassette('set_user_attributes_with_devices_and_events') do
+            expect { api.set_user_attributes([user_with_devices.merge(events: events)]) }.to_not raise_error
+          end
+        end
       end
 
       context 'invalid request' do
