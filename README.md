@@ -66,7 +66,7 @@ api.set_device_attributes(device_attributes)
 
 # You must provide either :user_id or :device_id for requests involving
 # attribute updates or event tracking.
-attribute_hash = {
+user_attributes = {
   user_id: 12345,
   first_name: 'Mike',
   last_name: 'Jones',
@@ -74,14 +74,14 @@ attribute_hash = {
   email: 'still_tippin@test.com',
   birthday: Date.today  # Dates/times will be converted to ISO8601 format
 }
-api.set_user_attributes(attribute_hash)
+api.set_user_attributes(user_attributes)
 
 # In 2017, Leanplum implemented the ability to set various first and last timestamps for event
 # occurrences, as well as counts for that event in their setUserAttributes API.
 # They also added the ability to set devices for that user.
 # This is what it would look like to push data about an event that happened 5 times between
 # 2015-02-01 and today along with a set of devices for that user.
-attribute_hash = {
+user_attributes = {
   user_id: 12345,
   devices: [device_attributes],
   events: {
@@ -93,7 +93,7 @@ attribute_hash = {
     }
   }
 }
-api.set_user_attributes(attribute_hash)
+api.set_user_attributes(user_attributes)
 
 # You must also provide the :event property for event tracking.
 ## :info is an optional property for an extra string.
