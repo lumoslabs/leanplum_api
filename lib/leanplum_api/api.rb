@@ -33,9 +33,9 @@ module LeanplumApi
     def track_multi(events: nil, user_attributes: nil, device_attributes: nil, options: {})
       events = Array.wrap(events)
 
-      request_data = events.map { |h| build_event_attributes_hash(h, options) } +
-                     Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h) } +
-                     Array.wrap(device_attributes).map { |h| build_device_attributes_hash(h) }
+      request_data = events.map { |h| build_event_attributes_hash(h.dup, options) } +
+                     Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h.dup) } +
+                     Array.wrap(device_attributes).map { |h| build_device_attributes_hash(h.dup) }
 
       response = production_connection.multi(request_data).body['response']
       force_anomalous_override(response, events) if options[:force_anomalous_override]
@@ -207,7 +207,6 @@ module LeanplumApi
     # build a user attributes hash
     # @param [Hash] user_hash user attributes to set into LP user
     def build_user_attributes_hash(user_hash)
-      user_hash = fix_iso8601(user_hash)
       user_attr_hash = extract_user_id_or_device_id_hash!(user_hash)
       user_attr_hash[:action] = SET_USER_ATTRIBUTES
       user_attr_hash[:devices] = user_hash.delete(:devices) if user_hash.key?(:devices)
@@ -215,7 +214,7 @@ module LeanplumApi
         user_attr_hash[:events] = user_hash.delete(:events)
         user_attr_hash[:events].each { |k, v| user_attr_hash[:events][k] = fix_seconds_since_epoch(v)}
       end
-      user_attr_hash[:userAttributes] = user_hash
+      user_attr_hash[:userAttributes] = fix_iso8601(user_hash)
       user_attr_hash
     end
 
