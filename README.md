@@ -76,11 +76,14 @@ attribute_hash = {
 }
 api.set_user_attributes(attribute_hash)
 
-# In 2017, Leanplum implemented the ability to set various first and last timestamps for event occurrences, as well as
-# counts for that event in their setUserAttributes API.  They also added the ability to set devices for that user.
-# This is what it would look like to push data about an event that happened 5 times between 2015-02-01 and today.
+# In 2017, Leanplum implemented the ability to set various first and last timestamps for event
+# occurrences, as well as counts for that event in their setUserAttributes API.
+# They also added the ability to set devices for that user.
+# This is what it would look like to push data about an event that happened 5 times between
+# 2015-02-01 and today along with a set of devices for that user.
 attribute_hash = {
   user_id: 12345,
+  devices: [device_attributes],
   events: {
     my_event_name: {
       count: 5,
@@ -88,8 +91,7 @@ attribute_hash = {
       firstTime: '2015-02-01'.to_time, # Dates/times will be converted to epoch seconds
       lastTime: Time.now.utc           # Dates/times will be converted to epoch seconds
     }
-  },
-  devices: [device_attributes]
+  }
 }
 api.set_user_attributes(attribute_hash)
 
