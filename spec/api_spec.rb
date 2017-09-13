@@ -187,7 +187,10 @@ describe LeanplumApi::API do
 
         it 'should successfully track non session events' do
           VCR.use_cassette('track_offline_events') do
-            expect { api.track_events(events, allow_offline: true) }.to_not raise_error
+            expect do
+              response = api.track_events(events, allow_offline: true)
+              expect(response.map { |r| r['success'] && r['isOffline'] }.all?).to be_truthy
+            end.to_not raise_error
           end
         end
       end
