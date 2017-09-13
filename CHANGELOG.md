@@ -1,5 +1,6 @@
 ## 4.0.0
 * **BREAKING CHANGE** - `track_multi` method signature has changed.
+* **BREAKING CHANGE** - Data export methods moved to the `DataExportAPI` class
 * *New Feature* - Added support for setDeviceAttributes (thanks @beingmattlevy)
 
 ## 3.1.0
