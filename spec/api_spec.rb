@@ -53,13 +53,6 @@ describe LeanplumApi::API do
             expect { api.set_device_attributes(devices) }.to_not raise_error
           end
         end
-
-        it 'sets device attributes without error' do
-          VCR.use_cassette('set_device_attributes') do
-            response = api.set_device_attributes(devices)
-            expect(response.first['success']).to be true
-          end
-        end
       end
     end
   end
