@@ -204,23 +204,6 @@ module LeanplumApi
       user_id ? { userId: user_id } : { deviceId: device_id }
     end
 
-    # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
-    def fix_iso8601(attr_hash)
-      attr_hash = HashWithIndifferentAccess.new(attr_hash)
-      attr_hash.each { |k, v| attr_hash[k] = v.iso8601 if is_date_or_time?(v) }
-      attr_hash
-    end
-
-    def fix_seconds_since_epoch(in_attr_hash)
-      attr_hash = in_attr_hash.dup
-      attr_hash.each do |k, v|
-        if v.is_a?(Time) || v.is_a?(DateTime) || v.is_a?(Date)
-          attr_hash[k] = v.strftime('%s').to_i
-        end
-      end
-      attr_hash
-    end
-
     # build a user attributes hash
     # @param [Hash] user_hash user attributes to set into LP user
     def build_user_attributes_hash(user_hash)
@@ -231,7 +214,6 @@ module LeanplumApi
       if user_hash.key?(:events)
         user_attr_hash[:events] = user_hash.delete(:events)
         user_attr_hash[:events].each { |k, v| user_attr_hash[:events][k] = fix_seconds_since_epoch(v)}
-
       end
       user_attr_hash[:userAttributes] = user_hash
       user_attr_hash
@@ -285,6 +267,17 @@ module LeanplumApi
         LeanplumApi.configuration.logger.debug("Resetting anomalous user ids: #{user_ids_to_reset}")
         reset_anomalous_users(user_ids_to_reset)
       end
+    end
+
+    # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
+    def fix_iso8601(attr_hash)
+      attr_hash = HashWithIndifferentAccess.new(attr_hash)
+      attr_hash.each { |k, v| attr_hash[k] = v.iso8601 if is_date_or_time?(v) }
+      attr_hash
+    end
+
+    def fix_seconds_since_epoch(attr_hash)
+      Hash[attr_hash.map { |k, v| [k, (is_date_or_time?(v) ? v.strftime('%s').to_i : v)] }]
     end
 
     def is_date_or_time?(obj)
