@@ -16,10 +16,8 @@ describe LeanplumApi::Connection do
   end
 
   context 'devMode' do
-    around(:all) do |example|
+    before do
       LeanplumApi.configure { |c| c.developer_mode = true }
-      example.run
-      LeanplumApi.configure { |c| c.developer_mode = false }
     end
 
     it 'should build the right developer mode url' do
