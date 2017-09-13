@@ -271,9 +271,7 @@ module LeanplumApi
 
     # As of 2015-10 Leanplum supports ISO8601 date & time strings as user attributes.
     def fix_iso8601(attr_hash)
-      attr_hash = HashWithIndifferentAccess.new(attr_hash)
-      attr_hash.each { |k, v| attr_hash[k] = v.iso8601 if is_date_or_time?(v) }
-      attr_hash
+      Hash[attr_hash.map { |k, v| [k, (is_date_or_time?(v) ? v.iso8601 : v)] }]
     end
 
     def fix_seconds_since_epoch(attr_hash)

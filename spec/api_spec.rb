@@ -67,10 +67,10 @@ describe LeanplumApi::API do
   context 'users' do
     let(:expected_event_hash) do
       {
-        'eventName1' => {
-          'count' => 1,
-          'firstTime' => first_event_time.strftime('%s').to_i,
-          'lastTime' => last_event_time.strftime('%s').to_i
+        eventName1: {
+          count: 1,
+          firstTime: first_event_time.strftime('%s').to_i,
+          lastTime: last_event_time.strftime('%s').to_i
         }
       }
     end
@@ -93,7 +93,7 @@ describe LeanplumApi::API do
 
       it 'builds user_attributes_hash with devices' do
         expect(api.send(:build_user_attributes_hash, user_with_devices)).to eq(
-          built_attributes.merge(devices: [devices.first.with_indifferent_access])
+          built_attributes.merge(devices: [devices.first])
         )
       end
     end
