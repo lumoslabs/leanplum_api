@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe LeanplumApi::DataExportAPI do
   let(:api) { described_class.new }
 

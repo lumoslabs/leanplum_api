@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe LeanplumApi::API do
   let(:api) { described_class.new }
   let(:first_user_id) { 123456 }

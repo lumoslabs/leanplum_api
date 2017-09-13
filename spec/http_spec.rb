@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe LeanplumApi::Connection do
   let(:http) { described_class.new(LeanplumApi.configuration.production_key) }
 

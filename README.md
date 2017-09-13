@@ -119,9 +119,9 @@ api.track_events(event, force_anomalous_override: true)
 ### API based data export:
 
 ```ruby
-api = LeanplumApi::DataExportAPI.new
-job_id = api.export_data(start_time, end_time)
-response = wait_for_export_job(job_id)
+data_export_api = LeanplumApi::DataExportAPI.new
+job_id = data_export_api.export_data(start_time, end_time)
+response = data_export_api.wait_for_export_job(job_id)
 ```
 
 **Note well that Leanplum now officially recommends use of the automated S3 export instead of API based export.**  According to a Leanplum engineer these two data export methodologies are completely independent data paths and in our experience we have found API based data export to be missing 10-15% of the data that is eventually returned by the automated export.
