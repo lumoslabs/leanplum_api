@@ -6,7 +6,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":1505188800,"params":{"some_timestamp":"2015-05-01
-        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1505188200},{"userId":123456,"action":"setUserAttributes","events":{"eventName1":{"count":1,"firstTime":1505102400,"lastTime":1505188800}},"userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
+        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1505188200},{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
     headers:
       User-Agent:
       - Faraday v0.13.1
@@ -26,17 +26,17 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 5759ed0b888b377e1cc9f8c2885a5937
+      - 1d9fae7271faf91d8a84aa0073e936df
       Set-Cookie:
-      - GOOGAPPUID=xCgoIAxAUII_D4c0F; expires=Sun, 01-Nov-2020 18:37:03 GMT; path=/
+      - GOOGAPPUID=xCgoIAxBCILu-4s0F; expires=Sun, 01-Nov-2020 23:00:11 GMT; path=/
       Date:
-      - Tue, 12 Sep 2017 22:37:03 GMT
+      - Wed, 13 Sep 2017 03:00:11 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '99'
       Expires:
-      - Tue, 12 Sep 2017 22:37:03 GMT
+      - Wed, 13 Sep 2017 03:00:11 GMT
       Cache-Control:
       - private
     body:

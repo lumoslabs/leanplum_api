@@ -5,7 +5,7 @@ http_interactions:
     uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505188800
     body:
       encoding: UTF-8
-      string: '{"data":[{"userId":123456,"action":"setUserAttributes","events":{"eventName1":{"count":1,"firstTime":1505102400,"lastTime":1505188800}},"userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
+      string: '{"data":[{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
     headers:
       User-Agent:
       - Faraday v0.13.1
@@ -25,17 +25,17 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - ce5c331e7500c151623f73efed80027f
+      - 5be03f9feb1252577866918e6fd5c00a
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDqASCKw-HNBQ; expires=Sun, 01-Nov-2020 18:36:58 GMT; path=/
+      - GOOGAPPUID=xCgsIAxDcBCC6vuLNBQ; expires=Sun, 01-Nov-2020 23:00:10 GMT; path=/
       Date:
-      - Tue, 12 Sep 2017 22:36:58 GMT
+      - Wed, 13 Sep 2017 03:00:10 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '31'
       Expires:
-      - Tue, 12 Sep 2017 22:36:58 GMT
+      - Wed, 13 Sep 2017 03:00:10 GMT
       Cache-Control:
       - private
     body:

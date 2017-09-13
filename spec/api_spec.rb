@@ -3,45 +3,35 @@ describe LeanplumApi::API do
   let(:first_user_id) { 123456 }
   let(:first_event_time) { Time.now.utc - 1.day }
   let(:last_event_time) { Time.now.utc }
-  let(:user) { users.first }
-  let(:users) do
-    [{
+  let(:users) { [user] }
+  let(:devices) { [device] }
+  let(:user) do
+    {
       user_id: first_user_id,
       first_name: 'Mike',
       last_name: 'Jones',
       gender: 'm',
       email: 'still_tippin@test.com',
       create_date: '2010-01-01'.to_date,
-      is_tipping: true,
-      events: {
-        eventName1: {
-          count: 1,
-          firstTime: first_event_time,
-          lastTime: last_event_time
-        }
-      }
-    }]
+      is_tipping: true
+    }
   end
-  let(:devices) do
-    [{
+  let(:device) do
+    {
       device_id: 'fu123',
       appVersion: 'x42x',
       deviceModel: 'p0d',
       create_date: '2018-01-01'.to_date
-    }]
+    }
   end
 
   context 'devices' do
-    let(:expected_response_hash) do
-      {
-        deviceId: devices.first[:device_id],
-        action: described_class::SET_DEVICE_ATTRIBUTES,
-        deviceAttributes: api.send(:fix_iso8601, devices.first.except(:device_id))
-      }
-    end
-
     it 'build_device_attributes_hash' do
-      expect(api.send(:build_device_attributes_hash, devices.first)).to eq(expected_response_hash)
+      expect(api.send(:build_device_attributes_hash, device)).to eq(
+        deviceId: device[:device_id],
+        action: described_class::SET_DEVICE_ATTRIBUTES,
+        deviceAttributes: api.send(:fix_iso8601, device.except(:device_id))
+      )
     end
 
     context 'set_device_attributes' do
@@ -59,14 +49,7 @@ describe LeanplumApi::API do
         {
           userId: first_user_id,
           action: described_class::SET_USER_ATTRIBUTES,
-          userAttributes: api.send(:fix_iso8601, user.except(:events, :user_id)),
-          events: {
-            eventName1: {
-              count: 1,
-              firstTime: first_event_time.strftime('%s').to_i,
-              lastTime: last_event_time.strftime('%s').to_i
-            }
-          }
+          userAttributes: api.send(:fix_iso8601, user.except(:events, :user_id))
         }
       end
 
@@ -74,12 +57,34 @@ describe LeanplumApi::API do
         expect(api.send(:build_user_attributes_hash, user)).to eq(built_attributes)
       end
 
+      context 'with events' do
+        let(:events) { { eventName1: { count: 1, firstTime: first_event_time, lastTime: last_event_time } } }
+        let(:events_with_timestamps) { Hash[events.map { |k, v| [k, api.send(:fix_seconds_since_epoch, v)] }] }
+        let(:user_with_events) do
+          user.merge(events: events)
+        end
+
+        it 'builds user_attributes_hash' do
+          expect(api.send(:build_user_attributes_hash, user_with_events)).to eq(
+            built_attributes.merge(
+              events: {
+                eventName1: {
+                  count: 1,
+                  firstTime: first_event_time.strftime('%s').to_i,
+                  lastTime: last_event_time.strftime('%s').to_i
+                }
+              }
+            )
+          )
+        end
+      end
+
       context 'with devices' do
         let(:user_with_devices) { user.merge(devices: devices) }
 
         it 'builds user_attributes_hash with devices' do
           expect(api.send(:build_user_attributes_hash, user_with_devices)).to eq(
-            built_attributes.merge(devices: [devices.first])
+            built_attributes.merge(devices: devices)
           )
         end
       end
