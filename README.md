@@ -57,6 +57,13 @@ end
 ```ruby
 api = LeanplumApi::API.new
 
+# Setting device attributes requires a device_id.
+device_attributes = {
+  device_id: 'big_boss_belt_buckler',
+  device_model: 'four_vogues'
+}
+api.set_device_attributes(device_attributes)
+
 # You must provide either :user_id or :device_id for requests involving
 # attribute updates or event tracking.
 attribute_hash = {
@@ -70,7 +77,7 @@ attribute_hash = {
 api.set_user_attributes(attribute_hash)
 
 # In 2017, Leanplum implemented the ability to set various first and last timestamps for event occurrences, as well as
-# counts for that event in their API at the same time as you set various attributes for that user.
+# counts for that event in their setUserAttributes API.  They also added the ability to set devices for that user.
 # This is what it would look like to push data about an event that happened 5 times between 2015-02-01 and today.
 attribute_hash = {
   user_id: 12345,
@@ -78,10 +85,11 @@ attribute_hash = {
     my_event_name: {
       count: 5,
       value: 'woodgrain',
-      firstTime: '2015-02-01'.to_time, # Dates/times be converted to epoch milliseconds
-      lastTime: Time.now.utc           # Dates/times be converted to epoch milliseconds
+      firstTime: '2015-02-01'.to_time, # Dates/times will be converted to epoch seconds
+      lastTime: Time.now.utc           # Dates/times will be converted to epoch seconds
     }
-  }
+  },
+  devices: [device_attributes]
 }
 api.set_user_attributes(attribute_hash)
 
@@ -92,8 +100,8 @@ api.set_user_attributes(attribute_hash)
 event = {
   user_id: 12345,
   event: 'purchase',
+  time: Time.now.utc, # Event timestamps will be converted to epoch seconds
   info: 'reallybigpurchase',
-  time: Time.now.utc, # Event timestamps will be converted to epoch seconds by the gem.
   some_event_property: 'boss_hog_on_candy'
 }
 api.track_events(event)
@@ -101,7 +109,7 @@ api.track_events(event)
 #   Ed. note 2017-09-12 - looks like Leanplum changed their API and everything is considered offline now
 api.track_events(event, allow_offline: true)
 
-# You can also track events, user attributes, and device attributes at the same time. magic!
+# You can also track events, user attributes, and device attributes at the same time. Magic!
 api.track_multi(
   events: event,
   user_attributes: user_attributes,
