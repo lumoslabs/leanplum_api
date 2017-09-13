@@ -137,15 +137,17 @@ response = data_export_api.wait_for_export_job(job_id)
 **Note well that Leanplum now officially recommends use of the automated S3 export instead of API based export.**  According to a Leanplum engineer these two data export methodologies are completely independent data paths and in our experience we have found API based data export to be missing 10-15% of the data that is eventually returned by the automated export.
 
 ### Other Available Methods
-* `api.user_attributes(user_id)`
-* `api.user_events(user_id)`
+These are mostly simple wrappers around Leanplum's API methods.
+
+* `api.export_user`
+* `api.user_attributes(user_id)` (gives you the attributes section of `exportUser`)
+* `api.user_events(user_id)` (gives you the events section of `exportUser`)
 * `api.get_ab_tests(only_recent)`
 * `api.get_ab_test(ab_test_id)`
 * `api.get_messages(only_recent)`
 * `api.get_message(message_id)`
 * `api.get_variant(variant_id)`
 * `api.get_vars(user_id)`
-* `api.set_device_attributes(device_attribute_hashes)`
 
 
 ## Specs
