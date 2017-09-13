@@ -203,12 +203,14 @@ describe LeanplumApi::API do
       end
 
       context 'anomalous data force_anomalous_override' do
-        let(:old_events) { events.map { |e| e[:time] -= 1.year; e } }
+        let(:old_events) { events.map { |e| e[:time] -= 2.years; e } }
 
         it 'should successfully force the anomalous data override events' do
-          #puts "old events: #{old_events}"
           VCR.use_cassette('track_events_anomaly_overrider') do
-            expect { api.track_events(old_events, force_anomalous_override: true) }.to_not raise_error
+            expect do
+              response = api.track_events(old_events, force_anomalous_override: true)
+              expect(response.map { |r| r['warning']['message'] }.all? { |w| w =~ /Device clock skew/ }).to be_truthy
+            end.to_not raise_error
           end
         end
       end

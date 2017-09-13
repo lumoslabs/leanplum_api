@@ -5,8 +5,8 @@ http_interactions:
     uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505188800
     body:
       encoding: UTF-8
-      string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":1473652800,"params":{"some_timestamp":"2015-05-01
-        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1473652200}]}'
+      string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":1442030400,"params":{"some_timestamp":"2015-05-01
+        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1442029800}]}'
     headers:
       User-Agent:
       - Faraday v0.13.1
@@ -26,23 +26,24 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 8ed07346ad6aee90ca986c553a6a8dc3
+      - d750bbdc504c87ea8cdd84354aa229ee
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxCDBCCNw-HNBQ; expires=Sun, 01-Nov-2020 18:37:01 GMT; path=/
+      - GOOGAPPUID=xCgsIAxDnAyC8xOPNBQ; expires=Mon, 02-Nov-2020 03:46:04 GMT; path=/
       Date:
-      - Tue, 12 Sep 2017 22:37:01 GMT
+      - Wed, 13 Sep 2017 07:46:04 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '163'
+      - '260'
       Expires:
-      - Tue, 12 Sep 2017 22:37:01 GMT
+      - Wed, 13 Sep 2017 07:46:04 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":true,"isOffline":true},{"success":true,"warning":{"message":"Past
-        event detected (365 days ago). Rewriting timestamp."},"isOffline":true}]}'
+      string: '{"response":[{"success":true,"warning":{"message":"Device clock skew
+        detected (1 days behind). Rewriting timestamp."},"isOffline":true},{"success":true,"warning":{"message":"Device
+        clock skew detected (1 days behind). Rewriting timestamp."},"isOffline":true}]}'
     http_version: 
   recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
 - request:
@@ -70,17 +71,17 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - d2007a2494ab0b39abe2c860b8408963
+      - 276d90e9d976c82b9c4ca17866ed9898
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxC2ByCNw-HNBQ; expires=Sun, 01-Nov-2020 18:37:02 GMT; path=/
+      - GOOGAPPUID=xCgsIAxDuAyC8xOPNBQ; expires=Mon, 02-Nov-2020 03:46:04 GMT; path=/
       Date:
-      - Tue, 12 Sep 2017 22:37:02 GMT
+      - Wed, 13 Sep 2017 07:46:04 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '48'
       Expires:
-      - Tue, 12 Sep 2017 22:37:02 GMT
+      - Wed, 13 Sep 2017 07:46:04 GMT
       Cache-Control:
       - private
     body:
