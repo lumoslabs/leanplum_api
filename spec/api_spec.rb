@@ -138,13 +138,13 @@ describe LeanplumApi::API do
         {
           user_id: first_user_id,
           event: purchase,
-          time: Time.now.utc,
+          time: last_event_time,
           some_timestamp: timestamp
         },
         {
           user_id: 54321,
           event: 'purchase_page_view',
-          time: Time.now.utc - 10.minutes
+          time: last_event_time - 10.minutes
         }
       ]
     end
@@ -153,7 +153,7 @@ describe LeanplumApi::API do
       let(:event_hash) do
         {
           userId: first_user_id,
-          time: Time.now.utc.strftime('%s').to_i,
+          time: last_event_time.strftime('%s').to_i,
           action: described_class::TRACK,
           event: purchase,
           params: { some_timestamp: timestamp }
