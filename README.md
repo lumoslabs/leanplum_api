@@ -119,7 +119,7 @@ api.track_events(event, force_anomalous_override: true)
 ### API based data export:
 
 ```ruby
-api = LeanplumApi::API.new
+api = LeanplumApi::DataExportAPI.new
 job_id = api.export_data(start_time, end_time)
 response = wait_for_export_job(job_id)
 ```
