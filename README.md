@@ -143,15 +143,13 @@ response = data_export_api.wait_for_export_job(job_id)
 
 To write _new_ specs (or regenerate one of [VCR](https://github.com/vcr/vcr)'s YAML files), you must set the `LEANPLUM_PRODUCTION_KEY`, `LEANPLUM_APP_ID`, `LEANPLUM_CONTENT_READ_ONLY_KEY`, `LEANPLUM_DEVELOPMENT_KEY`, and `LEANPLUM_DATA_EXPORT_KEY` environment variables (preferably to some development only keys) to something and then run rspec.  VCR will create fixture data based on your requests, masking your actual keys so that it's safe to commit the file.
 
+The easiest way to do this is to create a `.env` file based on the [.env.example](.env.example) file in the repo and then fill in the blanks.
+
 > BE AWARE THAT IF YOU WRITE A NEW SPEC OR DELETE A VCR FILE, IT'S POSSIBLE THAT REAL DATA WILL BE WRITTEN TO THE `LEANPLUM_APP_ID` YOU CONFIGURE!  Certainly a real request will be made to rebuild the VCR file, and while specs run with ```devMode=true```, it's usually a good idea to create a fake app for testing/running specs against.
 
 ```bash
-export LEANPLUM_APP_ID=app_somethingsomething2039410238
-export LEANPLUM_PRODUCTION_KEY=dev_somethingsomeg123456
-export LEANPLUM_DATA_EXPORT_KEY=data_something_3238mmmX
-export LEANPLUM_CONTENT_READ_ONLY_KEY=sometingsome23xx9
-export LEANPLUM_DEVELOPMENT_KEY=sometingsome23xx923n23i
-
+cp .env.example .env
+vi .env # open in your favorite text editor; edit it and fill in the various keys
 bundle exec rspec
 ```
 
