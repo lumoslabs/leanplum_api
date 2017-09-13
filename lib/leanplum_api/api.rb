@@ -210,10 +210,12 @@ module LeanplumApi
       user_attr_hash = extract_user_id_or_device_id_hash!(user_hash)
       user_attr_hash[:action] = SET_USER_ATTRIBUTES
       user_attr_hash[:devices] = user_hash.delete(:devices) if user_hash.key?(:devices)
+
       if user_hash.key?(:events)
         user_attr_hash[:events] = user_hash.delete(:events)
-        user_attr_hash[:events].each { |k, v| user_attr_hash[:events][k] = fix_seconds_since_epoch(v)}
+        user_attr_hash[:events].each { |k, v| user_attr_hash[:events][k] = fix_seconds_since_epoch(v) }
       end
+
       user_attr_hash[:userAttributes] = fix_iso8601(user_hash)
       user_attr_hash
     end
