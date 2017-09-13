@@ -54,7 +54,7 @@ describe LeanplumApi::API do
         {
           userId: first_user_id,
           action: described_class::SET_USER_ATTRIBUTES,
-          userAttributes: api.send(:fix_iso8601, user.except(:events, :user_id))
+          userAttributes: api.send(:fix_iso8601, user.except(:user_id))
         }
       end
 
@@ -165,9 +165,9 @@ describe LeanplumApi::API do
       let(:event_hash) do
         {
           userId: first_user_id,
+          event: purchase,
           time: last_event_time.strftime('%s').to_i,
           action: described_class::TRACK,
-          event: purchase,
           params: { some_timestamp: timestamp }
         }
       end
@@ -214,16 +214,12 @@ describe LeanplumApi::API do
     end
 
     context 'along with user attributes' do
-      it 'does not raise error' do
+      it 'does not raise error and has a success response' do
         VCR.use_cassette('track_events_and_attributes') do
-          expect { api.track_multi(events: events, user_attributes: users) }.to_not raise_error
-        end
-      end
-
-      it 'returns success response' do
-        VCR.use_cassette('track_events_and_attributes') do
-          response = api.track_multi(events: events, user_attributes: users)
-          expect(response.first['success']).to be true
+          expect do
+            response = api.track_multi(events: events, user_attributes: users)
+            expect(response.first['success']).to be true
+          end.to_not raise_error
         end
       end
     end
