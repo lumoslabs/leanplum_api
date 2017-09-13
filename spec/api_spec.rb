@@ -47,47 +47,43 @@ describe LeanplumApi::API do
     end
 
     context 'set_device_attributes' do
-      context 'valid request' do
-        it 'sets device attributes without error' do
-          VCR.use_cassette('set_device_attributes') do
-            expect { api.set_device_attributes(devices) }.to_not raise_error
-          end
+      it 'sets device attributes without error' do
+        VCR.use_cassette('set_device_attributes') do
+          expect { api.set_device_attributes(devices) }.to_not raise_error
         end
       end
     end
   end
 
   context 'users' do
-    let(:expected_event_hash) do
-      {
-        eventName1: {
-          count: 1,
-          firstTime: first_event_time.strftime('%s').to_i,
-          lastTime: last_event_time.strftime('%s').to_i
+    context 'building attributes' do
+      let(:built_attributes) do
+        {
+          userId: first_user_id,
+          action: described_class::SET_USER_ATTRIBUTES,
+          userAttributes: api.send(:fix_iso8601, user.except(:events, :user_id)),
+          events: {
+            eventName1: {
+              count: 1,
+              firstTime: first_event_time.strftime('%s').to_i,
+              lastTime: last_event_time.strftime('%s').to_i
+            }
+          }
         }
-      }
-    end
+      end
 
-    let(:built_attributes) do
-      {
-        userId: first_user_id,
-        action: described_class::SET_USER_ATTRIBUTES,
-        userAttributes: api.send(:fix_iso8601, user.except(:events, :user_id)),
-        events: expected_event_hash
-      }
-    end
+      it 'builds user_attributes_hash' do
+        expect(api.send(:build_user_attributes_hash, user)).to eq(built_attributes)
+      end
 
-    it 'builds user_attributes_hash' do
-      expect(api.send(:build_user_attributes_hash, user)).to eq(built_attributes)
-    end
+      context 'with devices' do
+        let(:user_with_devices) { user.merge(devices: devices) }
 
-    context 'with devices' do
-      let(:user_with_devices) { user.merge(devices: devices) }
-
-      it 'builds user_attributes_hash with devices' do
-        expect(api.send(:build_user_attributes_hash, user_with_devices)).to eq(
-          built_attributes.merge(devices: [devices.first])
-        )
+        it 'builds user_attributes_hash with devices' do
+          expect(api.send(:build_user_attributes_hash, user_with_devices)).to eq(
+            built_attributes.merge(devices: [devices.first])
+          )
+        end
       end
     end
 
