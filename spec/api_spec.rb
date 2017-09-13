@@ -44,6 +44,11 @@ describe LeanplumApi::API do
   end
 
   context 'users' do
+    let(:events) { { eventName1: { count: 1, firstTime: first_event_time, lastTime: last_event_time } } }
+    let(:events_with_timestamps) { Hash[events.map { |k, v| [k, api.send(:fix_seconds_since_epoch, v)] }] }
+    let(:user_with_devices) { user.merge(devices: devices) }
+    let(:user_with_events) { user.merge(events: events) }
+
     context 'building attributes' do
       let(:built_attributes) do
         {
@@ -58,30 +63,14 @@ describe LeanplumApi::API do
       end
 
       context 'with events' do
-        let(:events) { { eventName1: { count: 1, firstTime: first_event_time, lastTime: last_event_time } } }
-        let(:events_with_timestamps) { Hash[events.map { |k, v| [k, api.send(:fix_seconds_since_epoch, v)] }] }
-        let(:user_with_events) do
-          user.merge(events: events)
-        end
-
         it 'builds user_attributes_hash' do
           expect(api.send(:build_user_attributes_hash, user_with_events)).to eq(
-            built_attributes.merge(
-              events: {
-                eventName1: {
-                  count: 1,
-                  firstTime: first_event_time.strftime('%s').to_i,
-                  lastTime: last_event_time.strftime('%s').to_i
-                }
-              }
-            )
+            built_attributes.merge(events: events_with_timestamps)
           )
         end
       end
 
       context 'with devices' do
-        let(:user_with_devices) { user.merge(devices: devices) }
-
         it 'builds user_attributes_hash with devices' do
           expect(api.send(:build_user_attributes_hash, user_with_devices)).to eq(
             built_attributes.merge(devices: devices)
@@ -95,6 +84,18 @@ describe LeanplumApi::API do
         it 'should successfully set user attributes' do
           VCR.use_cassette('set_user_attributes') do
             expect { api.set_user_attributes(users) }.to_not raise_error
+          end
+        end
+
+        it 'should successfully set user attributes and events' do
+          VCR.use_cassette('set_user_attributes_with_events') do
+            expect { api.set_user_attributes([user_with_events]) }.to_not raise_error
+          end
+        end
+
+        it 'should successfully set user attributes and devices' do
+          VCR.use_cassette('set_user_attributes_with_devices') do
+            expect { api.set_user_attributes([user_with_devices]) }.to_not raise_error
           end
         end
       end
