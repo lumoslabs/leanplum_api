@@ -1,7 +1,8 @@
 require 'leanplum_api/api'
 
-# The data export features are semi-deprecated, because the data they give has historically been inaccurate.
-# The automated S3 export has better accuracy with a fraction of the headaches.  Use at your own risk.
+# Support for data export features are semi-deprecated in the gem, because the data they give has historically
+# been inaccurate. The automated S3 export has better accuracy with a fraction of the headaches.
+# Use these methods at your own risk.
 
 module LeanplumApi
   class DataExportAPI < API
