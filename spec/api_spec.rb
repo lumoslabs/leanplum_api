@@ -156,7 +156,7 @@ describe LeanplumApi::API do
         {
           userId: first_user_id,
           time: Time.now.utc.strftime('%s').to_i,
-          action: 'track',
+          action: described_class::TRACK,
           event: purchase,
           params: { some_timestamp: timestamp }
         }
