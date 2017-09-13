@@ -135,6 +135,7 @@ response = data_export_api.wait_for_export_job(job_id)
 * `api.get_message(message_id)`
 * `api.get_variant(variant_id)`
 * `api.get_vars(user_id)`
+* `api.set_device_attributes(device_attribute_hashes)`
 
 
 ## Specs
