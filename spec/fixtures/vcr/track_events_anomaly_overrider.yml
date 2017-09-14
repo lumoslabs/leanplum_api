@@ -44,7 +44,7 @@ http_interactions:
       string: '{"response":[{"success":true,"warning":{"message":"Past event detected
         (731 days ago). Rewriting timestamp."},"isOffline":true},{"success":true,"warning":{"message":"Past
         event detected (731 days ago). Rewriting timestamp."},"isOffline":true}]}'
-    http_version: 
+    http_version:
   recorded_at: Thu, 14 Sep 2017 07:09:10 GMT
 - request:
     method: post
@@ -87,6 +87,6 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"response":[{"success":true},{"success":true}]}'
-    http_version: 
+    http_version:
   recorded_at: Thu, 14 Sep 2017 07:09:10 GMT
 recorded_with: VCR 3.0.3

@@ -38,11 +38,11 @@ module LeanplumApi
         params.merge!(s3ObjectPrefix: LeanplumApi.configuration.s3_object_prefix) if LeanplumApi.configuration.s3_object_prefix
       end
 
-      data_export_connection.get(params).body['response'].first['jobId']
+      data_export_connection.get(params).first['jobId']
     end
 
     def get_export_results(job_id)
-      response = data_export_connection.get(action: 'getExportResults', jobId: job_id).body['response'].first
+      response = data_export_connection.get(action: 'getExportResults', jobId: job_id).first
 
       if response['state'] == EXPORT_FINISHED
         LeanplumApi.configuration.logger.info("Export finished.")
@@ -63,7 +63,7 @@ module LeanplumApi
     # The segment syntax is identical to that produced by the "Insert Value" feature on the dashboard.
     # Examples: 'Country = "US"', '{Country = "US"} and {App version = 1}'.
     def export_users(ab_test_id = nil, segment = nil)
-      data_export_connection.get(action: 'exportUsers', segment: segment, ab_test_id: ab_test_id).body['response'].first['jobId']
+      data_export_connection.get(action: 'exportUsers', segment: segment, ab_test_id: ab_test_id).first['jobId']
     end
 
     def wait_for_export_job(job_id, polling_interval = 60)

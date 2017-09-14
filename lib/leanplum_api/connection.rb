@@ -7,13 +7,13 @@ module LeanplumApi
     end
 
     def get(query)
-      connection.get(LEANPLUM_API_PATH, query.merge(authentication_params))
+      connection.get(LEANPLUM_API_PATH, query.merge(authentication_params)).body['response']
     end
 
     def multi(payload)
       connection.post("#{LEANPLUM_API_PATH}?#{authed_multi_param_string}") do |request|
         request.body = { data: payload }
-      end
+      end.body['response']
     end
 
     private

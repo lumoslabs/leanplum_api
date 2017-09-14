@@ -39,7 +39,7 @@ module LeanplumApi
                      Array.wrap(user_attributes).map { |h| build_user_attributes_hash(h.dup) } +
                      Array.wrap(device_attributes).map { |h| build_device_attributes_hash(h.dup) }
 
-      response = production_connection.multi(request_data).body['response']
+      response = production_connection.multi(request_data)
       force_anomalous_override(response, events) if options[:force_anomalous_override]
 
       response
@@ -65,37 +65,37 @@ module LeanplumApi
     end
 
     def export_user(user_id)
-      response = data_export_connection.get(action: 'exportUser', userId: user_id).body['response'].first
+      response = data_export_connection.get(action: 'exportUser', userId: user_id).first
       raise ResourceNotFoundError, 'User not found' unless response['events'] || response['userAttributes']
       response
     end
 
     def get_ab_tests(only_recent = false)
-      content_read_only_connection.get(action: 'getAbTests', recent: only_recent).body['response'].first['abTests']
+      content_read_only_connection.get(action: 'getAbTests', recent: only_recent).first['abTests']
     end
 
     def get_ab_test(ab_test_id)
-      content_read_only_connection.get(action: 'getAbTest', id: ab_test_id).body['response'].first['abTest']
+      content_read_only_connection.get(action: 'getAbTest', id: ab_test_id).first['abTest']
     end
 
     def get_variant(variant_id)
-      content_read_only_connection.get(action: 'getVariant', id: variant_id).body['response'].first['variant']
+      content_read_only_connection.get(action: 'getVariant', id: variant_id).first['variant']
     end
 
     def get_messages(only_recent = false)
-      content_read_only_connection.get(action: 'getMessages', recent: only_recent).body['response'].first['messages']
+      content_read_only_connection.get(action: 'getMessages', recent: only_recent).first['messages']
     end
 
     def get_message(message_id)
-      content_read_only_connection.get(action: 'getMessage', id: message_id).body['response'].first['message']
+      content_read_only_connection.get(action: 'getMessage', id: message_id).first['message']
     end
 
     def get_vars(user_id)
-      production_connection.get(action: 'getVars', userId: user_id).body['response'].first['vars']
+      production_connection.get(action: 'getVars', userId: user_id).first['vars']
     end
 
     def delete_user(user_id)
-      development_connection.get(action: 'deleteUser', userId: user_id).body['response'].first['vars']
+      development_connection.get(action: 'deleteUser', userId: user_id).first['vars']
     end
 
     # If you pass old events OR users with old date attributes (i.e. create_date for an old users), Leanplum
