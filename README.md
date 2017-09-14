@@ -154,6 +154,7 @@ These are mostly simple wrappers around Leanplum's API methods.  See their docum
 * `api.get_message(message_id)`
 * `api.get_variant(variant_id)`
 * `api.get_vars(user_id)`
+* `api.delete_user(user_id)`
 
 
 ## Specs

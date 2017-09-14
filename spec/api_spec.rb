@@ -43,7 +43,7 @@ describe LeanplumApi::API do
     end
   end
 
-  context 'user attributes' do
+  context 'users' do
     let(:events) { { eventName1: { count: 1, firstTime: first_event_time, lastTime: last_event_time } } }
     let(:events_with_timestamps) { Hash[events.map { |k, v| [k, api.send(:fix_seconds_since_epoch, v)] }] }
     let(:user_with_devices) { user.merge(devices: devices) }
@@ -133,6 +133,26 @@ describe LeanplumApi::API do
       it 'should successfully call setUserAttributes with resetAnomalies' do
         VCR.use_cassette('reset_anomalous_user') do
           expect { api.reset_anomalous_users(first_user_id) }.to_not raise_error
+        end
+      end
+    end
+
+    context '#delete_user' do
+      let(:user_id) { 'delete_yourself_123' }
+      let(:deletable_user) { user.merge(user_id: user_id) }
+
+      it 'should delete a user' do
+        VCR.use_cassette('delete_user') do
+          expect { api.set_user_attributes(deletable_user) }.to_not raise_error
+          expect { api.delete_user(user_id) }.to_not raise_error
+          expect {
+            begin
+              api.user_attributes(user_id)
+            rescue => e
+              pp e
+              raise e
+            end
+          }.to raise_error(LeanplumApi::ResourceNotFoundError)
         end
       end
     end

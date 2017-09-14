@@ -2,8 +2,6 @@ module LeanplumApi
   class API
     extend Gem::Deprecate
 
-    class LeanplumValidationException < RuntimeError; end
-
     # API Command Constants
     SET_USER_ATTRIBUTES = 'setUserAttributes'.freeze
     SET_DEVICE_ATTRIBUTES = 'setDeviceAttributes'.freeze
@@ -67,7 +65,9 @@ module LeanplumApi
     end
 
     def export_user(user_id)
-      data_export_connection.get(action: 'exportUser', userId: user_id).body['response'].first
+      response = data_export_connection.get(action: 'exportUser', userId: user_id).body['response'].first
+      raise ResourceNotFoundError, 'User not found' unless response['events'] || response['userAttributes']
+      response
     end
 
     def get_ab_tests(only_recent = false)

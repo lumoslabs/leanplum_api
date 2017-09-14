@@ -15,11 +15,11 @@ RSpec.configure do |config|
       configuration.data_export_key = ENV['LEANPLUM_DATA_EXPORT_KEY'] || DEFAULT_SPEC_KEY
       configuration.content_read_only_key = ENV['LEANPLUM_CONTENT_READ_ONLY_KEY'] || DEFAULT_SPEC_KEY
       configuration.development_key = ENV['LEANPLUM_DEVELOPMENT_KEY'] || DEFAULT_SPEC_KEY
-      configuration.logger.level = Logger::FATAL
+      configuration.logger.level = Logger::DEBUG
     end
 
     # Leanplum requires passing the time in some requests so we freeze it.
-    Timecop.freeze('2017-09-12'.to_time.utc)
+    Timecop.freeze('2017-09-14T07:09:10.787Z'.to_time)
   end
 end
 
