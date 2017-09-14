@@ -16,16 +16,16 @@ module LeanplumApi
 
       @app.call(environment).on_complete do |response|
         fail ResourceNotFoundError, response.inspect if response.status == 404
-        fail BadResponseError, response.inspect unless response.status == 200 && (responses = response.body['response'])
-        fail BadResponseError, "No :success key in #{responses.inspect}!" unless responses.is_a?(Array) && responses.all? { |r| r.key?(SUCCESS) }
+        fail BadResponseError, response.inspect unless response.status == 200 && (responses = response.body['response']).is_a?(Array)
+        fail BadResponseError, "No :success key in #{responses.inspect}!" unless responses.all? { |r| r.key?(SUCCESS) }
 
-        validate_operation_success(responses, requests)
+        validate_request_success(responses, requests) if LeanplumApi.configuration.validate_response
       end
     end
 
     private
 
-    def validate_operation_success(success_indicators, requests)
+    def validate_request_success(success_indicators, requests)
       if requests && success_indicators.size != requests.size
         fail "Attempted to do #{requests.size} requests but only received confirmation for #{success_indicators.size}!"
       end
@@ -35,11 +35,9 @@ module LeanplumApi
           LeanplumApi.configuration.logger.warn((requests ? "Warning for #{requests[i]}: " : '') + indicator[WARN].to_s)
         end
 
-        if indicator[SUCCESS].to_s != 'true'
-          (requests ? { operation: requests[i], error: indicator } : { error: indicator })
-        else
-          nil
-        end
+        next nil unless indicator[SUCCESS].to_s != 'true'
+
+        requests ? { operation: requests[i], error: indicator } : { error: indicator }
       end.compact
 
       unless failures.empty?
