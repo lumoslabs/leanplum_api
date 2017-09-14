@@ -1,7 +1,5 @@
 module LeanplumApi
   class API
-    extend Gem::Deprecate
-
     # API Command Constants
     SET_USER_ATTRIBUTES = 'setUserAttributes'.freeze
     SET_DEVICE_ATTRIBUTES = 'setDeviceAttributes'.freeze
@@ -46,7 +44,7 @@ module LeanplumApi
     end
 
     def user_attributes(user_id)
-      # Leanplum returns strings instead of boolean
+      # Leanplum returns strings instead of booleans
       Hash[export_user(user_id)['userAttributes'].map { |k, v| [k, v.to_s =~ /\Atrue|false\z/i ? eval(v.downcase) : v]}]
     end
 
