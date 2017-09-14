@@ -9,13 +9,14 @@ DEFAULT_SPEC_KEY = 'JUNKTASTIC_SPASMASTIC'
 
 RSpec.configure do |config|
   config.before(:all) do
-    LeanplumApi.configure do |configuration|
-      configuration.production_key = ENV['LEANPLUM_PRODUCTION_KEY'] || DEFAULT_SPEC_KEY
-      configuration.app_id = ENV['LEANPLUM_APP_ID'] || DEFAULT_SPEC_KEY
-      configuration.data_export_key = ENV['LEANPLUM_DATA_EXPORT_KEY'] || DEFAULT_SPEC_KEY
-      configuration.content_read_only_key = ENV['LEANPLUM_CONTENT_READ_ONLY_KEY'] || DEFAULT_SPEC_KEY
-      configuration.development_key = ENV['LEANPLUM_DEVELOPMENT_KEY'] || DEFAULT_SPEC_KEY
-      configuration.logger.level = Logger::FATAL
+    LeanplumApi.configure do |config|
+      config.production_key =        ENV['LEANPLUM_PRODUCTION_KEY'] || DEFAULT_SPEC_KEY
+      config.app_id =                ENV['LEANPLUM_APP_ID'] || DEFAULT_SPEC_KEY
+      config.data_export_key =       ENV['LEANPLUM_DATA_EXPORT_KEY'] || DEFAULT_SPEC_KEY
+      config.content_read_only_key = ENV['LEANPLUM_CONTENT_READ_ONLY_KEY'] || DEFAULT_SPEC_KEY
+      config.development_key =       ENV['LEANPLUM_DEVELOPMENT_KEY'] || DEFAULT_SPEC_KEY
+
+      config.logger.level = config.debug_mode? ? Logger::DEBUG : Logger::FATAL
     end
 
     # Leanplum requires passing the time in some requests so we freeze it.
