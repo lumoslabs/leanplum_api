@@ -182,10 +182,10 @@ module LeanplumApi
 
     # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
     # and has no idea what "versioning" actually means, so we just reset everyone all the time.
-    def force_anomalous_override(response, events)
+    def force_anomalous_override(responses, events)
       user_ids_to_reset = []
 
-      response.each_with_index do |indicator, i|
+      responses.each_with_index do |indicator, i|
         # This condition should be:
         # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
         # but it has to be:
