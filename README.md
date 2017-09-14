@@ -8,11 +8,11 @@ Leanplum calls it a REST API but it is not very RESTful.
 
 Leanplum also likes to change and break stuff in their API without changing the version number, so buyer beware.
 
-The gem uses the ```multi``` method with a POST for all event tracking and user attribute updating requests.  Check Leanplum's docs for more information on ```multi```.
+The gem uses the `multi` method with a POST for all event tracking and user attribute updating requests.  Check Leanplum's docs for more information on `multi`.
 
 Tested with Leanplum API version 1.0.6 - which is actually totally meaningless because the version is always 1.0.6, even when they make major revisions to how the API works.
 
-`required_ruby_version` is set to 1.9 but this code has only been tested with Ruby 2.1.5 and up!
+`required_ruby_version` is set to 2.0 but this code has only been tested with Ruby 2.1.5 and up!
 
 ## Configuration
 
@@ -108,7 +108,7 @@ event = {
 }
 api.track_events(event)
 # Events tracked like that will be made part of a session; for independent events use :allow_offline
-#   Ed. note 2017-09-12 - looks like Leanplum changed their API and everything is considered offline now
+#   Ed. note 2017-09-12 - looks like Leanplum changed their API and everything is considered offline now.
 api.track_events(event, allow_offline: true)
 
 # You can also track events, user attributes, and device attributes at the same time. Magic!
@@ -120,9 +120,9 @@ api.track_multi(
 )
 
 # If your event is sufficiently far in the past, leanplum will mark your user as "Anomalous"
-# To force a reset of this flag, either call the method directly
+# To force a reset of this flag, either call the method directly.
 api.reset_anomalous_users([12345, 23456])
-# Or use the :force_anomalous_override option when calling track_events or track_multi
+# Or use the :force_anomalous_override option when calling track_events or track_multi.
 api.track_events(event, force_anomalous_override: true)
 ```
 
@@ -137,7 +137,7 @@ response = data_export_api.wait_for_export_job(job_id)
 **Note well that Leanplum now officially recommends use of the automated S3 export instead of API based export.**  According to a Leanplum engineer these two data export methodologies are completely independent data paths and in our experience we have found API based data export to be missing 10-15% of the data that is eventually returned by the automated export.
 
 ### Other Available Methods
-These are mostly simple wrappers around Leanplum's API methods.
+These are mostly simple wrappers around Leanplum's API methods.  See their documentation for details.
 
 * `api.export_user(user_id)`
 * `api.user_attributes(user_id)` (gives you the attributes section of `exportUser`)
