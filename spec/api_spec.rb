@@ -145,14 +145,7 @@ describe LeanplumApi::API do
         VCR.use_cassette('delete_user') do
           expect { api.set_user_attributes(deletable_user) }.to_not raise_error
           expect { api.delete_user(user_id) }.to_not raise_error
-          expect {
-            begin
-              api.user_attributes(user_id)
-            rescue => e
-              pp e
-              raise e
-            end
-          }.to raise_error(LeanplumApi::ResourceNotFoundError)
+          expect { api.user_attributes(user_id) }.to raise_error(LeanplumApi::ResourceNotFoundError)
         end
       end
     end
