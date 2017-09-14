@@ -28,7 +28,6 @@ module LeanplumApi
 
     def validate_operation_success(operations, response)
       success_indicators = response.body['response']
-      puts "indicators: #{success_indicators}"
       if success_indicators.size != operations.size
         fail "Attempted to do #{operations.size} operations but only received confirmation for #{success_indicators.size}!"
       end

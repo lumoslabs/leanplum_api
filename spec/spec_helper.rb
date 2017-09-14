@@ -15,7 +15,7 @@ RSpec.configure do |config|
       configuration.data_export_key = ENV['LEANPLUM_DATA_EXPORT_KEY'] || DEFAULT_SPEC_KEY
       configuration.content_read_only_key = ENV['LEANPLUM_CONTENT_READ_ONLY_KEY'] || DEFAULT_SPEC_KEY
       configuration.development_key = ENV['LEANPLUM_DEVELOPMENT_KEY'] || DEFAULT_SPEC_KEY
-      configuration.logger.level = Logger::DEBUG
+      configuration.logger.level = Logger::FATAL
     end
 
     # Leanplum requires passing the time in some requests so we freeze it.

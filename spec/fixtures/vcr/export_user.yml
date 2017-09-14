@@ -23,22 +23,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 594e803fa4d8e8e80e6ec7d634efcb49
+      - 4a45807783f206b776fd3fb9a544860d
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDLAyCLw-HNBQ; expires=Sun, 01-Nov-2020 18:36:59 GMT; path=/
+      - GOOGAPPUID=xCgsIAxCYByCX1-jNBQ; expires=Tue, 03-Nov-2020 03:11:19 GMT; path=/
       Date:
-      - Tue, 12 Sep 2017 22:36:59 GMT
+      - Thu, 14 Sep 2017 07:11:19 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '526'
+      - '598'
       Expires:
-      - Tue, 12 Sep 2017 22:36:59 GMT
+      - Thu, 14 Sep 2017 07:11:19 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"totalSessions":0,"timeSpentInApp":0.0,"userAttributes":{"is_tipping":"True","gender":"m","last_name":"Jones","create_date":"2010-01-01","first_name":"Mike","email":"still_tippin@test.com"},"lastActive":1.446709787966E9,"devices":[],"success":true,"created":1.43935302887E9,"unsubscribeChannels":[],"userId":"123456","events":{"purchase":{"firstTime":1.460514593026E9,"lastTime":1.505250274986E9,"count":76},"eventName1":{"firstTime":1.4735664E9,"lastTime":1.5051888E9,"count":1}},"userBucket":358,"states":{}}]}'
+      string: '{"response":[{"totalSessions":0,"timeSpentInApp":0.0,"userAttributes":{"is_tipping":"True","gender":"m","last_name":"Jones","create_date":"2010-01-01","first_name":"Mike","email":"still_tippin@test.com"},"lastActive":1.446709787966E9,"devices":[{"deviceId":null},{"deviceId":null},{"deviceId":null},{"deviceId":null}],"success":true,"created":1.43935302887E9,"unsubscribeChannels":[],"userId":"123456","events":{"purchase":{"firstTime":1.460514593026E9,"lastTime":1.505288764337E9,"count":91},"eventName1":{"firstTime":1.4735664E9,"lastTime":1.50537295E9,"count":1}},"userBucket":358,"states":{}}]}'
     http_version: 
-  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
+  recorded_at: Thu, 14 Sep 2017 07:09:10 GMT
 recorded_with: VCR 3.0.3

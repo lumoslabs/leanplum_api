@@ -228,7 +228,7 @@ describe LeanplumApi::API do
           VCR.use_cassette('track_events_anomaly_overrider') do
             expect do
               response = api.track_events(old_events, force_anomalous_override: true)
-              expect(response.map { |r| r['warning']['message'] }.all? { |w| w =~ /Device clock skew/ }).to be true
+              expect(response.map { |r| r['warning']['message'] }.all? { |w| w =~ /Past event detected/ }).to be true
             end.to_not raise_error
           end
         end
