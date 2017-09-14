@@ -45,7 +45,7 @@ module LeanplumApi
 
     def user_attributes(user_id)
       # Leanplum returns strings instead of booleans
-      Hash[export_user(user_id)['userAttributes'].map { |k, v| [k, v.to_s =~ /\Atrue|false\z/i ? eval(v.downcase) : v]}]
+      Hash[export_user(user_id)['userAttributes'].map { |k, v| [k, v.to_s =~ /\Atrue|false\z/i ? eval(v.downcase) : v] }]
     end
 
     def user_events(user_id)
