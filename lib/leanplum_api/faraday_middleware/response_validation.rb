@@ -27,7 +27,7 @@ module LeanplumApi
 
     def validate_request_success(success_indicators, requests)
       if requests && success_indicators.size != requests.size
-        fail "Attempted to do #{requests.size} requests but only received confirmation for #{success_indicators.size}!"
+        fail BadResponseError, "Attempted #{requests.size} operations but received confirmation for #{success_indicators.size}!"
       end
 
       failures = success_indicators.map.with_index do |indicator, i|
@@ -35,15 +35,15 @@ module LeanplumApi
           LeanplumApi.configuration.logger.warn((requests ? "Warning for #{requests[i]}: " : '') + indicator[WARN].to_s)
         end
 
-        next nil unless indicator[SUCCESS].to_s != 'true'
+        next nil if indicator[SUCCESS].to_s == 'true'
 
         requests ? { operation: requests[i], error: indicator } : { error: indicator }
       end.compact
 
       unless failures.empty?
-        error_message = "Operation failure(s): #{failures}"
+        error_message = "Operation failures: #{failures}"
         LeanplumApi.configuration.logger.error(error_message)
-        fail BadResponseError.new(error_message)
+        fail BadResponseError, error_message
       end
     end
   end
