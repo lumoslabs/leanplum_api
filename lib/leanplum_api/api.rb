@@ -86,7 +86,7 @@ module LeanplumApi
       development_connection.get(action: 'deleteUser', userId: user_id).first['vars']
     end
 
-    # If you pass old events OR users with old date attributes (i.e. create_date for an old user), Leanplum
+    # If you pass old events OR users with old date attributes (e.g. create_date for an old user), Leanplum
     # wil mark them 'anomalous' and exclude them from your data set.
     # Calling this method after you pass old events will fix that for all events for the specified user_id.
     def reset_anomalous_users(user_ids)
