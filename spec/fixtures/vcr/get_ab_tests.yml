@@ -23,22 +23,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 37ed4e82db5ccf5c93ec2c0cb02b88f8
+      - f3345c6634ba954b9320a0c8a9691cc4
       Set-Cookie:
-      - GOOGAPPUID=xCgoIAxBnIOaX4c0F; expires=Sun, 01-Nov-2020 17:04:39 GMT; path=/
+      - GOOGAPPUID=xCgsIAxDaBCCa1-jNBQ; expires=Tue, 03-Nov-2020 03:11:22 GMT; path=/
       Date:
-      - Tue, 12 Sep 2017 21:04:39 GMT
+      - Thu, 14 Sep 2017 07:11:22 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '44'
       Expires:
-      - Tue, 12 Sep 2017 21:04:39 GMT
+      - Thu, 14 Sep 2017 07:11:22 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
       string: '{"response":[{"success":true,"abTests":[]}]}'
     http_version: 
-  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
+  recorded_at: Thu, 14 Sep 2017 07:09:10 GMT
 recorded_with: VCR 3.0.3

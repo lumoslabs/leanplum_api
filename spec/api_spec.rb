@@ -1,57 +1,107 @@
-require 'spec_helper'
-
 describe LeanplumApi::API do
   let(:api) { described_class.new }
   let(:first_user_id) { 123456 }
   let(:first_event_time) { Time.now.utc - 1.day }
   let(:last_event_time) { Time.now.utc }
-  let(:users) do
-    [{
+  let(:users) { [user] }
+  let(:devices) { [device] }
+  let(:user) do
+    {
       user_id: first_user_id,
       first_name: 'Mike',
       last_name: 'Jones',
       gender: 'm',
       email: 'still_tippin@test.com',
       create_date: '2010-01-01'.to_date,
-      is_tipping: true,
-      events: {
-        eventName1: {
-          count: 1,
-          firstTime: first_event_time,
-          lastTime: last_event_time
-        }
-      }
-    }]
+      is_tipping: true
+    }
+  end
+  let(:device) do
+    {
+      device_id: 'fu123',
+      appVersion: 'x42x',
+      deviceModel: 'p0d',
+      create_date: '2018-01-01'.to_date
+    }
+  end
+
+  context 'devices' do
+    it 'build_device_attributes_hash' do
+      expect(api.send(:build_device_attributes_hash, device)).to eq(
+        deviceId: device[:device_id],
+        action: described_class::SET_DEVICE_ATTRIBUTES,
+        deviceAttributes: api.send(:fix_iso8601, device.except(:device_id))
+      )
+    end
+
+    context 'set_device_attributes' do
+      it 'sets device attributes without error' do
+        VCR.use_cassette('set_device_attributes') do
+          expect { api.set_device_attributes(devices) }.to_not raise_error
+        end
+      end
+    end
   end
 
   context 'users' do
-    it 'build_user_attributes_hash' do
-      expect(api.send(:build_user_attributes_hash, users.first)).to eq({
-        userId: first_user_id,
-        action: 'setUserAttributes',
-        events: {
-          'eventName1' => {
-            'count' => 1,
-            'firstTime' => first_event_time.strftime('%s').to_i,
-            'lastTime' => last_event_time.strftime('%s').to_i
-          }
-        },
-        userAttributes: HashWithIndifferentAccess.new(
-          first_name: 'Mike',
-          last_name: 'Jones',
-          gender: 'm',
-          email: 'still_tippin@test.com',
-          create_date: '2010-01-01',
-          is_tipping: true
-        )
-      })
+    let(:events) { { eventName1: { count: 1, firstTime: first_event_time, lastTime: last_event_time } } }
+    let(:events_with_timestamps) { Hash[events.map { |k, v| [k, api.send(:fix_seconds_since_epoch, v)] }] }
+    let(:user_with_devices) { user.merge(devices: devices) }
+    let(:user_with_events) { user.merge(events: events) }
+
+    context '#build_user_attributes_hash' do
+      let(:built_attributes) do
+        {
+          userId: first_user_id,
+          action: described_class::SET_USER_ATTRIBUTES,
+          userAttributes: api.send(:fix_iso8601, user.except(:user_id))
+        }
+      end
+
+      it 'builds the right hash' do
+        expect(api.send(:build_user_attributes_hash, user)).to eq(built_attributes)
+      end
+
+      context 'with events' do
+        it 'builds the right hash' do
+          expect(api.send(:build_user_attributes_hash, user_with_events)).to eq(
+            built_attributes.merge(events: events_with_timestamps)
+          )
+        end
+      end
+
+      context 'with devices' do
+        it 'builds the right hash' do
+          expect(api.send(:build_user_attributes_hash, user_with_devices)).to eq(
+            built_attributes.merge(devices: devices)
+          )
+        end
+      end
     end
 
-    context 'set_user_attributes' do
+    context '#set_user_attributes' do
       context 'valid request' do
         it 'should successfully set user attributes' do
           VCR.use_cassette('set_user_attributes') do
             expect { api.set_user_attributes(users) }.to_not raise_error
+          end
+        end
+
+        it 'should successfully set user attributes and events' do
+          VCR.use_cassette('set_user_attributes_with_events') do
+            expect { api.set_user_attributes([user_with_events]) }.to_not raise_error
+          end
+        end
+
+        it 'should successfully set user attributes and devices' do
+          VCR.use_cassette('set_user_attributes_with_devices') do
+            expect { api.set_user_attributes([user_with_devices]) }.to_not raise_error
+          end
+        end
+
+        it 'should successfully set user attributes and devices and events' do
+          VCR.use_cassette('set_user_attributes_with_devices_and_events') do
+            expect { api.set_user_attributes([user_with_devices.merge(events: events)]) }.to_not raise_error
           end
         end
       end
@@ -65,34 +115,43 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'user_attributes' do
+    context '#user_attributes' do
       it 'should get user attributes for this user' do
         VCR.use_cassette('export_user') do
           api.user_attributes(first_user_id).each do |k, v|
-            if users.first[k.to_sym].is_a?(Date) || users.first[k.to_sym].is_a?(DateTime)
-              expect(v).to eq(users.first[k.to_sym].strftime('%Y-%m-%d'))
+            if user[k.to_sym].is_a?(Date) || user[k.to_sym].is_a?(DateTime)
+              expect(v).to eq(user[k.to_sym].strftime('%Y-%m-%d'))
             else
-              expect(v).to eq(users.first[k.to_sym])
+              expect(v).to eq(user[k.to_sym])
             end
           end
         end
       end
     end
 
-    context 'export_users' do
-      it 'should export users'
-    end
-
-    context 'reset_anomalous_users' do
+    context '#reset_anomalous_users' do
       it 'should successfully call setUserAttributes with resetAnomalies' do
         VCR.use_cassette('reset_anomalous_user') do
           expect { api.reset_anomalous_users(first_user_id) }.to_not raise_error
         end
       end
     end
+
+    context '#delete_user' do
+      let(:user_id) { 'delete_yourself_123' }
+      let(:deletable_user) { user.merge(user_id: user_id) }
+
+      it 'should delete a user' do
+        VCR.use_cassette('delete_user') do
+          expect { api.set_user_attributes(deletable_user) }.to_not raise_error
+          expect { api.delete_user(user_id) }.to_not raise_error
+          expect { api.user_attributes(user_id) }.to raise_error(LeanplumApi::ResourceNotFoundError)
+        end
+      end
+    end
   end
 
-  context 'events' do
+  context 'event tracking' do
     let(:timestamp) { '2015-05-01 01:02:03' }
     let(:purchase) { 'purchase' }
     let(:events) do
@@ -100,13 +159,13 @@ describe LeanplumApi::API do
         {
           user_id: first_user_id,
           event: purchase,
-          time: Time.now.utc,
+          time: last_event_time,
           some_timestamp: timestamp
         },
         {
           user_id: 54321,
           event: 'purchase_page_view',
-          time: Time.now.utc - 10.minutes
+          time: last_event_time - 10.minutes
         }
       ]
     end
@@ -115,9 +174,9 @@ describe LeanplumApi::API do
       let(:event_hash) do
         {
           userId: first_user_id,
-          time: Time.now.utc.strftime('%s').to_i,
-          action: 'track',
           event: purchase,
+          time: last_event_time.strftime('%s').to_i,
+          action: described_class::TRACK,
           params: { some_timestamp: timestamp }
         }
       end
@@ -127,7 +186,7 @@ describe LeanplumApi::API do
       end
     end
 
-    context 'without user attributes' do
+    context '#track_events' do
       context 'valid request' do
         it 'should successfully track session events' do
           VCR.use_cassette('track_events') do
@@ -137,7 +196,10 @@ describe LeanplumApi::API do
 
         it 'should successfully track non session events' do
           VCR.use_cassette('track_offline_events') do
-            expect { api.track_events(events, allow_offline: true) }.to_not raise_error
+            expect do
+              response = api.track_events(events, allow_offline: true)
+              expect(response.map { |r| r['success'] && r['isOffline'] }.all?).to be_truthy
+            end.to_not raise_error
           end
         end
       end
@@ -153,28 +215,34 @@ describe LeanplumApi::API do
       end
 
       context 'anomalous data force_anomalous_override' do
-        let(:old_events) { events.map { |e| e[:time] -= 1.year; e } }
+        let(:old_events) { events.map { |e| e[:time] -= 2.years; e } }
 
         it 'should successfully force the anomalous data override events' do
           VCR.use_cassette('track_events_anomaly_overrider') do
-            expect { api.track_events(old_events, force_anomalous_override: true) }.to_not raise_error
+            expect do
+              response = api.track_events(old_events, force_anomalous_override: true)
+              expect(response.map { |r| r['warning']['message'] }.all? { |w| w =~ /Past event detected/ }).to be true
+            end.to_not raise_error
           end
         end
       end
     end
 
-    context 'along with user attributes' do
-      it 'should work' do
+    context '#track_multi' do
+      it 'tracks users and events at the same time' do
         VCR.use_cassette('track_events_and_attributes') do
-          expect { api.track_multi(events, users) }.to_not raise_error
+          expect do
+            response = api.track_multi(events: events, user_attributes: users)
+            expect(response.first['success']).to be true
+          end.to_not raise_error
         end
       end
     end
 
-    context 'user_events' do
+    context '#user_events' do
       it 'should get user events for this user' do
         VCR.use_cassette('export_user') do
-          expect(api.user_events(first_user_id)[purchase].keys).to eq(%w(firstTime lastTime count))
+          expect(api.user_events(first_user_id)[purchase].keys.sort).to eq(%w(firstTime lastTime count).sort)
         end
       end
     end
@@ -186,46 +254,6 @@ describe LeanplumApi::API do
       LeanplumApi.configure { |c| c.developer_mode = false }
       example.run
       LeanplumApi.configure { |c| c.developer_mode = true }
-    end
-
-    context 'data export methods' do
-      context 'export_data' do
-        context 'regular export' do
-          it 'should request a data export job with a starttime' do
-            VCR.use_cassette('export_data') do
-              expect { api.export_data(Time.at(1438660800).utc) }.to raise_error LeanplumApi::BadResponseError
-            end
-          end
-
-          it 'should request a data export job with start and end dates' do
-            VCR.use_cassette('export_data_dates') do
-              expect { api.export_data(Date.new(2017, 8, 5), Date.new(2017, 8, 6)) }.to_not raise_error
-            end
-          end
-        end
-
-        context 's3 export' do
-          let(:s3_bucket_name) { 'bucket' }
-          let(:s3_access_key) { 's3_access_key' }
-          let(:s3_access_id) { 's3_access_id' }
-
-          it 'should request an S3 export'
-        end
-      end
-
-      context 'get_export_results' do
-        it 'should get a status for a data export job' do
-          VCR.use_cassette('get_export_results') do
-            expect(api.get_export_results('export_4727756026281984_2904941266315269120')).to eq({
-              files: ['https://leanplum_export.storage.googleapis.com/export-4727756026281984-d5969d55-f242-48a6-85a3-165af08e2306-output-0'],
-              number_of_bytes: 36590,
-              number_of_sessions: 101,
-              state: LeanplumApi::API::EXPORT_FINISHED,
-              s3_copy_status: nil
-            })
-          end
-        end
-      end
     end
 
     context 'content read only methods' do
@@ -267,9 +295,25 @@ describe LeanplumApi::API do
         pending 'Docs are extremely unclear about what getVars and setVars even do'
 
         VCR.use_cassette('get_vars') do
-          expect(api.get_vars(users.first[:user_id])).to eq({ 'test_var' => 1 })
+          expect(api.get_vars(user[:user_id])).to eq({ 'test_var' => 1 })
         end
       end
+    end
+  end
+
+  context 'hash utility methods' do
+    let(:hash_with_times) { { not_time: 'grippin', time: Time.now.utc, date: Time.now.utc.to_date } }
+
+    it 'turns datetimes into seconds from the epoch' do
+      expect(api.send(:fix_seconds_since_epoch, hash_with_times)).to eq(
+        hash_with_times.merge(time: Time.now.utc.strftime('%s').to_i, date: Time.now.utc.to_date.strftime('%s').to_i)
+      )
+    end
+
+    it 'turns datetimes into iso8601 format' do
+      expect(api.send(:fix_iso8601, hash_with_times)).to eq(
+        hash_with_times.merge(time: Time.now.utc.iso8601, date: Time.now.utc.to_date.iso8601)
+      )
     end
   end
 end

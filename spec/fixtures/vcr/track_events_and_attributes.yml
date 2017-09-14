@@ -2,11 +2,11 @@
 http_interactions:
 - request:
     method: post
-    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505188800
+    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505372950
     body:
       encoding: UTF-8
-      string: '{"data":[{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true},"events":{"eventName1":{"count":1,"firstTime":1505102400,"lastTime":1505188800}}},{"action":"track","event":"purchase","userId":123456,"time":1505188800,"params":{"some_timestamp":"2015-05-01
-        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1505188200}]}'
+      string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":1505372950,"params":{"some_timestamp":"2015-05-01
+        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1505372350},{"userId":123456,"action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
     headers:
       User-Agent:
       - Faraday v0.13.1
@@ -26,22 +26,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - e30df8f39eca3f77705e8ae2c82d76d8
+      - 370430d1328668596903479e939bd7b2
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDCByDil-HNBQ; expires=Sun, 01-Nov-2020 17:04:35 GMT; path=/
+      - GOOGAPPUID=xCgsIAxDKByCa1-jNBQ; expires=Tue, 03-Nov-2020 03:11:22 GMT; path=/
       Date:
-      - Tue, 12 Sep 2017 21:04:35 GMT
+      - Thu, 14 Sep 2017 07:11:22 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '99'
       Expires:
-      - Tue, 12 Sep 2017 21:04:35 GMT
+      - Thu, 14 Sep 2017 07:11:22 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":true},{"success":true,"isOffline":true},{"success":true,"isOffline":true}]}'
+      string: '{"response":[{"success":true,"isOffline":true},{"success":true,"isOffline":true},{"success":true}]}'
     http_version: 
-  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
+  recorded_at: Thu, 14 Sep 2017 07:09:10 GMT
 recorded_with: VCR 3.0.3

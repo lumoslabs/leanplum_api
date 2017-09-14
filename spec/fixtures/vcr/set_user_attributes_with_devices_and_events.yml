@@ -5,8 +5,7 @@ http_interactions:
     uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505372950
     body:
       encoding: UTF-8
-      string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":1505372950,"params":{"some_timestamp":"2015-05-01
-        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1505372350}]}'
+      string: '{"data":[{"userId":123456,"action":"setUserAttributes","devices":[{"device_id":"fu123","appVersion":"x42x","deviceModel":"p0d","create_date":"2018-01-01"}],"events":{"eventName1":{"count":1,"firstTime":1505286550,"lastTime":1505372950}},"userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
     headers:
       User-Agent:
       - Faraday v0.13.1
@@ -26,22 +25,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - cf42a9b71fd66bdbb477cf565b11bc3e
+      - b3c2b0e268a8b9d0b5b2a837220c047a
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxD7BCCZ1-jNBQ; expires=Tue, 03-Nov-2020 03:11:21 GMT; path=/
+      - GOOGAPPUID=xCgsIAxCYBSCX1-jNBQ; expires=Tue, 03-Nov-2020 03:11:19 GMT; path=/
       Date:
-      - Thu, 14 Sep 2017 07:11:21 GMT
+      - Thu, 14 Sep 2017 07:11:19 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '82'
+      - '31'
       Expires:
-      - Thu, 14 Sep 2017 07:11:21 GMT
+      - Thu, 14 Sep 2017 07:11:19 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":true,"isOffline":true},{"success":true,"isOffline":true}]}'
+      string: '{"response":[{"success":true}]}'
     http_version: 
   recorded_at: Thu, 14 Sep 2017 07:09:10 GMT
 recorded_with: VCR 3.0.3

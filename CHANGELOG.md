@@ -1,5 +1,11 @@
+## 4.0.0
+* **BREAKING CHANGE** - `track_multi` method signature has changed.
+* **BREAKING CHANGE** - Data export methods moved to the `DataExportAPI` class
+* *New Feature* - Added support for setDeviceAttributes (thanks @beingmattlevy)
+* Fix `export_users`
+
 ## 3.1.0
-Add the ability to send events as `userAttributes` properties
+* Add the ability to send events as `userAttributes` properties
 
 ## 3.0.3
 * Single connection class; rename `wait_for_job` to `wait_for_export_job`
