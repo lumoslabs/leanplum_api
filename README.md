@@ -130,7 +130,13 @@ api.track_events(event, force_anomalous_override: true)
 
 ```ruby
 data_export_api = LeanplumApi::DataExportAPI.new
+
+# Bulk data export
 job_id = data_export_api.export_data(start_time, end_time)
+response = data_export_api.wait_for_export_job(job_id)
+
+# User export
+job_id = data_export_api.export_users(ab_test_id, segment)
 response = data_export_api.wait_for_export_job(job_id)
 ```
 

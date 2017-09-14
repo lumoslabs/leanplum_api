@@ -1,0 +1,44 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://www.leanplum.com/api?ab_test_id&action=exportUsers&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DATA_EXPORT_KEY>&devMode=false&segment
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.13.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json;charset=utf-8
+      X-Cloud-Trace-Context:
+      - 0b7e9a1a587a439434abe5bfbe49a3fd
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxCoBiCqyOjNBQ; expires=Tue, 03-Nov-2020 02:39:38 GMT; path=/
+      Date:
+      - Thu, 14 Sep 2017 06:39:38 GMT
+      Server:
+      - Google Frontend
+      Content-Length:
+      - '91'
+      Expires:
+      - Thu, 14 Sep 2017 06:39:38 GMT
+      Cache-Control:
+      - private
+    body:
+      encoding: UTF-8
+      string: '{"response":[{"jobId":"export_users_4727756026281984_1464353648502719488","success":true}]}'
+    http_version: 
+  recorded_at: Tue, 12 Sep 2017 04:00:00 GMT
+recorded_with: VCR 3.0.3

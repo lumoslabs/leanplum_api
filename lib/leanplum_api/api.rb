@@ -47,13 +47,6 @@ module LeanplumApi
       response
     end
 
-    # See leanplum docs.
-    # The segment syntax is identical to that produced by the "Insert Value" feature on the dashboard.
-    # Examples: 'Country = "US"', '{Country = "US"} and {App version = 1}'.
-    def export_users(segment, ab_test_id)
-      data_export_connection.get(action: 'exportUsers', segment: segment, ab_test_id: ab_test_id)
-    end
-
     def user_attributes(user_id)
       export_user(user_id)['userAttributes'].inject({}) do |attrs, (k, v)|
         # Leanplum doesn't use true JSON for booleans...

@@ -45,5 +45,13 @@ describe LeanplumApi::DataExportAPI do
         end
       end
     end
+
+    context '#export_users' do
+      it 'should export users' do
+        VCR.use_cassette('export_users') do
+          expect(api.export_users).to match(/export_users_\d+_\d+/)
+        end
+      end
+    end
   end
 end
