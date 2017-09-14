@@ -1,7 +1,5 @@
 module LeanplumApi
   class API
-    extend Gem::Deprecate
-
     # API Command Constants
     SET_USER_ATTRIBUTES = 'setUserAttributes'.freeze
     SET_DEVICE_ATTRIBUTES = 'setDeviceAttributes'.freeze
@@ -46,18 +44,8 @@ module LeanplumApi
     end
 
     def user_attributes(user_id)
-      export_user(user_id)['userAttributes'].inject({}) do |attrs, (k, v)|
-        # Leanplum doesn't use true JSON for booleans...
-        if v == 'True'
-          attrs[k] = true
-        elsif v == 'False'
-          attrs[k] = false
-        else
-          attrs[k] = v
-        end
-
-        attrs
-      end
+      # Leanplum returns strings instead of booleans
+      Hash[export_user(user_id)['userAttributes'].map { |k, v| [k, v.to_s =~ /\Atrue|false\z/i ? eval(v.downcase) : v] }]
     end
 
     def user_events(user_id)
@@ -66,7 +54,7 @@ module LeanplumApi
 
     def export_user(user_id)
       response = data_export_connection.get(action: 'exportUser', userId: user_id).first
-      raise ResourceNotFoundError, 'User not found' unless response['events'] || response['userAttributes']
+      fail ResourceNotFoundError, "User #{user_id} not found" unless response['events'] || response['userAttributes']
       response
     end
 
@@ -98,7 +86,7 @@ module LeanplumApi
       development_connection.get(action: 'deleteUser', userId: user_id).first['vars']
     end
 
-    # If you pass old events OR users with old date attributes (i.e. create_date for an old users), Leanplum
+    # If you pass old events OR users with old date attributes (e.g. create_date for an old user), Leanplum
     # wil mark them 'anomalous' and exclude them from your data set.
     # Calling this method after you pass old events will fix that for all events for the specified user_id.
     def reset_anomalous_users(user_ids)
@@ -181,11 +169,11 @@ module LeanplumApi
     end
 
     # Leanplum's engineering team likes to break their API and or change stuff without warning (often)
-    # and has no idea what "versioning" actually means, so we just reset everyone all the time.
-    def force_anomalous_override(response, events)
+    # and has no idea what "versioning" actually means, so we just reset everyone on any type of warning.
+    def force_anomalous_override(responses, events)
       user_ids_to_reset = []
 
-      response.each_with_index do |indicator, i|
+      responses.each_with_index do |indicator, i|
         # This condition should be:
         # if indicator['warning'] && indicator['warning']['message'] =~ /Past event detected/i
         # but it has to be:

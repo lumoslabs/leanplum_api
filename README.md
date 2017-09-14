@@ -45,7 +45,7 @@ LeanplumApi.configure do |config|
   # Defaults to false.  See "Debugging" below for more info.
   config.developer_mode = true
 
-  # Override validations for leanplum response. True by default. Useful when stubbing LP responses in application tests.  
+  # Override validations for Leanplum responses. True by default and you should probably leave it that way.
   config.validate_response = true
 end
 ```
