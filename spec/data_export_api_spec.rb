@@ -10,15 +10,15 @@ describe LeanplumApi::DataExportAPI do
   context 'data export methods' do
     context 'export_data' do
       context 'regular export' do
-        it 'should request a data export job with a starttime' do
-          VCR.use_cassette('export_data') do
-            expect { api.export_data(Time.at(1438660800).utc) }.to raise_error LeanplumApi::BadResponseError
-          end
-        end
-
         it 'should request a data export job with start and end dates' do
           VCR.use_cassette('export_data_dates') do
             expect { api.export_data(Date.new(2017, 8, 5), Date.new(2017, 8, 6)) }.to_not raise_error
+          end
+        end
+
+        it 'should exception when requesting a data export job with an invalid starttime' do
+          VCR.use_cassette('export_data') do
+            expect { api.export_data(Time.at(1438660800).utc) }.to raise_error LeanplumApi::BadResponseError
           end
         end
       end
