@@ -16,8 +16,10 @@ module LeanplumApi
 
       @app.call(environment).on_complete do |response|
         fail ResourceNotFoundError, response.inspect if response.status == 404
-        fail BadResponseError, response.inspect unless response.status == 200 && (responses = response.body['response']).is_a?(Array)
-        fail BadResponseError, "No :success key in #{responses.inspect}!" unless responses.all? { |r| r.key?(SUCCESS) }
+        fail BadResponseError, response.inspect unless response.status == 200
+
+        responses = response.body['response']
+        fail BadResponseError, "No response array: #{response.inspect}" unless responses.is_a?(Array)
 
         validate_request_success(responses, requests) if LeanplumApi.configuration.validate_response
       end
@@ -35,9 +37,14 @@ module LeanplumApi
           LeanplumApi.configuration.logger.warn((requests ? "Warning for #{requests[i]}: " : '') + indicator[WARN].to_s)
         end
 
-        next nil if indicator[SUCCESS].to_s == 'true'
-
-        requests ? { operation: requests[i], error: indicator } : { error: indicator }
+        if indicator[SUCCESS].to_s == 'true'
+          nil
+        elsif indicator[SUCCESS].nil?
+          message = "No :success key in #{indicator}"
+          requests ? { operation: requests[i], error: message } : { error: message }
+        else
+          requests ? { operation: requests[i], error: indicator } : { error: indicator }
+        end
       end.compact
 
       unless failures.empty?

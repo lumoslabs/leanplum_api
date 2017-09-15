@@ -1,3 +1,6 @@
+## HEAD
+* Slight improvement to `ResponseValidation` readability
+
 ## 4.0.0
 * **BREAKING CHANGE** - `track_multi` method signature has changed.
 * **BREAKING CHANGE** - Data export methods moved to the `DataExportAPI` class
