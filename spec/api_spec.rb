@@ -302,17 +302,17 @@ describe LeanplumApi::API do
   end
 
   context 'hash utility methods' do
-    let(:hash_with_times) { { not_time: 'grippin', time: Time.now.utc, date: Time.now.utc.to_date } }
+    let(:hash_with_times) { { not_time: 'grippin', time: last_event_time, date: last_event_time.to_date } }
 
     it 'turns datetimes into seconds from the epoch' do
       expect(api.send(:fix_seconds_since_epoch, hash_with_times)).to eq(
-        hash_with_times.merge(time: Time.now.utc.strftime('%s').to_i, date: Time.now.utc.to_date.strftime('%s').to_i)
+        hash_with_times.merge(time: last_event_time.strftime('%s').to_i, date: last_event_time.to_date.strftime('%s').to_i)
       )
     end
 
     it 'turns datetimes into iso8601 format' do
       expect(api.send(:fix_iso8601, hash_with_times)).to eq(
-        hash_with_times.merge(time: Time.now.utc.iso8601, date: Time.now.utc.to_date.iso8601)
+        hash_with_times.merge(time: last_event_time.iso8601, date: last_event_time.to_date.iso8601)
       )
     end
   end
