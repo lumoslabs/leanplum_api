@@ -29,7 +29,7 @@ module LeanplumApi
 
     def validate_request_success(success_indicators, requests)
       if requests && success_indicators.size != requests.size
-        fail BadResponseError, "Attempted #{requests.size} operations but received confirmation for #{success_indicators.size}!"
+        fail BadResponseError, "Attempted #{requests.size} operations; responses for only #{success_indicators.size}!"
       end
 
       failures = success_indicators.map.with_index do |indicator, i|
@@ -39,11 +39,10 @@ module LeanplumApi
 
         if indicator[SUCCESS].to_s == 'true'
           nil
-        elsif indicator[SUCCESS].nil?
-          message = "No :success key in #{indicator}"
-          requests ? { operation: requests[i], error: message } : { error: message }
         else
-          requests ? { operation: requests[i], error: indicator } : { error: indicator }
+          failure = { message: indicator.key?(SUCCESS) ? indicator.to_s : "No :success key found in #{indicator}" }
+          failure.merge!(operation: requests[i]) if requests
+          failure
         end
       end.compact
 

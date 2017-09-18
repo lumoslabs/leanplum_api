@@ -1,5 +1,5 @@
-## HEAD
-* Slight improvement to `ResponseValidation` readability
+# 4.0.1
+* Slight improvement to `ResponseValidation` readability; slight change to error messages
 
 ## 4.0.0
 * **BREAKING CHANGE** - `track_multi` method signature has changed.
