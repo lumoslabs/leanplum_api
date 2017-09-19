@@ -37,13 +37,10 @@ module LeanplumApi
           LeanplumApi.configuration.logger.warn((requests ? "Warning for #{requests[i]}: " : '') + indicator[WARN].to_s)
         end
 
-        if indicator[SUCCESS].to_s == 'true'
-          nil
-        else
-          failure = { message: indicator.key?(SUCCESS) ? indicator.to_s : "No :success key found in #{indicator}" }
-          failure.merge!(operation: requests[i]) if requests
-          failure
-        end
+        next nil if indicator[SUCCESS].to_s == 'true'
+
+        failure = { message: indicator.key?(SUCCESS) ? indicator.to_s : "No :success key found in #{indicator}" }
+        requests ? failure.merge(operation: requests[i]) : failure
       end.compact
 
       unless failures.empty?
