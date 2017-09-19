@@ -20,6 +20,26 @@ module LeanplumApi
       track_multi(device_attributes: device_attributes, options: options)
     end
 
+    # POSTs to Leanplum's sendMessage API endpoint
+    #
+    # @param message_id [String] the Leanplum message ID
+    # @param user_id [String] the Leanplum user ID
+    # @param user_ids [Array] Leanplum user IDs (for when you want to send a message to more than one user)
+    # @param device_id [String] the Leanplum device ID
+    # @param create_disposition [String] the policy that determines whether users are created by the API.
+    # @param force [Boolean] whether to send the message regardless of whether the user meets the targeting criteria.
+    # @param values [Hash{Symbol => String, Numeric}] values used to set variables used in the message.
+    # @return [Array<Hash>] the Response(s) from the API
+    def send_message(message_id:, user_id: nil, user_ids: [], device_id: nil, create_disposition: "CreateNever", force: false, values: {}, dev_mode: false)
+      fail ArgumentError, "missing keyword: user_id or user_ids" if user_id.blank? && user_ids.blank?
+      user_ids << user_id if user_id.present?
+      messages = []
+      user_ids.each do |user_id|
+        messages << build_send_message(message_id: message_id, user_id: user_id, device_id: device_id, create_disposition: create_disposition, force: force, values: values, dev_mode: dev_mode)
+      end
+      production_connection.multi(messages).body['response']
+    end
+
     def track_events(events, options = {})
       track_multi(events: events, options: options)
     end
@@ -183,7 +203,7 @@ module LeanplumApi
         reset_anomalous_users(user_ids_to_reset)
       end
     end
-    
+
     # If you pass old events OR users with old date attributes (i.e. create_date for an old users), leanplum will mark
     # them 'anomalous' and exclude them from your data set.
     # Calling this method after you pass old events will fix that for all events for the specified user_id
@@ -265,6 +285,19 @@ module LeanplumApi
       event.merge!(allowOffline: true) if options[:allow_offline]
 
       event_hash.keys.size > 0 ? event.merge(params: event_hash.symbolize_keys ) : event
+    end
+
+    def build_send_message(message_id:, user_id:, device_id: nil, create_disposition: "CreateNever", force: false, values: {}, dev_mode: false)
+      {
+        action: 'sendMessage',
+        messageId: message_id,
+        userId: user_id,
+        deviceId: device_id,
+        createDisposition: create_disposition,
+        force: force,
+        values: values.to_json,
+        devMode: dev_mode
+      }
     end
   end
 end
