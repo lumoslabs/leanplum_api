@@ -1,4 +1,4 @@
-# 4.0.1
+## 4.0.1
 * Slight improvement to `ResponseValidation` readability; slight change to error messages
 
 ## 4.0.0
