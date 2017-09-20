@@ -227,6 +227,30 @@ describe LeanplumApi::API do
         expect(response['messagesSent']).to eq 1
         expect(response['error']).to be_blank
       end
+
+      it "receives the expected error when message_id does not exist" do
+        response = VCR.use_cassette('send_message_with_invalid_message_id') do
+          api.send_message(message_id: "thisisaninvalidmessageid", user_id: user_id)
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['warning']['message']).to eq "Message entity not found"
+        expect(response['messagesSent']).to be_blank
+        expect(response['error']).to be_blank
+      end
+
+      it "receives the expected error when user_id is passed in but does not exist" do
+        response = VCR.use_cassette('send_message_with_invalid_user_id') do
+          api.send_message(message_id: message_id, user_id: "thisisaninvaliduserid")
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['warning']['message']).to eq "User not found; request skipped."
+        expect(response['messagesSent']).to be_blank
+        expect(response['error']).to be_blank
+      end
     end
   end
 
