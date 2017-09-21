@@ -24,18 +24,31 @@ module LeanplumApi
     #
     # @param message_id [String] the Leanplum message ID
     # @param user_id [String] the Leanplum user ID
-    # @param user_ids [Array] Leanplum user IDs (for when you want to send a message to more than one user)
     # @param device_id [String] the Leanplum device ID
     # @param create_disposition [String] the policy that determines whether users are created by the API.
     # @param force [Boolean] whether to send the message regardless of whether the user meets the targeting criteria.
     # @param values [Hash{Symbol => String, Numeric}] values used to set variables used in the message.
     # @return [Array<Hash>] the Response(s) from the API
-    def send_message(message_id:, user_id: nil, user_ids: [], device_id: nil, create_disposition: "CreateNever", force: false, values: {}, dev_mode: false)
-      fail ArgumentError, "missing keyword: user_id or user_ids" if user_id.blank? && user_ids.blank?
-      user_ids << user_id if user_id.present?
+    def send_message(message_id:, user_id:, device_id: nil, create_disposition: "CreateNever", force: false, values: {}, dev_mode: false)
+      message = build_send_message(message_id: message_id, user_id: user_id, device_id: device_id, create_disposition: create_disposition, force: force, values: values, dev_mode: dev_mode)
+      production_connection.multi([message]).body['response']
+    end
+
+    # POSTs multiple messages to Leanplum's sendMessage API endpoint
+    #
+    # @param message_id [String] the Leanplum message ID
+    # @param users [Array<Hash{:id => String (required), :device_id => String (optional), :values => Hash (optional)}>] Leanplum users including an optional device_id and vaules hash used to set the variables for the message template
+    # @param create_disposition [String] the policy that determines whether users are created by the API.
+    # @param force [Boolean] whether to send the message regardless of whether the user meets the targeting criteria.
+    # @param values [Hash{Symbol => String, Numeric}] values used to set variables used in the message.
+    # @return [Array<Hash>] the Response(s) from the API
+    def send_messages(message_id:, users:, create_disposition: "CreateNever", force: false, values: {}, dev_mode: false)
+      fail ArgumentError, "Cannot accept more than 50 users" if users.size > 50
+      validation_results = users_valid?(users)
+      fail ArgumentError, "users failed validation: #{validation_results[1]}" if validation_results != true
       messages = []
-      user_ids.each do |user_id|
-        messages << build_send_message(message_id: message_id, user_id: user_id, device_id: device_id, create_disposition: create_disposition, force: force, values: values, dev_mode: dev_mode)
+      users.each do |user|
+        messages << build_send_message(message_id: message_id, user_id: user[:id], device_id: user[:device_id], create_disposition: create_disposition, force: force, values: user[:values] || values, dev_mode: dev_mode)
       end
       production_connection.multi(messages).body['response']
     end
@@ -298,6 +311,14 @@ module LeanplumApi
         values: values.to_json,
         devMode: dev_mode
       }
+    end
+
+    def users_valid?(users)
+      users.each do |user|
+        return false, "User is missing `:id` key: #{user}" unless user.has_key?(:id)
+        return false, "user[:values] must be a hash: #{user}" if user.has_key?(:values) && ![Hash, HashWithIndifferentAccess].include?(user[:values].class)
+      end
+      true
     end
   end
 end
