@@ -1,4 +1,4 @@
-## HEAD
+## 4.0.2
 * Remove useless `.to_json` call in Faraday middleware
 
 ## 4.0.1
