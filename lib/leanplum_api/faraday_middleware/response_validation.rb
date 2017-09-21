@@ -9,9 +9,8 @@ module LeanplumApi
     WARN = 'warning'.freeze
 
     def call(environment)
-      if environment.body
-        requests = environment.body[:data] if environment.body[:data] && environment.body[:data].is_a?(Array)
-        environment.body = environment.body.to_json
+      if environment.body && environment.body[:data] && environment.body[:data].is_a?(Array)
+        requests = environment.body[:data]
       end
 
       @app.call(environment).on_complete do |response|
