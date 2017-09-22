@@ -330,11 +330,11 @@ describe LeanplumApi::API do
       end
 
       it "does not process if even one user does not include an id" do
-        expect { api.send_messages(message_id: message_id, users: [{}]) }.to raise_error(ArgumentError, "users failed validation: User is missing `:id` key: {}")
+        expect { api.send_messages(message_id: message_id, users: [{}]) }.to raise_error(ArgumentError, "users failed validation. User is missing `:id` key: {}")
       end
 
       it "does not process if even one user includes an invalid values hash" do
-        expect { api.send_messages(message_id: message_id, users: [{id: user_id, values: "Invalid"}]) }.to raise_error(ArgumentError, "users failed validation: user[:values] must be a hash: {:id=>123456, :values=>\"Invalid\"}")
+        expect { api.send_messages(message_id: message_id, users: [{id: user_id, values: "Invalid"}]) }.to raise_error(ArgumentError, "users failed validation. user[:values] must be a hash: {:id=>123456, :values=>\"Invalid\"}")
       end
     end
   end

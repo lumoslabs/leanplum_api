@@ -44,8 +44,7 @@ module LeanplumApi
     # @return [Array<Hash>] the Response(s) from the API
     def send_messages(message_id:, users:, create_disposition: "CreateNever", force: false, values: {}, dev_mode: false)
       fail ArgumentError, "Cannot accept more than 50 users" if users.size > 50
-      validation_results = users_valid?(users)
-      fail ArgumentError, "users failed validation: #{validation_results[1]}" if validation_results != true
+      validate_users(users)
       messages = []
       users.each do |user|
         messages << build_send_message(message_id: message_id, user_id: user[:id], device_id: user[:device_id], create_disposition: create_disposition, force: force, values: user[:values] || values, dev_mode: dev_mode)
@@ -313,12 +312,11 @@ module LeanplumApi
       }
     end
 
-    def users_valid?(users)
+    def validate_users(users)
       users.each do |user|
-        return false, "User is missing `:id` key: #{user}" unless user.has_key?(:id)
-        return false, "user[:values] must be a hash: #{user}" if user.has_key?(:values) && ![Hash, HashWithIndifferentAccess].include?(user[:values].class)
+        fail ArgumentError, "users failed validation. User is missing `:id` key: #{user}" unless user.has_key?(:id)
+        fail ArgumentError, "users failed validation. user[:values] must be a hash: #{user}" if user.has_key?(:values) && ![Hash, HashWithIndifferentAccess].include?(user[:values].class)
       end
-      true
     end
   end
 end
