@@ -85,7 +85,7 @@ api.track_events(event)
 api.track_events(event, allow_offline: true)
 
 # You can also track events, user attributes, and device attributes at the same time. magic!
-api.track_multi(events: event, user_attributes: user_attributes, device_attributes: device_attributes)
+api.track_multi(events: event, user_attributes: user_attributes, device_attributes: device_attributes, options: {force_anomalous_override: true})
 
 # If your event is sufficiently far in the past, leanplum will mark your user as "Anomalous"
 # To force a reset of this flag, either call the method directly

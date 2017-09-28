@@ -27,7 +27,7 @@ module LeanplumApi
     # This method is for tracking events and/or updating user and/or device attributes
     # at the same time, batched together like leanplum recommends.
     # Set the :force_anomalous_override option to catch warnings from leanplum
-    # Ôabout anomalous events and force them to not be considered anomalous.
+    # about anomalous events and force them to not be considered anomalous.
     def track_multi(events: nil, user_attributes: nil, device_attributes: nil, options: {})
       events = Array.wrap(events)
 
