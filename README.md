@@ -143,7 +143,7 @@ response = data_export_api.wait_for_export_job(job_id)
 **Note well that Leanplum now officially recommends use of the automated S3 export instead of API based export.**  According to a Leanplum engineer these two data export methodologies are completely independent data paths and in our experience we have found API based data export to be missing 10-15% of the data that is eventually returned by the automated export.
 
 ### Other Available Methods
-These are mostly simple wrappers around Leanplum's API methods.  See their documentation for details.
+These are mostly simple wrappers around Leanplum's API methods.  See [their documentation](https://www.leanplum.com/docs/api/) for details.
 
 * `api.export_user(user_id)`
 * `api.user_attributes(user_id)` (gives you the attributes section of `exportUser`)

@@ -5,7 +5,7 @@ require 'webmock'
 require 'vcr'
 require 'dotenv/load'
 
-DEFAULT_SPEC_KEY = 'JUNKTASTIC_SPASMASTIC'
+DEFAULT_SPEC_KEY = 'JUNKTASTIC_SPASMASTIC'.freeze
 
 RSpec.configure do |config|
   config.before(:all) do
