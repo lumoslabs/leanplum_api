@@ -43,7 +43,6 @@ module LeanplumApi
     # @param values [Hash{Symbol => String, Numeric}] values used to set variables used in the message.
     # @return [Array<Hash>] the Response(s) from the API
     def send_messages(message_id:, users:, create_disposition: "CreateNever", force: false, values: {}, dev_mode: false)
-      fail ArgumentError, "Cannot accept more than 50 users due to Leanplum API restrictions" if users.size > 50
       validate_users(users)
       messages = []
       users.each do |user|
@@ -313,6 +312,7 @@ module LeanplumApi
     end
 
     def validate_users(users)
+      fail ArgumentError, "Cannot accept more than 50 users due to Leanplum API restrictions" if users.present? && users.size > 50
       users.each do |user|
         fail ArgumentError, "users failed validation. User is missing `:id` key: #{user}" unless user.has_key?(:id)
         fail ArgumentError, "users failed validation. user[:values] must be a hash: #{user}" if user.has_key?(:values) && ![Hash, HashWithIndifferentAccess].include?(user[:values].class)
