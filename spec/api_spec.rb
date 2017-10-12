@@ -339,7 +339,7 @@ describe LeanplumApi::API do
       end
 
       it "does not process if passing in more than 50 users" do
-        expect { api.send_messages(message_id: message_id, users: Array.new(51)) }.to raise_error(ArgumentError, "Cannot accept more than 50 users")
+        expect { api.send_messages(message_id: message_id, users: Array.new(51)) }.to raise_error(ArgumentError)
       end
 
       it "does not process if even one user does not include an id" do
