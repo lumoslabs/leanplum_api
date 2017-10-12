@@ -2,14 +2,14 @@
 http_interactions:
 - request:
     method: post
-    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1502521200
+    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1505372950
     body:
       encoding: UTF-8
-      string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":"1502521200","allowOffline":true,"params":{"some_timestamp":"2015-05-01
-        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":"1502520600","allowOffline":true}]}'
+      string: '{"data":[{"action":"track","event":"purchase","userId":123456,"time":1505372950,"allowOffline":true,"params":{"some_timestamp":"2015-05-01
+        01:02:03"}},{"action":"track","event":"purchase_page_view","userId":54321,"time":1505372350,"allowOffline":true}]}'
     headers:
       User-Agent:
-      - Faraday v0.12.1
+      - Faraday v0.13.1
       Content-Type:
       - application/json
       Accept-Encoding:
@@ -24,26 +24,24 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - da0211f2f027a6d6521dbbc188cc4764
+      - edb9c1a488ab44bc4cc2714a91edfc10
       Set-Cookie:
-      - GOOGAPPUID=xCgoIAxAGIKuX2MwF; expires=Tue, 06-Oct-2020 17:33:31 GMT; path=/
+      - GOOGAPPUID=xCgoIAxBLIJnX6M0F; expires=Tue, 03-Nov-2020 03:11:21 GMT; path=/
       Date:
-      - Thu, 17 Aug 2017 21:33:31 GMT
+      - Thu, 14 Sep 2017 07:11:21 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '260'
+      - '82'
       Expires:
-      - Thu, 17 Aug 2017 21:33:31 GMT
+      - Thu, 14 Sep 2017 07:11:21 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"isOffline":true,"success":true,"warning":{"message":"Device
-        clock skew detected (5 days behind). Rewriting timestamp."}},{"isOffline":true,"success":true,"warning":{"message":"Device
-        clock skew detected (5 days behind). Rewriting timestamp."}}]}'
+      string: '{"response":[{"success":true,"isOffline":true},{"success":true,"isOffline":true}]}'
     http_version: 
-  recorded_at: Sat, 12 Aug 2017 04:00:00 GMT
+  recorded_at: Thu, 14 Sep 2017 07:09:10 GMT
 recorded_with: VCR 3.0.3

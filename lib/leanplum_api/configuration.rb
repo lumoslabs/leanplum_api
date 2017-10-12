@@ -45,7 +45,11 @@ module LeanplumApi
       @validate_response = true
       @timeout_seconds = 600
       @logger = LeanplumApi::Logger.new(STDOUT)
-      @api_debug = ENV['LEANPLUM_API_DEBUG'].to_s =~ /^(true|t|yes|y|1)$/i
+      @api_debug = debug_mode?
+    end
+
+    def debug_mode?
+      ENV['LEANPLUM_API_DEBUG'].to_s =~ /^(true|t|yes|y|1)$/i
     end
   end
 end

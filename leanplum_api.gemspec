@@ -16,15 +16,14 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 2.0'
 
-  gem.add_dependency 'activesupport', '> 3.0', '< 5'
+  gem.add_dependency 'activesupport', '> 3.0', '< 6'
   gem.add_dependency 'awesome_print', '~> 1'
   gem.add_dependency 'faraday', '~> 0.9', '>= 0.9.1'
-  gem.add_dependency 'faraday_middleware', '~> 0.9.1'
+  gem.add_dependency 'faraday_middleware', '~> 0.10'
 
   gem.add_development_dependency 'rspec', '~> 3'
   gem.add_development_dependency 'timecop', '~> 0.8'
   gem.add_development_dependency 'vcr', '> 2'
   gem.add_development_dependency 'webmock', '> 2'
   gem.add_development_dependency 'dotenv', '~> 2.2', '>= 2.2.1'
-
 end

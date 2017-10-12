@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe LeanplumApi do
   context 'configuration' do
     after(:each) do

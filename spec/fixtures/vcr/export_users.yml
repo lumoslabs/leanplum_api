@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://www.leanplum.com/api?action=exportData&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DATA_EXPORT_KEY>&devMode=false&startDate=20150804&startTime=1438660800
+    uri: https://www.leanplum.com/api?ab_test_id&action=exportUsers&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DATA_EXPORT_KEY>&devMode=false&segment
     body:
       encoding: US-ASCII
       string: ''
@@ -23,23 +23,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 87d63e3fd2bf3b5744576a1bc636b7f8
+      - df14ae5ccab73158a1947c3245bcb7ae
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDAByCb1-jNBQ; expires=Tue, 03-Nov-2020 03:11:23 GMT; path=/
+      - GOOGAPPUID=xCgoIAxAXIJzX6M0F; expires=Tue, 03-Nov-2020 03:11:25 GMT; path=/
       Date:
-      - Thu, 14 Sep 2017 07:11:23 GMT
+      - Thu, 14 Sep 2017 07:11:25 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '96'
+      - '90'
       Expires:
-      - Thu, 14 Sep 2017 07:11:23 GMT
+      - Thu, 14 Sep 2017 07:11:25 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":false,"error":{"message":"You cannot export
-        data older than 60 days"}}]}'
+      string: '{"response":[{"jobId":"export_users_4727756026281984_463727504458688512","success":true}]}'
     http_version: 
   recorded_at: Thu, 14 Sep 2017 07:09:10 GMT
 recorded_with: VCR 3.0.3

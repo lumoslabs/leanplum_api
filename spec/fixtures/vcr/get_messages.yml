@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.12.1
+      - Faraday v0.13.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,25 +21,25 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
-      - application/json; charset=UTF-8
+      - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 2be9d7df703848967473640cd9e1ed4b
+      - 414ab5c763ea4c1c170af2b76d79b0c3
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDkAyCxl9jMBQ; expires=Tue, 06-Oct-2020 17:33:37 GMT; path=/
+      - GOOGAPPUID=xCgsIAxDHBiCb1-jNBQ; expires=Tue, 03-Nov-2020 03:11:23 GMT; path=/
       Date:
-      - Thu, 17 Aug 2017 21:33:37 GMT
+      - Thu, 14 Sep 2017 07:11:23 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '165'
       Expires:
-      - Thu, 17 Aug 2017 21:33:37 GMT
+      - Thu, 14 Sep 2017 07:11:23 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":true,"messages":[{"id":5670583287676928,"created":1.440091595799E9,"name":"New
-        Message","active":false,"messageType":"Push Notification"}]}]}'
+      string: '{"response":[{"success":true,"messages":[{"messageType":"Push Notification","created":1.440091595799E9,"name":"New
+        Message","active":false,"id":5670583287676928}]}]}'
     http_version: 
-  recorded_at: Sat, 12 Aug 2017 04:00:00 GMT
+  recorded_at: Thu, 14 Sep 2017 07:09:10 GMT
 recorded_with: VCR 3.0.3
