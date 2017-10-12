@@ -21,8 +21,7 @@ RSpec.configure do |config|
 
     # Leanplum requires passing the time in some requests so we freeze it.
     # If your specs are failing because of time skew, update this time to today and re-run
-    Timecop.freeze(DateTime.now.to_time)
-    # Timecop.freeze('2017-10-12T07:09:10.787Z'.to_time)
+    Timecop.freeze('2017-10-12T07:09:10.787Z'.to_time)
   end
 
   config.fail_fast = true
