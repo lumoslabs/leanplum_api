@@ -12,7 +12,9 @@ describe LeanplumApi::DataExportAPI do
       context 'regular export' do
         it 'should request a data export job with start and end dates' do
           VCR.use_cassette('export_data_dates') do
-            expect { api.export_data(Date.new(2017, 8, 5), Date.new(2017, 8, 6)) }.to_not raise_error
+            start_date = Date.today - 7.days
+            end_date = Date.today
+            expect { api.export_data(start_date, end_date) }.to_not raise_error
           end
         end
 

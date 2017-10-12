@@ -23,7 +23,7 @@ describe LeanplumApi::API do
   end
   let(:device) do
     {
-      device_id: device_id,
+      deviceId: device_id,
       appVersion: 'x42x',
       deviceModel: 'p0d',
       create_date: '2018-01-01'.to_date
@@ -33,9 +33,9 @@ describe LeanplumApi::API do
   context 'devices' do
     it 'build_device_attributes_hash' do
       expect(api.send(:build_device_attributes_hash, device)).to eq(
-        deviceId: device[:device_id],
+        deviceId: device[:deviceId],
         action: described_class::SET_DEVICE_ATTRIBUTES,
-        deviceAttributes: api.send(:fix_iso8601, device.except(:device_id))
+        deviceAttributes: api.send(:fix_iso8601, device.except(:deviceId))
       )
     end
 
@@ -466,13 +466,8 @@ describe LeanplumApi::API do
       context 'messages' do
         it 'gets messages' do
           VCR.use_cassette('get_messages') do
-            expect(api.get_messages).to eq([{
-              'id' => 5670583287676928,
-              'created' => 1440091595.799,
-              'name' => 'New Message',
-              'active' => false,
-              'messageType' => 'Push Notification'
-            }])
+            expect(messages = api.get_messages).to be_a(Array)
+            expect(messages.size).to be > 1
           end
         end
 
