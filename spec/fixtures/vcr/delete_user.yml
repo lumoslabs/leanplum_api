@@ -1,0 +1,129 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://www.leanplum.com/api?action=multi&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_PRODUCTION_KEY>&devMode=false&time=1507848284
+    body:
+      encoding: UTF-8
+      string: '{"data":[{"userId":"delete_yourself_123","action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
+    headers:
+      User-Agent:
+      - Faraday v0.9.2
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json;charset=utf-8
+      X-Cloud-Trace-Context:
+      - 73a34fda2327503b09c4fcceccbdcb7e
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxDeBCDf4P_OBQ; expires=Tue, 01-Dec-2020 18:44:47 GMT; path=/
+      Date:
+      - Thu, 12 Oct 2017 22:44:47 GMT
+      Server:
+      - Google Frontend
+      Content-Length:
+      - '31'
+      Expires:
+      - Thu, 12 Oct 2017 22:44:47 GMT
+      Cache-Control:
+      - private
+    body:
+      encoding: UTF-8
+      string: '{"response":[{"success":true}]}'
+    http_version: 
+  recorded_at: Thu, 12 Oct 2017 22:44:44 GMT
+- request:
+    method: get
+    uri: https://www.leanplum.com/api?action=deleteUser&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DEVELOPMENT_KEY>&devMode=false&userId=delete_yourself_123
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json;charset=utf-8
+      X-Cloud-Trace-Context:
+      - ed58e0b9a153d29fb310ade86c1127f1
+      Set-Cookie:
+      - GOOGAPPUID=xCgoIAxABIODg_84F; expires=Tue, 01-Dec-2020 18:44:48 GMT; path=/
+      Date:
+      - Thu, 12 Oct 2017 22:44:48 GMT
+      Server:
+      - Google Frontend
+      Content-Length:
+      - '31'
+      Expires:
+      - Thu, 12 Oct 2017 22:44:48 GMT
+      Cache-Control:
+      - private
+    body:
+      encoding: UTF-8
+      string: '{"response":[{"success":true}]}'
+    http_version: 
+  recorded_at: Thu, 12 Oct 2017 22:44:44 GMT
+- request:
+    method: get
+    uri: https://www.leanplum.com/api?action=exportUser&apiVersion=1.0.6&appId=<LEANPLUM_APP_ID>&clientKey=<LEANPLUM_DATA_EXPORT_KEY>&devMode=false&userId=delete_yourself_123
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.9.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json;charset=utf-8
+      X-Cloud-Trace-Context:
+      - 154669e175a96f537c2181a6469dc03f
+      Set-Cookie:
+      - GOOGAPPUID=xCgsIAxDOByDg4P_OBQ; expires=Tue, 01-Dec-2020 18:44:48 GMT; path=/
+      Date:
+      - Thu, 12 Oct 2017 22:44:48 GMT
+      Server:
+      - Google Frontend
+      Content-Length:
+      - '88'
+      Expires:
+      - Thu, 12 Oct 2017 22:44:48 GMT
+      Cache-Control:
+      - private
+    body:
+      encoding: UTF-8
+      string: '{"response":[{"success":true,"warning":{"message":"User not found;
+        request skipped."}}]}'
+    http_version: 
+  recorded_at: Thu, 12 Oct 2017 22:44:44 GMT
+recorded_with: VCR 3.0.3
