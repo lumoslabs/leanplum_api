@@ -3,6 +3,9 @@ require 'spec_helper'
 describe LeanplumApi::API do
   let(:api) { LeanplumApi::API.new }
   let(:first_user_id) { 123456 }
+  let(:user_id) { first_user_id }
+  let(:message_id) { "5389574245449728" }
+  let(:device_id) { "fu123" }
   let(:users) do
     [{
        user_id: first_user_id,
@@ -17,7 +20,7 @@ describe LeanplumApi::API do
 
   let(:devices) do
     [{
-       device_id: 'fu123',
+       device_id: device_id,
        appVersion: 'x42x',
        deviceModel: 'p0d',
        create_date: '2018-01-01'.to_date
@@ -146,6 +149,205 @@ describe LeanplumApi::API do
         VCR.use_cassette('reset_anomalous_user') do
           expect { api.reset_anomalous_users(first_user_id) }.to_not raise_error
         end
+      end
+    end
+  end
+
+  context 'messages' do
+    let(:device) {
+      VCR.use_cassette('set_device_attributes') do
+        api.set_device_attributes(devices)
+      end
+    }
+    let(:user) {
+      VCR.use_cassette('set_user_attributes') do
+        api.set_user_attributes(users)
+      end
+    }
+    let(:spock) {
+      VCR.use_cassette('spock') do
+        api.set_user_attributes(
+          [{
+             user_id: "spock",
+             first_name: "Spock",
+             gender: "m",
+             email: "spock@ufop.org",
+             create_date: "2018-01-01".to_date
+          }]
+        )
+      end
+    }
+
+    describe '#send_message' do
+      it "requires message_id" do
+        expect { api.send_message(user_id: user_id) }.to raise_error(ArgumentError, "missing keyword: message_id")
+      end
+
+      it "requires user_id or user_ids" do
+        expect { api.send_message(message_id: message_id) }.to raise_error(ArgumentError, "missing keyword: user_id")
+      end
+
+      it "succesfully sends a message to Leanplum's API" do
+        user
+        response = VCR.use_cassette('send_message') do
+          api.send_message(message_id: message_id, user_id: user_id)
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['result']).to eq "Message sent"
+        expect(response['messagesSent']).to eq 1
+        expect(response['error']).to be_blank
+      end
+
+      it "succesfully sends a message to Leanplum's API using device_id" do
+        user
+        device
+        response = VCR.use_cassette('send_message_with_device_id') do
+          api.send_message(message_id: message_id, user_id: user_id, device_id: device_id)
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['result']).to eq "Message sent"
+        expect(response['messagesSent']).to eq 1
+        expect(response['error']).to be_blank
+      end
+
+      it "accepts a values JSON object" do
+        response = VCR.use_cassette('send_message_with_values') do
+          api.send_message(message_id: message_id, user_id: user_id, values: {foo: "bar", baz: "fizz"})
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['result']).to eq "Message sent"
+        expect(response['messagesSent']).to eq 1
+        expect(response['error']).to be_blank
+      end
+
+      it "receives the expected error when message_id does not exist" do
+        response = VCR.use_cassette('send_message_with_invalid_message_id') do
+          api.send_message(message_id: "thisisaninvalidmessageid", user_id: user_id)
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['warning']['message']).to eq "Message entity not found"
+        expect(response['messagesSent']).to be_blank
+        expect(response['error']).to be_blank
+      end
+
+      it "receives the expected error when user_id is passed in but does not exist" do
+        response = VCR.use_cassette('send_message_with_invalid_user_id') do
+          api.send_message(message_id: message_id, user_id: "thisisaninvaliduserid")
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['warning']['message']).to eq "User not found; request skipped."
+        expect(response['messagesSent']).to be_blank
+        expect(response['error']).to be_blank
+      end
+    end
+
+    describe '#send_messages' do
+      it "requires message_id" do
+        expect { api.send_messages(users: [{id: user_id}]) }.to raise_error(ArgumentError, "missing keyword: message_id")
+      end
+
+      it "requires users" do
+        expect { api.send_messages(message_id: message_id) }.to raise_error(ArgumentError, "missing keyword: users")
+      end
+
+      it "succesfully sends a message to Leanplum's API" do
+        user
+        response = VCR.use_cassette('send_messages') do
+          api.send_messages(message_id: message_id, users: [{id: user_id}])
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['result']).to eq "Message sent"
+        expect(response['messagesSent']).to eq 1
+        expect(response['error']).to be_blank
+      end
+
+      it "succesfully sends a message to Leanplum's API using device_id" do
+        user
+        device
+        response = VCR.use_cassette('send_messages_with_device_id') do
+          api.send_messages(message_id: message_id, users: [{id: user_id, device_id: device_id}])
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['result']).to eq "Message sent"
+        expect(response['messagesSent']).to eq 1
+        expect(response['error']).to be_blank
+      end
+
+      it "succesfully sends multiple messages" do
+        user
+        spock
+        response = VCR.use_cassette('send_multiple_messages') do
+          api.send_messages(message_id: message_id, users: [{id: user_id}, {id: "spock"}])
+        end
+        expect(response.size).to eq 2
+        response.each do |r|
+          expect(r['success']).to eq true
+          expect(r['result']).to eq "Message sent"
+          expect(r['messagesSent']).to eq 1
+          expect(r['error']).to be_blank
+        end
+      end
+
+      it "accepts a values JSON object" do
+        response = VCR.use_cassette('send_messages_with_values') do
+          api.send_messages(message_id: message_id, users: [{id: user_id, values: {foo: "bar", baz: "fizz"}}])
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['result']).to eq "Message sent"
+        expect(response['messagesSent']).to eq 1
+        expect(response['error']).to be_blank
+      end
+
+      it "receives the expected error when message_id does not exist" do
+        response = VCR.use_cassette('send_messages_with_invalid_message_id') do
+          api.send_messages(message_id: "thisisaninvalidmessageid", users: [{id: user_id}])
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['warning']['message']).to eq "Message entity not found"
+        expect(response['messagesSent']).to be_blank
+        expect(response['error']).to be_blank
+      end
+
+      it "receives the expected error when users includes an invalid id" do
+        response = VCR.use_cassette('send_messages_with_invalid_user_id') do
+          api.send_messages(message_id: message_id, users: [{id: "thisisaninvaliduserid"}])
+        end
+        expect(response.size).to eq 1
+        response = response.first
+        expect(response['success']).to eq true
+        expect(response['warning']['message']).to eq "User not found; request skipped."
+        expect(response['messagesSent']).to be_blank
+        expect(response['error']).to be_blank
+      end
+
+      it "does not process if passing in more than 50 users" do
+        expect { api.send_messages(message_id: message_id, users: Array.new(51)) }.to raise_error(ArgumentError, "Cannot accept more than 50 users")
+      end
+
+      it "does not process if even one user does not include an id" do
+        expect { api.send_messages(message_id: message_id, users: [{}]) }.to raise_error(ArgumentError, "users failed validation. User is missing `:id` key: {}")
+      end
+
+      it "does not process if even one user includes an invalid values hash" do
+        expect { api.send_messages(message_id: message_id, users: [{id: user_id, values: "Invalid"}]) }.to raise_error(ArgumentError, "users failed validation. user[:values] must be a hash: {:id=>123456, :values=>\"Invalid\"}")
       end
     end
   end
