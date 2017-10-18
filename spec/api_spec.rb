@@ -438,6 +438,14 @@ describe LeanplumApi::API do
         end
       end
     end
+
+    context '#user_devices' do
+      it 'should get user devices for this user' do
+        VCR.use_cassette('export_user') do
+          expect(api.user_devices(first_user_id).first['deviceId']).to eq(device_id)
+        end
+      end
+    end
   end
 
   # Data export and content read only endpoints forbid use of devMode

@@ -51,6 +51,10 @@ module LeanplumApi
       export_user(user_id)['events']
     end
 
+    def user_devices(user_id)
+      export_user(user_id)['devices']
+    end
+
     def export_user(user_id)
       response = data_export_connection.get(action: 'exportUser', userId: user_id).first
       fail ResourceNotFoundError, "User #{user_id} not found" unless response['events'] || response['userAttributes']
