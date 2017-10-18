@@ -103,13 +103,15 @@ module LeanplumApi
     # @param values [Hash{Symbol => String, Numeric}] values used to set variables used in the message.
     # @return [Array<Hash>] the Response(s) from the API
     def send_message(message_id:, user_id:, device_id: nil, create_disposition: 'CreateNever', force: false, values: {}, dev_mode: false)
-      message = build_send_message(message_id: message_id,
-                                   user_id: user_id,
-                                   device_id: device_id,
-                                   create_disposition: create_disposition,
-                                   force: force,
-                                   values: values,
-                                   dev_mode: dev_mode)
+      message = build_send_message(
+        message_id: message_id,
+        user_id: user_id,
+        device_id: device_id,
+        create_disposition: create_disposition,
+        force: force,
+        values: values,
+        dev_mode: dev_mode
+      )
       production_connection.multi([message])
     end
 
@@ -126,13 +128,15 @@ module LeanplumApi
       messages = []
 
       users.each do |user|
-        messages << build_send_message(message_id: message_id,
-                                       user_id: user[:id],
-                                       device_id: user[:device_id],
-                                       create_disposition: create_disposition,
-                                       force: force,
-                                       values: user[:values] || values,
-                                       dev_mode: dev_mode)
+        messages << build_send_message(
+          message_id: message_id,
+          user_id: user[:id],
+          device_id: user[:device_id],
+          create_disposition: create_disposition,
+          force: force,
+          values: user[:values] || values,
+          dev_mode: dev_mode
+        )
       end
 
       production_connection.multi(messages)
