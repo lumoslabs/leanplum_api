@@ -183,6 +183,23 @@ describe LeanplumApi::API do
       end
     }
 
+    describe '#get_newsfeed_messages' do
+      let(:newsfeed_response) { YAML.load_file('spec/fixtures/webmock/get_newsfeed_messages.yml') }
+      let(:messages) { newsfeed_response['response'].first['newsfeedMessages'] }
+      let(:headers) {{'Content-Type' => 'application/json'}}
+      before do
+        WebMock.stub_request(:get, /www.leanplum.com.*getNewsfeedMessages.*deviceId.*#{device_id}/).to_return(
+          body: newsfeed_response.to_json,
+          headers: headers,
+          status: 200,
+        )
+      end
+      it 'responds with the associated newsfeed messages' do
+        expect(api.get_newsfeed_messages(deviceId: device_id).length)
+          .to eq messages.count
+      end
+    end
+
     describe '#send_message' do
       it 'requires message_id' do
         expect { api.send_message(user_id: user_id) }.to raise_error(ArgumentError, "missing keyword: message_id")

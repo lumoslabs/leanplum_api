@@ -81,6 +81,10 @@ module LeanplumApi
       content_read_only_connection.get(action: 'getMessage', id: message_id).first['message']
     end
 
+    def get_newsfeed_messages(device_id)
+      content_read_only_connection.get(action: 'getNewsfeedMessages', deviceId: device_id).first['newsfeedMessages']
+    end
+
     def get_vars(user_id)
       production_connection.get(action: 'getVars', userId: user_id).first['vars']
     end
@@ -156,7 +160,7 @@ module LeanplumApi
       @data_export ||= Connection.new(LeanplumApi.configuration.data_export_key)
     end
 
-    # Only instantiated for ContentReadOnly calls (AB tests)
+    # Only instantiated for ContentReadOnly calls (AB tests and newsfeed messages)
     def content_read_only_connection
       fail 'content_read_only_key not configured!' unless LeanplumApi.configuration.content_read_only_key
       @content_read_only ||= Connection.new(LeanplumApi.configuration.content_read_only_key)

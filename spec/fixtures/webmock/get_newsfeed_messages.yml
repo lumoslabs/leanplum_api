@@ -1,0 +1,53 @@
+---
+response:
+- newsfeedMessages:
+    5947704113102848##0:
+      deliveryTimestamp: 1506619476525
+      isRead: false
+      messageData:
+        countdown: 86400
+        action: __Newsfeed Message
+        parentCampaignId: 
+        vars:
+          Open action:
+            __name__: Open URL
+            URL: https://www.countable.us/issues/taxes
+          Subtitle: Inbox subtitle
+          __name__: __Newsfeed Message
+          Title: Inbox title
+        hasImpressionCriteria: false
+        priority: 1000
+        whenLimits:
+          children: []
+          subject: 
+          objects: []
+        unlessTriggers:
+          children: []
+          subject: 
+          objects: []
+    4853081433178112##1:
+      deliveryTimestamp: 1506621983356
+      isRead: false
+      messageData:
+        countdown: 86400
+        action: __Newsfeed Message
+        parentCampaignId: 
+        vars:
+          Open action:
+            __name__: Open URL
+            URL: https://www.countable.us/issues/taxes
+          Subtitle: Inbox test two subtitle
+          __name__: __Newsfeed Message
+          Title: Inbox test two title
+        hasImpressionCriteria: false
+        priority: 1000
+        whenLimits:
+          children: []
+          subject: 
+          objects: []
+        unlessTriggers:
+          children: []
+          subject: 
+          objects: []
+  success: true
+
