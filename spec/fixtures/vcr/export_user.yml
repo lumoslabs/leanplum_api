@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.13.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -23,22 +23,22 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 8e160ed7bce0eac7163851e0ecb1d9c8
+      - bbb1fc0425606aa6d67aaf41a99c79a8
       Set-Cookie:
-      - GOOGAPPUID=xCgoIAxA0IPvi_84F; expires=Tue, 01-Dec-2020 18:49:31 GMT; path=/
+      - GOOGAPPUID=xCgsIAxCwBiCK9qPPBQ; expires=Tue, 08-Dec-2020 15:20:42 GMT; path=/
       Date:
-      - Thu, 12 Oct 2017 22:49:31 GMT
+      - Thu, 19 Oct 2017 19:20:42 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '538'
       Expires:
-      - Thu, 12 Oct 2017 22:49:31 GMT
+      - Thu, 19 Oct 2017 19:20:42 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"totalSessions":0,"timeSpentInApp":0.0,"userAttributes":{"is_tipping":"True","gender":"m","last_name":"Jones","create_date":"2010-01-01","first_name":"Mike","email":"still_tippin@test.com"},"lastActive":null,"devices":[{"deviceId":"fu123"}],"success":true,"created":1.504288257836E9,"unsubscribeChannels":[],"userId":"123456","events":{"eventName1":{"firstTime":1.50528655E9,"lastTime":1.507848284E9,"count":1},"purchase":{"firstTime":1.507836536269E9,"lastTime":1.507848293557E9,"count":16}},"userBucket":358,"states":{}}]}'
+      string: '{"response":[{"totalSessions":0,"timeSpentInApp":0.0,"userAttributes":{"is_tipping":"True","gender":"m","last_name":"Jones","create_date":"2010-01-01","first_name":"Mike","email":"still_tippin@test.com"},"lastActive":null,"devices":[{"deviceId":"fu123"}],"success":true,"created":1.504288257836E9,"unsubscribeChannels":[],"userId":"123456","events":{"eventName1":{"firstTime":1.50528655E9,"lastTime":1.507848284E9,"count":1},"purchase":{"firstTime":1.507836536269E9,"lastTime":1.507848576048E9,"count":20}},"userBucket":358,"states":{}}]}'
     http_version: 
   recorded_at: Thu, 12 Oct 2017 07:09:10 GMT
 recorded_with: VCR 3.0.3

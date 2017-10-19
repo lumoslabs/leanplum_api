@@ -23,17 +23,17 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - fed6cfa364b4a6d002ad81b0669980cf
+      - 8589e379f663a8356752c009eb787ca6
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxCNAiCB4__OBQ; expires=Tue, 01-Dec-2020 18:49:37 GMT; path=/
+      - GOOGAPPUID=xCgsIAxCaBSD99qPPBQ; expires=Tue, 08-Dec-2020 15:22:38 GMT; path=/
       Date:
-      - Thu, 12 Oct 2017 22:49:37 GMT
+      - Thu, 19 Oct 2017 19:22:38 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '96'
       Expires:
-      - Thu, 12 Oct 2017 22:49:37 GMT
+      - Thu, 19 Oct 2017 19:22:38 GMT
       Cache-Control:
       - private
     body:

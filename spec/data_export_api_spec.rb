@@ -36,6 +36,7 @@ describe LeanplumApi::DataExportAPI do
 
     context 'get_export_results' do
       it 'should get a status for a data export job' do
+        # @note: this spec requires setup in Leanplum. if you destroy the cassette, you have to rebuild the data on LP.
         VCR.use_cassette('get_export_results') do
           expect(api.get_export_results('export_4727756026281984_2904941266315269120')).to eq({
             files: ['https://leanplum_export.storage.googleapis.com/export-4727756026281984-d5969d55-f242-48a6-85a3-165af08e2306-output-0'],

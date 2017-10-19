@@ -85,12 +85,16 @@ module LeanplumApi
       content_read_only_connection.get(action: 'getNewsfeedMessages', deviceId: device_id).first['newsfeedMessages']
     end
 
-    def get_vars(user_id)
-      production_connection.get(action: 'getVars', userId: user_id).first['vars']
+    def get_unsubscribe_categories
+      content_read_only_connection.get(action: 'getUnsubscribeCategories').body['response'].first['categories']
     end
 
     def delete_user(user_id)
       development_connection.get(action: 'deleteUser', userId: user_id).first['vars']
+    end
+
+    def get_vars(user_id)
+      production_connection.get(action: 'getVars', userId: user_id).first['vars']
     end
 
     # POSTs to Leanplum's sendMessage API endpoint
@@ -176,34 +180,54 @@ module LeanplumApi
     end
 
     # Deletes the user_id and device_id key/value pairs from the hash parameter.
-    def extract_user_id_or_device_id_hash!(hash)
-      user_id = hash.delete(:user_id) || hash.delete(:userId)
-      device_id = hash.delete(:device_id) || hash.delete(:deviceId)
-      fail "No device_id or user_id in hash #{hash}" unless user_id || device_id
+    # @param [Hash] user_data
+    # @return [Hash]
+    def extract_user_id_or_device_id_hash!(user_data)
+      user_id = user_data.delete(:user_id) || user_data.delete(:userId)
+      device_id = user_data.delete(:device_id) || user_data.delete(:deviceId)
+      fail "No device_id or user_id in hash #{user_data}" unless user_id || device_id
 
       user_id ? { userId: user_id } : { deviceId: device_id }
     end
 
-    # build a user attributes hash
-    # @param [Hash] user_hash user attributes to set into LP user
-    def build_user_attributes_hash(user_hash)
-      user_attr_hash = extract_user_id_or_device_id_hash!(user_hash)
-      user_attr_hash[:action] = SET_USER_ATTRIBUTES
-      user_attr_hash[:devices] = user_hash.delete(:devices) if user_hash.key?(:devices)
+    # pull defined attributes from user data and put into LP specific attributes hash
+    # @param [Hash] user_data user data hash to built LP specific attributes hash
+    # @return [Hash]
+    def extract_user_hash_attributes!(user_data)
+      user_attr_hash = extract_user_id_or_device_id_hash!(user_data)
 
-      if user_hash.key?(:events)
-        user_attr_hash[:events] = user_hash.delete(:events)
+      [ :devices,
+        :unsubscribeCategoriesToAdd,
+        :unsubscribeCategoriesToRemove,
+        :unsubscribeChannelsToAdd,
+        :unsubscribeChannelsToRemove
+      ].each do |attr|
+        user_attr_hash[attr] = user_data.delete(attr) if user_data.has_key?(attr)
+      end
+
+      user_attr_hash
+    end
+
+    # build a user attributes hash from user data
+    # @param [Hash] user_data user data hash to built LP specific attributes hash
+    # @return [Hash]
+    def build_user_attributes_hash(user_data)
+      user_attr_hash = extract_user_hash_attributes!(user_data)
+      user_attr_hash[:action] = SET_USER_ATTRIBUTES
+
+      if user_data.key?(:events)
+        user_attr_hash[:events] = user_data.delete(:events)
         user_attr_hash[:events].each { |k, v| user_attr_hash[:events][k] = fix_seconds_since_epoch(v) }
       end
 
-      user_attr_hash[:userAttributes] = fix_iso8601(user_hash)
+      user_attr_hash[:userAttributes] = fix_iso8601(user_data)
       user_attr_hash
     end
 
     # build a user attributes hash
-    # @param [Hash] device_hash device attributes to set into LP device
-    def build_device_attributes_hash(device_hash)
-      device_hash = fix_iso8601(device_hash)
+    # @param [Hash] device_data device attributes to set into LP device
+    def build_device_attributes_hash(device_data)
+      device_hash = fix_iso8601(device_data)
       extract_user_id_or_device_id_hash!(device_hash).merge(
         action: SET_DEVICE_ATTRIBUTES,
         deviceAttributes: device_hash

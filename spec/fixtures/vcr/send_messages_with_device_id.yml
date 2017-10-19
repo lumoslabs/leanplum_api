@@ -8,7 +8,7 @@ http_interactions:
       string: '{"data":[{"action":"sendMessage","messageId":"5389574245449728","userId":123456,"deviceId":"fu123","createDisposition":"CreateNever","force":false,"values":"{}","devMode":false}]}'
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.13.1
       Content-Type:
       - application/json
       Accept-Encoding:
@@ -25,17 +25,17 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 87eb3def988454e67b8069f02e01c5d4
+      - e444e108896812bf3423cb10a47250e8
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDiAyD94v_OBQ; expires=Tue, 01-Dec-2020 18:49:33 GMT; path=/
+      - GOOGAPPUID=xCgsIAxD6AiCN9qPPBQ; expires=Tue, 08-Dec-2020 15:20:45 GMT; path=/
       Date:
-      - Thu, 12 Oct 2017 22:49:33 GMT
+      - Thu, 19 Oct 2017 19:20:45 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '80'
       Expires:
-      - Thu, 12 Oct 2017 22:49:33 GMT
+      - Thu, 19 Oct 2017 19:20:45 GMT
       Cache-Control:
       - private
     body:

@@ -8,7 +8,7 @@ http_interactions:
       string: '{"data":[{"userId":"delete_yourself_123","action":"setUserAttributes","userAttributes":{"first_name":"Mike","last_name":"Jones","gender":"m","email":"still_tippin@test.com","create_date":"2010-01-01","is_tipping":true}}]}'
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.13.1
       Content-Type:
       - application/json
       Accept-Encoding:
@@ -25,22 +25,23 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 78be69a7bde54fafd796000c63c8c11f
+      - 8975b0103e810dddbff24c325e749b36
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxDHBSD74v_OBQ; expires=Tue, 01-Dec-2020 18:49:31 GMT; path=/
+      - GOOGAPPUID=xCgsIAxCJBSCL9qPPBQ; expires=Tue, 08-Dec-2020 15:20:43 GMT; path=/
       Date:
-      - Thu, 12 Oct 2017 22:49:31 GMT
+      - Thu, 19 Oct 2017 19:20:43 GMT
       Server:
       - Google Frontend
       Content-Length:
-      - '31'
+      - '120'
       Expires:
-      - Thu, 12 Oct 2017 22:49:31 GMT
+      - Thu, 19 Oct 2017 19:20:43 GMT
       Cache-Control:
       - private
     body:
       encoding: UTF-8
-      string: '{"response":[{"success":true}]}'
+      string: '{"response":[{"success":true,"warning":{"message":"Device clock skew
+        detected (7 days behind). Rewriting timestamp."}}]}'
     http_version: 
   recorded_at: Thu, 12 Oct 2017 07:09:10 GMT
 - request:
@@ -51,7 +52,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.13.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -66,17 +67,17 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 7b4f7a92d2cc6681bdd4e34fc59440b4
+      - b8e2109dcd624246ceab9f638d1e5146
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxCUAyD74v_OBQ; expires=Tue, 01-Dec-2020 18:49:31 GMT; path=/
+      - GOOGAPPUID=xCgsIAxDgBSCL9qPPBQ; expires=Tue, 08-Dec-2020 15:20:43 GMT; path=/
       Date:
-      - Thu, 12 Oct 2017 22:49:31 GMT
+      - Thu, 19 Oct 2017 19:20:43 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '31'
       Expires:
-      - Thu, 12 Oct 2017 22:49:31 GMT
+      - Thu, 19 Oct 2017 19:20:43 GMT
       Cache-Control:
       - private
     body:
@@ -92,7 +93,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.13.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -107,17 +108,17 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       X-Cloud-Trace-Context:
-      - 6e8f479d1138ef49af9aaa0d08edfba4
+      - '083ee6ce68f783058aed1969201c8ebb'
       Set-Cookie:
-      - GOOGAPPUID=xCgsIAxCEBCD84v_OBQ; expires=Tue, 01-Dec-2020 18:49:32 GMT; path=/
+      - GOOGAPPUID=xCgoIAxB3IIv2o88F; expires=Tue, 08-Dec-2020 15:20:43 GMT; path=/
       Date:
-      - Thu, 12 Oct 2017 22:49:32 GMT
+      - Thu, 19 Oct 2017 19:20:43 GMT
       Server:
       - Google Frontend
       Content-Length:
       - '88'
       Expires:
-      - Thu, 12 Oct 2017 22:49:32 GMT
+      - Thu, 19 Oct 2017 19:20:43 GMT
       Cache-Control:
       - private
     body:

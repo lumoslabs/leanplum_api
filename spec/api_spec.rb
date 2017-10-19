@@ -53,6 +53,24 @@ describe LeanplumApi::API do
     let(:events_with_timestamps) { Hash[events.map { |k, v| [k, api.send(:fix_seconds_since_epoch, v)] }] }
     let(:user_with_devices) { user.merge(devices: devices) }
     let(:user_with_events) { user.merge(events: events) }
+    let(:unsubscribe_categories) {Hash(unsubscribeCategoriesToAdd: 'foo', unsubscribeCategoriesToRemove: 'bar', unsubscribeChannelsToAdd: 'baz', unsubscribeChannelsToRemove: 'biz')}
+    let(:user_with_unsubscribe_categories) { user.merge(unsubscribe_categories) }
+
+    context '#extract_user_hash_attributes!' do
+      let(:extract_attributes) do
+        {
+          userId: first_user_id
+        }
+      end
+
+      it 'builds the right hash' do
+        expect(api.send(:extract_user_hash_attributes!, user)).to eq(extract_attributes)
+      end
+
+      it 'builds the right hash with categories' do
+        expect(api.send(:extract_user_hash_attributes!, user_with_unsubscribe_categories)).to eq(extract_attributes.merge(unsubscribe_categories))
+      end
+    end
 
     context '#build_user_attributes_hash' do
       let(:built_attributes) do
@@ -82,6 +100,13 @@ describe LeanplumApi::API do
           )
         end
       end
+
+      context 'with unsubscribe categories' do
+        it 'builds the right hash' do
+          expect(api.send(:build_user_attributes_hash, user_with_unsubscribe_categories)).to eq(built_attributes.merge(unsubscribe_categories))
+        end
+      end
+
     end
 
     context '#set_user_attributes' do
@@ -426,6 +451,7 @@ describe LeanplumApi::API do
       context 'anomalous data force_anomalous_override' do
         let(:old_events) { events.map { |e| e[:time] -= 2.years; e } }
 
+        # @NOTE: this spec requires setup of events in LP.
         it 'should successfully force the anomalous data override events' do
           VCR.use_cassette('track_events_anomaly_overrider') do
             expect do
