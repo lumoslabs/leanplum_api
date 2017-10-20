@@ -86,7 +86,7 @@ module LeanplumApi
     end
 
     def get_unsubscribe_categories
-      content_read_only_connection.get(action: 'getUnsubscribeCategories').body['response'].first['categories']
+      content_read_only_connection.get(action: 'getUnsubscribeCategories').first['categories']
     end
 
     def delete_user(user_id)
