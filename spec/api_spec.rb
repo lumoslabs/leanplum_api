@@ -116,6 +116,10 @@ describe LeanplumApi::API do
     end
 
     context '#user_attributes' do
+      let(:true_key) { 'random_true_key' }
+      let(:false_key) { 'arbitrary_false_key' }
+      let(:test_hash) { { 'userAttributes' => { true_key => 'TrUe', false_key => 'fALSE' } } }
+
       it 'should get user attributes for this user' do
         VCR.use_cassette('export_user') do
           api.user_attributes(first_user_id).each do |k, v|
@@ -125,6 +129,28 @@ describe LeanplumApi::API do
               expect(v).to eq(user[k.to_sym])
             end
           end
+        end
+      end
+
+      it 'should convert true / false strings into booleans' do
+        allow(api).to receive(:export_user).and_return(test_hash)
+        attributes = api.user_attributes(first_user_id)
+
+        expect(attributes[true_key]).to eq(true)
+        expect(attributes[false_key]).to eq(false)
+      end
+
+      context 'boolean looking strings' do
+        let(:true_like_value) { 'truegrit' }
+        let(:false_like_value) { 'whatever string ending in false' }
+        let(:test_hash) { { 'userAttributes' => { true_key => true_like_value, false_key => false_like_value } } }
+
+        it 'should not convert true / false like strings' do
+          allow(api).to receive(:export_user).and_return(test_hash)
+          attributes = api.user_attributes(first_user_id)
+
+          expect(attributes[true_key]).to eq(true_like_value)
+          expect(attributes[false_key]).to eq(false_like_value)
         end
       end
     end
