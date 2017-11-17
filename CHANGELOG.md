@@ -1,3 +1,6 @@
+## 4.0.3
+* Fix regex in `user_attributes` to filter out boolean looking strings
+
 ## 4.0.2
 * Remove useless `.to_json` call in Faraday middleware
 
