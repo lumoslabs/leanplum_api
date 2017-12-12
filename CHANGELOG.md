@@ -1,3 +1,6 @@
+## 4.0.4
+* Adding support for uploading CSV files by using the `import_csv` method
+
 ## 4.0.3
 * Fix regex in `user_attributes` to filter out boolean looking strings
 
