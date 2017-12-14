@@ -1,4 +1,4 @@
-## 4.0.4
+## 4.1.0
 * Adding support for uploading CSV files by using the `import_csv` method
 
 ## 4.0.3
