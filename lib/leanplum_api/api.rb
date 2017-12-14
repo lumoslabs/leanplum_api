@@ -97,6 +97,16 @@ module LeanplumApi
       development_connection.multi(request_data)
     end
 
+    def import_csv(bucket, file_path, user_attributes = true)
+      request_data = {
+        createJob: true,
+        defaultAction: user_attributes ? SET_USER_ATTRIBUTES : SET_DEVICE_ATTRIBUTES,
+        gcsBucket: bucket,
+        file: file_path
+      }
+      development_connection.multi_dev(request_data)
+    end
+
     private
 
     def production_connection

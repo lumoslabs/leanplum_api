@@ -16,6 +16,12 @@ module LeanplumApi
       end.body['response']
     end
 
+    def multi_dev(payload)
+      connection
+        .post("#{LEANPLUM_API_PATH}?#{authed_multi_param_string}&#{URI.encode_www_form(payload)}")
+        .body['response']
+    end
+
     private
 
     def authentication_params
