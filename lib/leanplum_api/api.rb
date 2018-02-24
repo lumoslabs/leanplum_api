@@ -175,6 +175,8 @@ module LeanplumApi
       event = { action: TRACK, event: event_name }.merge(extract_user_id_or_device_id_hash!(event_hash))
       event.merge!(time: event_hash.delete(:time).strftime('%s').to_i) if event_hash[:time]
       event.merge!(info: event_hash.delete(:info)) if event_hash[:info]
+      event.merge!(currencyCode: event_hash.delete(:currency_code)) if event_hash[:currency_code]
+      event.merge!(value: event_hash.delete(:value).to_f) if event_hash[:value]
       event.merge!(allowOffline: true) if options[:allow_offline]
 
       event_hash.keys.size > 0 ? event.merge(params: event_hash.symbolize_keys ) : event

@@ -102,6 +102,8 @@ api.set_user_attributes(user_attributes)
 event = {
   user_id: 12345,
   event: 'purchase',
+  currency_code: 'USD', # ISO 4217 currency code
+  value: 10.0,
   time: Time.now.utc, # Event timestamps will be converted to epoch seconds
   info: 'reallybigpurchase',
   some_event_property: 'boss_hog_on_candy'
