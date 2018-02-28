@@ -180,13 +180,17 @@ describe LeanplumApi::API do
   context 'event tracking' do
     let(:timestamp) { '2015-05-01 01:02:03' }
     let(:purchase) { 'purchase' }
+    let(:currency_code) { 'USD' }
+    let(:purchase_value) { 10.0 }
     let(:events) do
       [
         {
           user_id: first_user_id,
           event: purchase,
           time: last_event_time,
-          some_timestamp: timestamp
+          some_timestamp: timestamp,
+          currency_code: 'USD',
+          value: 10.0
         },
         {
           user_id: 54321,
@@ -201,6 +205,8 @@ describe LeanplumApi::API do
         {
           userId: first_user_id,
           event: purchase,
+          currencyCode: currency_code,
+          value: purchase_value,
           time: last_event_time.strftime('%s').to_i,
           action: described_class::TRACK,
           params: { some_timestamp: timestamp }
