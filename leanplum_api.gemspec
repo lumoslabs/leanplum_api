@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'rspec', '~> 3'
   gem.add_development_dependency 'timecop', '~> 0.8'
-  gem.add_development_dependency 'vcr', '> 2'
-  gem.add_development_dependency 'webmock', '> 2'
+  gem.add_development_dependency 'vcr', '~> 2'
+  gem.add_development_dependency 'webmock', '~> 2'
   gem.add_development_dependency 'dotenv', '~> 2.2', '>= 2.2.1'
 end
