@@ -84,8 +84,8 @@ module LeanplumApi
       production_connection.get(action: 'getVars', userId: user_id).first['vars']
     end
 
-    def delete_user(user_id)
-      development_connection.get(action: 'deleteUser', userId: user_id).first['vars']
+    def delete_user(user_id, full_erasure = false)
+      development_connection.get(action: 'deleteUser', userId: user_id, fullErasure: full_erasure).first['vars']
     end
 
     # If you pass old events OR users with old date attributes (e.g. create_date for an old user), Leanplum
